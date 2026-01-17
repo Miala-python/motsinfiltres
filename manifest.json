@@ -1,6 +1,6 @@
 {
-  "name": "Infiltré - Le Jeu",
-  "short_name": "Infiltré",
+  "name": "Mots Infiltrés - Le Jeu",
+  "short_name": "Infiltrés",
   "description": "Un jeu de société de déduction et de ruse.",
   "start_url": "./index.html",
   "display": "standalone",
