@@ -1,5 +1,6 @@
 Pomme,Poire,Banane,Pêche,Abricot,Fraise,Framboise,Cerise,Mangue,Ananas,Citron,Orange
 Voiture,Camion,Moto,Autobus,Tracteur,Scooter,Velo,Tricycle,Tramway,Velomoteur
+Tortue,Serpent,Reptile,Lézard
 Paris,Londres,Rome,Berlin,Madrid,Bruxelles,Lisbonne,Vienne,Prague,Amsterdam,Varsovie
 Guitare,Violon,Piano,Harpe,Flûte,Trompette,Batterie,Violoncelle,Saxophone,Clarinette
 Chien,Chat,Loup,Renard,Hamster,Lapin,Souris,Rat,Ours,Singe
@@ -304,7 +305,7 @@ Banque,Compte,Livret,Épargne,Crédit
 Bourse,Action,Obligation,Sicav
 Cryptomonnaie,Bitcoin,Ethereum,Portefeuille
 Crowdfunding,Financement,Participatif,Don,Prêt
-Microcrédit,Prêt,Solidaire,Entrepreneuriat,Social
+Crédit,Prêt,Solidaire,Entrepreneuriat,Social
 Économie,Sociale,Solidaire,Coopérative,Association
 Bénévolat,Volontariat,Service,Civique
 Don,Legs,Fondation,Mécénat
@@ -318,7 +319,7 @@ Thérapie,Psychanalyse,Comportementaliste
 Hypnose,Acupuncture,Ostéopathie
 Médecine,Douce,Homéopathie,Phytothérapie
 Thermalisme,Cure,Station,Thermale
-Thalassothérapie,Algothérapie,Eau,Mer
+Algothérapie,Eau,Mer
 Spa,Hammam,Sauna,Jacuzzi
 Massage,Relaxant,Californien,Shiatsu
 Esthétique,Soin,Visage,Manucure,Épilation
