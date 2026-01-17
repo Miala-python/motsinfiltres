@@ -1,2 +1,2 @@
-# motsinfiltres
+# Mots Infiltrés
 Jeu social
