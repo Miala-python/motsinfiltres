@@ -294,7 +294,7 @@ Taxi,Chauffeur,Course,Voiture
 Livraison,Domicile,Coursier,Drive,Collect
 Facture,Devis,Commande,Livraison
 Comptabilité,Bilan,Compte,Résultat,Livre
-Fiscalité,Impôt,Revenu,TVA
+Impôt,Revenu,TVA,Argent,Prêt
 Société,Compagnie,Entreprise,Business
 Droit,Travail,Contrat,Convention
 Droit,Consommation,Garantie,Rétractation
@@ -347,4 +347,5 @@ Vecteur,Matrice,Scalaire,Complexe,Polynôme,Fonction
 Python,While,For,If,Def,Return
 Laplace,Newton,Pythagore,Thalès,Bézout,Fermat
 Lit,Couette,Matelas,Oreiller,Housse,Drap,Coussin
-Vent,Orage,Pluie,Brume
+Vent,Orage,Pluie,Brume,Nuage,Éclair 
+Livre,Histoire,Roman,
