@@ -259,24 +259,32 @@
             }
         }
 
-        function checkMrVideGuess() {
-            const guess = document.getElementById('mrVideGuess').value.trim().toLowerCase();
-            const actual = words.civil.toLowerCase();
-            const statusDiv = document.getElementById('gameStatus');
-            
-            // On nettoie les accents pour plus de tolérance
-            const normalize = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            
-            if(normalize(guess) === normalize(actual)) {
-                statusDiv.innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot ! VICTOIRE de M.∅.</div>`;
-            } else {
-                statusDiv.innerHTML = `<div class="status-msg lose">M.∅ s'est trompé ! Élimination confirmée.</div>`;
-            }
+        
 
-            document.getElementById('guessArea').style.display = "none";
-            document.getElementById('playerList').style.opacity = "1";
-            document.getElementById('playerList').style.pointerEvents = "auto";
-        }
+function checkMrVideGuess() {
+    const guess = document.getElementById('mrVideGuess').value.trim().toLowerCase();
+    const actual = words.civil.toLowerCase();
+    const statusDiv = document.getElementById('gameStatus');
+
+    // Fonction pour normaliser les accents ET supprimer les 'e' et 's' finaux
+    const simplify = (str) => {
+        return str
+            .normalize("NFD") 
+            .replace(/[\u0300-\u036f]/g, "") // Enlève les accents
+            .replace(/[es]+$/g, "");         // Enlève les 'e' et 's' à la fin du mot
+    };
+
+    if(simplify(guess) === simplify(actual)) {
+        statusDiv.innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot ! VICTOIRE de M.∅.</div>`;
+    } else {
+        statusDiv.innerHTML = `<div class="status-msg lose">M.∅ s'est trompé ! Élimination confirmée.</div>`;
+    }
+
+    document.getElementById('guessArea').style.display = "none";
+    document.getElementById('playerList').style.opacity = "1";
+    document.getElementById('playerList').style.pointerEvents = "auto";
+}
+
 
         function checkEndGame() {
             const alive = players.filter(p => p.alive);
