@@ -275,7 +275,7 @@ function checkMrVideGuess() {
             .replace(/[es]+$/g, "");         // Enlève les 'e' et 's' à la fin du mot
     };
 
-alert(simplify(guess) +' ; '+ simplify(actual))
+//alert(simplify(guess) +' ; '+ simplify(actual))
     if(simplify(guess) === simplify(actual)) {
         statusDiv.innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot ! VICTOIRE de M.∅.</div>`;
     } else {
