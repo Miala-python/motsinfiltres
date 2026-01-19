@@ -14,7 +14,22 @@
             --text: #1e293b;
             --danger: #ef4444;
             --success: #22c55e;
+            --input-border: #e2e8f0;
         }
+
+        /* --- Mode Sombre --- */
+        body.dark-mode { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --text: #f1f5f9; 
+            --input-border: #475569;
+        }
+
+        /* --- Transition Fluide --- */
+        body, .screen, input, .player-item, .secret-box, button {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
             background: var(--bg); 
@@ -25,6 +40,7 @@
             padding-bottom: 80px;
             box-sizing: border-box;
         }
+
         .screen { 
             display: none; width: 100%; max-width: 400px; 
             background: var(--card); padding: 25px; 
@@ -32,15 +48,22 @@
             box-sizing: border-box;
         }
         .active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
         h1, h2 { color: var(--primary); margin-top: 0; }
         .input-group { text-align: left; margin-bottom: 15px; }
         label { display: block; font-size: 0.9em; margin-bottom: 5px; font-weight: bold; }
+        
         input { 
-            width: 100%; padding: 12px; border: 2px solid #e2e8f0; 
+            width: 100%; padding: 12px; border: 2px solid var(--input-border); 
             border-radius: 10px; box-sizing: border-box; font-size: 16px; 
+            background: transparent; color: inherit;
         }
+
         button { 
             width: 100%; background: var(--primary); color: white; border: none; 
             padding: 15px; border-radius: 10px; font-size: 16px; font-weight: bold;
@@ -55,30 +78,31 @@
             font-weight: bold; font-size: 1.2em; text-align: center;
         }
         .revealed { background: #f1f5f9; color: var(--danger); border: 2px dashed var(--danger); }
+        body.dark-mode .revealed { background: #334155; color: #fb7185; border-color: #fb7185; }
 
         .player-item { 
             background: #f1f5f9; margin: 8px 0; padding: 12px; 
             border-radius: 8px; display: flex; justify-content: space-between; align-items: center;
         }
+        body.dark-mode .player-item { background: #334155; }
+
         .eliminated { opacity: 0.6; background: #e2e8f0; border-left: 5px solid #64748b; }
+        body.dark-mode .eliminated { background: #1e293b; border-left-color: #475569; }
+
         .role-tag { font-size: 0.8em; font-weight: bold; color: var(--danger); margin-left: 10px; }
 
         #guessArea {
             margin-top: 20px; padding: 15px; background: #fff7ed; border: 1px solid #ffedd5; border-radius: 10px;
         }
+        body.dark-mode #guessArea { background: #2d1a05; border-color: #452a0a; color: #fdba74; }
+
         .status-msg {
             padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; text-align: center;
         }
         .win { background: #dcfce7; color: #166534; }
         .lose { background: #fee2e2; color: #991b1b; }
-
-        /* Mode Sombre */
-        body.dark-mode { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; }
-        body.dark-mode input { background: #334155; border-color: #475569; color: white; }
-        body.dark-mode .player-item, body.dark-mode .revealed { background: #334155; color: #f1f5f9; }
-        body.dark-mode #guessArea { background: #2d1a05; border-color: #452a0a; color: #fdba74; }
-        body.dark-mode .status-msg.win { background: #064e3b; color: #6ee7b7; }
-        body.dark-mode .status-msg.lose { background: #7f1d1d; color: #fca5a5; }
+        body.dark-mode .win { background: #064e3b; color: #6ee7b7; }
+        body.dark-mode .lose { background: #7f1d1d; color: #fca5a5; }
 
         .theme-toggle {
             position: absolute; top: 20px; right: 20px; width: auto; 
@@ -88,12 +112,13 @@
 
         footer {
             position: fixed; bottom: 20px; text-align: center; width: 100%;
-            font-size: 0.85em; color: #94a3b8;
+            font-size: 0.85em; color: #94a3b8; pointer-events: none;
         }
         .version-badge {
             background: #e2e8f0; padding: 2px 8px; border-radius: 12px;
-            font-weight: bold; margin-left: 5px; cursor: pointer;
+            font-weight: bold; margin-left: 5px; cursor: pointer; pointer-events: auto;
         }
+        body.dark-mode .version-badge { background: #334155; color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -127,7 +152,7 @@
         </div>
 
         <button id="confirmNameBtn" onclick="confirmName()">Valider mon nom</button>
-        <button id="editNamesBtn" class="secondary-btn" onclick="showScreen(1)">Modifier les paramètres de la partie</button>
+        <button id="editNamesBtn" class="secondary-btn" onclick="showScreen(1)">Modifier les paramètres / noms</button>
     </div>
 
     <div id="screen3" class="screen">
@@ -146,6 +171,7 @@
         <button onclick="resetGame()" style="background:#64748b; margin-top:30px;">Nouvelle Partie</button>
     </div>
 
+    
 
     <script>
         let config = { nbPlayers: 3, nbInf: 1, nbVid: 1 };
@@ -154,7 +180,6 @@
         let words = { civil: "", inf: "" };
         let savedNames = JSON.parse(localStorage.getItem('infiltres_names') || "[]");
 
-        // Chargement initial des paramètres sauvegardés
         window.onload = () => {
             const savedConfig = JSON.parse(localStorage.getItem('infiltres_config'));
             if (savedConfig) {
@@ -176,7 +201,6 @@
             config.nbInf = parseInt(document.getElementById('nbInf').value);
             config.nbVid = parseInt(document.getElementById('nbVid').value);
 
-            // Sauvegarde config
             localStorage.setItem('infiltres_config', JSON.stringify(config));
 
             if (config.nbInf + config.nbVid >= config.nbPlayers) {
@@ -233,8 +257,6 @@
             if(!nameInput.value) return alert("Choisis un pseudo !");
 
             players[currentIndex].name = nameInput.value;
-            
-            // Mise à jour du cache des noms
             savedNames[currentIndex] = nameInput.value;
             localStorage.setItem('infiltres_names', JSON.stringify(savedNames));
 
@@ -262,9 +284,9 @@
 
         function startVoteScreen() {
             showScreen(3);
-            const validStarters = players.filter(p => p.type !== 'M.∅');
+            const validStarters = players.filter(p => p.alive && p.type !== 'M.∅');
             const starter = validStarters[Math.floor(Math.random() * validStarters.length)];
-            document.getElementById('starter').innerText = starter.name;
+            document.getElementById('starter').innerText = starter ? starter.name : "-";
             document.getElementById('gameStatus').innerHTML = "";
             document.getElementById('playerList').style.opacity = "1";
             document.getElementById('playerList').style.pointerEvents = "auto";
@@ -316,9 +338,9 @@
             const simplify = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[es]+$/g, "");
 
             if(simplify(guess) === simplify(actual)) {
-                document.getElementById('gameStatus').innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot (${words.civil}) ! VICTOIRE.</div>`;
+                document.getElementById('gameStatus').innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot (${words.civil}) ! VICTOIRE de M.∅.</div>`;
             } else {
-                document.getElementById('gameStatus').innerHTML = `<div class="status-msg lose">Faux ! Le mot était "${words.civil}".</div>`;
+                document.getElementById('gameStatus').innerHTML = `<div class="status-msg lose">Faux ! Le mot était "${words.civil}". Élimination confirmée.</div>`;
             }
             document.getElementById('guessArea').style.display = "none";
             document.getElementById('playerList').style.opacity = "1";
@@ -339,7 +361,6 @@
         }
 
         function resetGame() {
-            // Relancer une partie avec la même config sans recharger la page
             initGame();
         }
 
@@ -355,8 +376,9 @@
         }
     </script>
 
-    <footer>
-        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.0.5beta</span>
+<!-- A conserver en bas du code pour une modification facile -->
+<footer>
+        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.0.5</span>
     </footer>
 </body>
 </html>
