@@ -454,6 +454,16 @@ footer {
     Version du jeu <span class="version-badge">v1.0.4beta</span>
 </footer>
 
+<script>
+// Sélectionne l'élément par sa classe
+const badge = document.querySelector('.version-badge');
+
+// Ajoute l'action au clic
+badge.addEventListener('click', () => {
+    window.location.href = './beta.html';
+});
+</script>
+
 
 </body>
 </html>
