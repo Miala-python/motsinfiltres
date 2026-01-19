@@ -111,6 +111,53 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* --- Ajustements spécifiques pour le Mode Sombre --- */
+
+body.dark-mode #guessArea {
+    background: #2d1a05; /* Orange très foncé pour rester dans le thème */
+    border-color: #452a0a;
+    color: #fdba74;
+}
+
+body.dark-mode .status-msg.win {
+    background: #064e3b;
+    color: #6ee7b7;
+}
+
+body.dark-mode .status-msg.lose {
+    background: #7f1d1d;
+    color: #fca5a5;
+}
+
+/* On adapte aussi les éléments de liste de joueurs */
+body.dark-mode .player-item {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+body.dark-mode .eliminated {
+    background: #1e293b;
+    border-left-color: #475569;
+    opacity: 0.5;
+}
+
+/* La boîte secrète quand elle est révélée */
+body.dark-mode .revealed {
+    background: #334155;
+    color: #fb7185; /* Un rouge plus doux pour le mode sombre */
+    border-color: #fb7185;
+}
+
+/* Les inputs (bordures et texte) */
+body.dark-mode input {
+    background: #334155;
+    border-color: #475569;
+    color: white;
+}
+
+body.dark-mode label {
+    color: #94a3b8;
+}
 
 
 
@@ -404,7 +451,7 @@ footer {
 </style>
 
 <footer>
-    Version du jeu <span class="version-badge">v1.0.2beta</span>
+    Version du jeu <span class="version-badge">v1.0.4beta</span>
 </footer>
 
 
