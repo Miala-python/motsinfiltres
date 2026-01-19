@@ -44,21 +44,21 @@
             cursor: pointer; margin-top: 10px; transition: opacity 0.2s;
         }
         button:active { opacity: 0.8; }
-        
+
         .secret-box {
             background: #1e293b; color: white; padding: 40px 20px;
             border-radius: 15px; margin: 20px 0; cursor: pointer;
             font-weight: bold; font-size: 1.2em; text-align: center;
         }
         .revealed { background: #f1f5f9; color: var(--danger); border: 2px dashed var(--danger); }
-        
+
         .player-item { 
             background: #f1f5f9; margin: 8px 0; padding: 12px; 
             border-radius: 8px; display: flex; justify-content: space-between; align-items: center;
         }
         .eliminated { opacity: 0.6; background: #e2e8f0; border-left: 5px solid #64748b; }
         .role-tag { font-size: 0.8em; font-weight: bold; color: var(--danger); margin-left: 10px; }
-        
+
         #guessArea {
             margin-top: 20px; padding: 15px; background: #fff7ed; border: 1px solid #ffedd5; border-radius: 10px;
         }
@@ -67,9 +67,74 @@
         }
         .win { background: #dcfce7; color: #166534; }
         .lose { background: #fee2e2; color: #991b1b; }
+
+
+
+
+/* Définition des couleurs du mode sombre */
+body.dark-mode {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --input-border: #334155;
+}
+
+/* Style pour le bouton de bascule */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: auto; /* Pour ne pas prendre toute la largeur */
+    padding: 8px 12px;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--primary);
+    font-size: 1.2rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+/* Ajustements pour les inputs et éléments clairs en mode sombre */
+body.dark-mode input {
+    background: #334155;
+    border-color: var(--input-border);
+    color: white;
+}
+
+body.dark-mode .player-item, 
+body.dark-mode .revealed {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+/* Transition fluide */
+body {
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+
+
+
     </style>
 </head>
 <body>
+
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+
+<script>
+function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById('themeBtn');
+
+    body.classList.toggle('dark-mode');
+
+    // Change l'icône selon le mode
+    if (body.classList.contains('dark-mode')) {
+        btn.innerText = '☀️';
+    } else {
+        btn.innerText = '🌙';
+    }
+}
+</script>
 
     <div id="screen1" class="screen active">
         <h1>Mots Infiltrés</h1>
@@ -92,12 +157,12 @@
     <div id="screen2" class="screen">
         <h2 id="stepTitle">Pseudo du Joueur 1</h2>
         <input type="text" id="playerNameInput" placeholder="Entrez votre nom">
-        
+
         <div id="wordArea" style="display:none">
             <div id="wordDisplay" class="secret-box" onclick="revealWord()">CLIQUEZ POUR VOIR</div>
             <button id="nextPlayerBtn" style="display:none" onclick="nextPlayer()">Joueur Suivant ➔</button>
         </div>
-        
+
         <button id="confirmNameBtn" onclick="confirmName()">Valider mon nom</button>
     </div>
 
@@ -163,7 +228,7 @@
             for(let i=0; i<config.nbInf; i++) roles.push({type: 'INFILTRÉ', word: words.inf});
             for(let i=0; i<config.nbVid; i++) roles.push({type: 'M.∅', word: 'Vous n\'avez pas de mot !'});
             while(roles.length < config.nbPlayers) roles.push({type: 'CIVIL', word: words.civil});
-            
+
             roles.sort(() => Math.random() - 0.5);
             players = roles.map(r => ({ ...r, name: "", alive: true }));
 
@@ -173,7 +238,7 @@
         function confirmName() {
             const nameInput = document.getElementById('playerNameInput');
             if(!nameInput.value) return alert("Choisis un pseudo !");
-            
+
             players[currentIndex].name = nameInput.value;
             nameInput.style.display = "none";
             document.getElementById('wordArea').style.display = "block";
@@ -196,11 +261,11 @@
                 document.getElementById('wordArea').style.display = "none";
                 document.getElementById('nextPlayerBtn').style.display = "none";
                 document.getElementById('confirmNameBtn').style.display = "block";
-                
+
                 const display = document.getElementById('wordDisplay');
                 display.classList.remove('revealed');
                 display.innerText = "CLIQUEZ POUR VOIR";
-                
+
                 document.getElementById('stepTitle').innerText = "Pseudo du Joueur " + (currentIndex + 1);
             } else {
                 startVoteScreen();
@@ -221,13 +286,13 @@
             players.forEach((p, idx) => {
                 const div = document.createElement('div');
                 div.className = `player-item ${p.alive ? '' : 'eliminated'}`;
-                
+
                 let content = `<span>${p.name}</span>`;
                 if(!p.alive) {
                     content += `<span class="role-tag">${p.type}</span>`;
                 }
                 div.innerHTML = content;
-                
+
                 if(p.alive) {
                     const btn = document.createElement('button');
                     btn.innerText = "Éliminer";
@@ -247,7 +312,7 @@
             // On ne mentionne pas le mot civil dans la confirmation
             if(confirm(`Confirmer l'élimination de ${p.name} ?`)) {
                 p.alive = false;
-                
+
                 if(p.type === 'M.∅') {
                     // Masquer la liste pour que M.∅ ne voit pas les noms en devinant
                     document.getElementById('playerList').style.opacity = "0.3";
@@ -256,13 +321,13 @@
                 } else {
                     document.getElementById('guessArea').style.display = "none";
                 }
-                
+
                 renderPlayers();
                 checkEndGame();
             }
         }
 
-        
+
 
 function checkMrVideGuess() {
     const guess = document.getElementById('mrVideGuess').value.trim().toLowerCase();
@@ -339,10 +404,18 @@ footer {
 </style>
 
 <footer>
-    Version du jeu <a href="./beta.html"><span class="version-badge">v1.0.2</span></a>
+    Version du jeu <span class="version-badge">v1.0.3</span>
 </footer>
 
+<script>
+// Sélectionne l'élément par sa classe
+const badge = document.querySelector('.version-badge');
+
+// Ajoute l'action au clic
+badge.addEventListener('click', () => {
+    window.location.href = 'beta.html';
+});
+</script>
 
 </body>
 </html>
-
