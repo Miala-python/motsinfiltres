@@ -335,7 +335,7 @@
         function checkMrVideGuess() {
             const guess = document.getElementById('mrVideGuess').value.trim().toLowerCase();
             const actual = words.civil.toLowerCase();
-            const simplify = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[es]+$/g, "");
+            const simplify = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[esx]+$/g, "");
 
             if(simplify(guess) === simplify(actual)) {
                 document.getElementById('gameStatus').innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot (${words.civil}) ! VICTOIRE de M.∅.</div>`;
@@ -378,7 +378,7 @@
 
 <!-- A conserver en bas du code pour une modification facile -->
 <footer>
-        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.0.6beta</span>
+        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.0.7beta</span>
     </footer>
 </body>
 </html>
