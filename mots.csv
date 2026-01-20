@@ -84,7 +84,9 @@ Joie,Tristesse,Colère,Peur,Surprise,Dégoût,Honte,Espoir,Fierté
 Amour,Amitié,Haine,Respect,Confiance,Courage,Empathie,Tolérance
 Électricité,Gaz,Eau,Internet,Réseau,Signal,Onde
 Atome,Molécule,Cellule,Gène,Bactérie,Virus,ADN,Quark,Neutron
+Physique,Chimie,Biologie,Géologie,Astronomie,Mathématiques
 Physique,Chimie,Biologie,Géologie,Astronomie,Mathématiques,Histoire,Géographie,Philosophie,Sociologie,Économie,Informatique,Psychologie
+Histoire,Géographie,Philosophie,Sociologie,Économie,Informatique,Psychologie
 Français,Anglais,Espagnol,Allemand,Italien,Chinois,Russe,Arabe
 Mètre,Kilogramme,Litre,Heure,Minute,Seconde,Degré,Kilomètre,Gramme
 Nord,Sud,Est,Ouest,Boussole
@@ -158,7 +160,9 @@ Discours,Débat,Conférence,Colloque,Séminaire,Assemblée,Réunion
 Ventilateur,Climatiseur,Radiateur,Chaudière,Pompe,Convecteur
 Écologie,Environnement,Recyclage,Biodiversité,Écosystème
 Danseur,Chorégraphe,Ballerine
-Inondation,Sécheresse,Tremblement,Éruption,Avalanche,Glissement
+Inondation,Sécheresse,Eau
+Tremblement,Avalanche,Glissement
+Eruption,Feu,Volcan
 Jardinier,Horticulteur,Arboriculteur,Paysagiste,Botaniste,Pépiniériste
 Chasseur,Pêcheur,Cueilleur,Agriculteur,Éleveur,Sylviculteur,Aquaculteur
 Fête,Anniversaire,Mariage,Cérémonie,Réception,Banquet,Buffet,Cocktail
@@ -187,7 +191,8 @@ Jardin,Botanique,Fleurs,Herbe
 Français,Anglais,Japonais,Espagnol
 Bonsaï,Orchidée,Cactus,Succulente,Carnivore
 Compost,Engrais,Pesticide,Terre
-Brouette,Arrosoir,Sécateur,Plantoir,Gants
+Brouette,Arrosoir,Sécateur,Gants
+Brouette,Marteau,Secateur,Pelle
 Attelle,Pansement,Seringue,Stéthoscope,Tensiomètre
 Ambulance,Civière,Brancard,Défibrillateur,Oxygène
 Chapeau,Lunettes,Casquette,Parasol
@@ -206,7 +211,7 @@ Philatélie,Timbre,Enveloppe,Collection
 Entomologie,Insecte,Collection,Boîte
 Lépidoptères,Papillon,Nuit,Jour,Chrysalide
 Ornithologie,Oiseau,Jumelles,Nichoir
-Astrologie,Zodiaque,Horo,Ascendant,Thème
+Astrologie,Zodiaque,Horoscope,Etoile
 Alchimie,Pierre,Élixir,Transmutation
 Cryptographie,Chiffrement,Déchiffrement,Code
 Hiéroglyphes,Cunéiforme,Alphabet,Runes
@@ -285,11 +290,11 @@ Librairie,Surface,Culturelle,Enligne
 Bibliothèque,Classification,Prêt,Interbibliothèque
 Archives,INA,Vieux,Histoire
 Musée,Collection,Exposition,Visite,Guide
-Galerie,Vernissage,Exposition,Collectionneur
-Salle,Vente,Enchère,Commissaire,Estimation
-Antiquités,Brocante,Brocanteur,Chineur
-Dépôt,Vente,Revente,Occasion
-Location,Saisonnière,Colocation
+Galerie,Photo,Peinture,Tableau
+Vente,Enchère,Achat,Don,Occasion
+Antiquités,Brocante,Chineur,Collectionneur
+Vente,Revente,Occasion,Don
+Location,Propriété,Bien
 Hôtel,Étoile,Buffet,Restaurant,Michelin
 Tourisme,Réservation,Voyage,Organisé,Guide
 Agence,Voyage,Billet,Avion,Assurance
@@ -322,7 +327,8 @@ Paris,Sport,Cote,Mise
 Pronostic,Analyse,Statistique,Diagnostic
 Diététique,Calorie,Nutriment,Complément
 Méditation,Yoga,Sophrologie,Conscience
-Thérapie,Psychanalyse,Neurone,Cerveau
+Thérapie,Psychologie,Psychanalyse
+Neurone,Cerveau,Synapse,Electricité
 Médecine,Douce,Homéopathie,Phytothérapie
 Thermalisme,Cure,Station,Thermale
 Algothérapie,Eau,Mer,Océan
@@ -368,3 +374,5 @@ Oasis,Coca,Orangina,Tropical
 cosinus,sinus,tangente,hyperbolique,Arc
 Arc,Fleche,Carquois,Tir
 Chiffre,Nombre,Pair,Impair
+Jambe,Bras,Doigt,Pied,Main
+Casque,Ecouteurs,Audio,Oreille
