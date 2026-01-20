@@ -340,7 +340,7 @@
             if(simplify(guess) === simplify(actual)) {
                 document.getElementById('gameStatus').innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot (${words.civil}) ! VICTOIRE de M.∅.</div>`;
             } else {
-                document.getElementById('gameStatus').innerHTML = `<div class="status-msg lose">Faux ! Le mot était "${words.civil}". Élimination confirmée.</div>`;
+                document.getElementById('gameStatus').innerHTML = `<div class="status-msg lose">Faux ! Élimination confirmée.</div>`;
             }
             document.getElementById('guessArea').style.display = "none";
             document.getElementById('playerList').style.opacity = "1";
@@ -378,7 +378,7 @@
 
 <!-- A conserver en bas du code pour une modification facile -->
 <footer>
-        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.0.7beta</span>
+        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.1.1beta</span>
     </footer>
 </body>
 </html>
