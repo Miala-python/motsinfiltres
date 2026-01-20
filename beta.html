@@ -145,7 +145,7 @@
 </head>
 <body>
 
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">✨</button>
 
     <div id="screen1" class="screen active">
         <h1>Mots Infiltrés</h1>
@@ -215,7 +215,7 @@
             const body = document.body;
             const btn = document.getElementById('themeBtn');
             body.classList.toggle('dark-mode');
-            btn.innerText = body.classList.contains('dark-mode') ? '☀️' : '🌙';
+            btn.innerText = body.classList.contains('dark-mode') ? '🌙' : '☀️';
         }
 
         async function initGame() {
@@ -400,7 +400,7 @@
 
 <!-- A conserver en bas du code pour une modification facile -->
 <footer>
-        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.1.2beta</span>
+        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.1.3beta</span>
     </footer>
 </body>
 </html>
