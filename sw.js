@@ -18,13 +18,13 @@ self.addEventListener('fetch', (event) => {
       return cache.match(event.request).then((cachedResponse) => {
         const fetchPromise = fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
-            
+
             // LOGIQUE DE DÉTECTION DE CHANGEMENT
             if (cachedResponse) {
               // On compare les ETag ou Last-Modified (si disponibles) 
               // ou on peut comparer la taille/contenu pour les fichiers critiques
               const isDifferent = networkResponse.headers.get('ETag') !== cachedResponse.headers.get('ETag');
-              
+
               if (isDifferent && event.request.url.includes('index.html')) {
                 notifyClientsOfUpdate();
               }
