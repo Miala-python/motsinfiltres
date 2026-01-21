@@ -209,7 +209,7 @@ Archéologie,Fouille,Stratigraphie,Artéfact,Carbone
 Paléontologie,Fossile,Dinosaure
 Généalogie,Ascendant,Descendant,Arbre,Acte
 Héraldique,Blason,Écu,Devise,Haubert
-Numismatique,Pièce,Billet,Collection
+Numismatique,Pièce,Timbre,Collection
 Timbre,Enveloppe,Collection,Numismatique
 Astrologie,Zodiaque,Horoscope,Etoile
 Alchimie,Pierre,Élixir,Transmutation
@@ -491,3 +491,10 @@ kayak,canoë,voilier,planche,voile
 biberon,tétine,doudou,couches,bébé
 araignée,toile,insecte,mouche
 saxophone,trombone,flûte,clarinette
+Gourde,Bouteille,Eau,Soif,Fontaine,Robinet
+Secret,Mystère,Enigme,Inconnu
+Triangle,Créneau,Sinusoïde
+Cercle,Carré,Triangle,Etoile,Hexagone,Ellipse
+Civil,Infiltré,Vide,Jeu
+Ah,Oh,Hi,Euh,Interjection
+Lumière,Visible,Eclairé,Brillant
