@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mots Infiltrés - Web App</title>
     <link rel="manifest" href="manifest.json">
-   
+
 <link rel="icon" type="image/png" href="./favicon.png">
 
 <meta name="description" content="Démasquez l'Infiltré dans ce jeu de mots captivant ! Entre amis ou en famille, utilisez votre intuition pour survivre. Inspiré du célèbre jeu Undercover.">
@@ -24,7 +24,7 @@
 
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://miala-python.github.io/motsinfiltres/?from=linkCanonical">
- 
+
 
 
 <script data-goatcounter="https://infiltresgame.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -70,7 +70,7 @@
             box-sizing: border-box;
         }
         .active { display: block; animation: fadeIn 0.3s ease; }
-        
+
         @keyframes fadeIn { 
             from { opacity: 0; transform: translateY(10px); } 
             to { opacity: 1; transform: translateY(0); } 
@@ -79,7 +79,7 @@
         h1, h2 { color: var(--primary); margin-top: 0; }
         .input-group { text-align: left; margin-bottom: 15px; }
         label { display: block; font-size: 0.9em; margin-bottom: 5px; font-weight: bold; }
-        
+
         input { 
             width: 100%; padding: 12px; border: 2px solid var(--input-border); 
             border-radius: 10px; box-sizing: border-box; font-size: 16px; 
@@ -193,7 +193,7 @@
         <button onclick="resetGame()" style="background:#64748b; margin-top:30px;">Nouvelle Partie</button>
     </div>
 
-    
+
 
     <script>
         let config = { nbPlayers: 3, nbInf: 1, nbVid: 1 };
@@ -267,7 +267,7 @@
             document.getElementById('wordArea').style.display = "none";
             document.getElementById('confirmNameBtn').style.display = "block";
             document.getElementById('stepTitle').innerText = "Pseudo du Joueur " + (currentIndex + 1);
-            
+
             const display = document.getElementById('wordDisplay');
             display.classList.remove('revealed');
             display.innerText = "CLIQUEZ POUR VOIR";
@@ -392,33 +392,15 @@
         }
 
         if ('serviceWorker' in navigator) {
-
- // Ecouter les messages du Service Worker
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
-      const userConfirmed = confirm("Une nouvelle version du contenu est disponible. Voulez-vous actualiser la page pour la voir ?");
-      if (userConfirmed) {
-        window.location.reload();
-      }
-    }
-  });
-
-
-
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
             });
-
-
-
         }
-
     </script>
 
 <!-- A conserver en bas du code pour une modification facile -->
 <footer>
-        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.2.1beta</span>
+        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.1.3beta</span>
     </footer>
 </body>
 </html>
-
