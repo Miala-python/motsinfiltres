@@ -219,6 +219,9 @@
         }
 
         async function initGame() {
+
+                    document.getElementById('guessArea').style.display = "none";
+
             config.nbPlayers = parseInt(document.getElementById('nbPlayers').value);
             config.nbInf = parseInt(document.getElementById('nbInf').value);
             config.nbVid = parseInt(document.getElementById('nbVid').value);
