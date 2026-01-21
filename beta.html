@@ -392,10 +392,27 @@
         }
 
         if ('serviceWorker' in navigator) {
+
+ // Ecouter les messages du Service Worker
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+      const userConfirmed = confirm("Une nouvelle version du contenu est disponible. Voulez-vous actualiser la page pour la voir ?");
+      if (userConfirmed) {
+        window.location.reload();
+      }
+    }
+  });
+
+
+
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
             });
+
+
+
         }
+
     </script>
 
 <!-- A conserver en bas du code pour une modification facile -->
