@@ -1,56 +1,49 @@
 const CACHE_NAME = 'infiltre-v1.1.1';
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './mots.csv'
-];
+const ASSETS = ['./', './index.html', './manifest.json', './mots.csv'];
 
-// Installation : Mise en cache initiale
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
   self.skipWaiting();
 });
 
-// Activation : Nettoyage des anciens caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
+    caches.keys().then((names) => Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n))))
   );
 });
 
-// Stratégie Stale-While-Revalidate : 
-// Sert le cache immédiatement, mais télécharge la mise à jour en arrière-plan si internet est disponible.
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(event.request).then((response) => {
+      return cache.match(event.request).then((cachedResponse) => {
         const fetchPromise = fetch(event.request).then((networkResponse) => {
-          // Si la réponse réseau est valide, on met à jour le cache
           if (networkResponse && networkResponse.status === 200) {
+            
+            // LOGIQUE DE DÉTECTION DE CHANGEMENT
+            if (cachedResponse) {
+              // On compare les ETag ou Last-Modified (si disponibles) 
+              // ou on peut comparer la taille/contenu pour les fichiers critiques
+              const isDifferent = networkResponse.headers.get('ETag') !== cachedResponse.headers.get('ETag');
+              
+              if (isDifferent && event.request.url.includes('index.html')) {
+                notifyClientsOfUpdate();
+              }
+            }
+
             cache.put(event.request, networkResponse.clone());
           }
           return networkResponse;
-        }).catch(() => {
-          // Échec du réseau (hors-ligne), rien à faire, on a déjà servi le cache si dispo
         });
 
-        // Retourne la réponse du cache si elle existe, sinon attend le réseau
-        return response || fetchPromise;
+        return cachedResponse || fetchPromise;
       });
     })
   );
 });
 
+// Fonction pour envoyer un message à la page HTML
+function notifyClientsOfUpdate() {
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => client.postMessage({ type: 'UPDATE_AVAILABLE' }));
+  });
+}
