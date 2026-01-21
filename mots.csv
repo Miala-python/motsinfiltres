@@ -112,7 +112,7 @@ Cinéma,Caméra,Projecteur,Écran,Scénario,Acteur,Réalisateur,Scénariste,Prod
 Musique,Partition,Note,Rythme,Mélodie,Harmonie,Tempo,Accord,Gamme
 Dessin,Croquis,Esquisse,Portrait,Paysage,Caricature,Illustration
 Drapeau,Hymne,Monnaie,Capitale,Frontière,Ambassade,Consulat
-Drapeau,Blason,Emblème,Silicone
+Drapeau,Blason,Emblème,Logo,Devise
 Hymne,Musique,Chanson
 Blanc,Noir,Jaune,Rouge,Gris,Orange
 Philosophe,Scientifique,Artiste,Inventeur,Explorateur,Écrivain,Compositeur
@@ -168,7 +168,7 @@ Tremblement,Avalanche,Glissement
 Eruption,Feu,Volcan
 Jardinier,Horticulteur,Arboriculteur,Paysagiste,Botaniste,Pépiniériste
 Chasseur,Pêcheur,Cueilleur,Agriculteur,Éleveur,Sylviculteur,Aquaculteur
-Fête,Anniversaire,Mariage,Cérémonie,Réception,Banquet,Buffet,Cocktail
+Fête,Anniversaire,Mariage,Cérémonie,Banquet,Buffet,Cocktail
 Randonnée,Alpinisme,Escalade,Trekking,Raid,Aventure,Exploration
 Tradition,Coutume,Rite,Rituel,Cérémonial,Folklore,Patrimoine
 Moustache,Barbe,Cheveux,Poils
@@ -177,7 +177,7 @@ Manège,Roue,Toboggan,Balançoire,Tourniquet,Trampoline
 Aquarium,Bassin,Bocal,Filtration,Algue,Corail
 Poterie,Tour,Argile,Émail,Cuisson,Four
 Calligraphie,Enluminure,Parchemin,Plume,Encre
-Broderie,Tricot,Crochet,Tapisserie,Dentelle,Macramé
+Broderie,Tricot,Tapisserie,Dentelle
 Vitrail,Verre,Plomb,Soudure,Rosace
 Randonnée,Pédestre,Équestre,Vélo,Raquettes
 Spéléologie,Canyon,Escalade,Gouffre,Tunnel
@@ -201,15 +201,16 @@ Ambulance,Civière,Brancard,Défibrillateur,Oxygène
 Chapeau,Lunettes,Casquette,Parasol
 Tente,Sac,Réchaud,Lanterne,Couteau
 Sac,Gourde,Boussole,Carte,Lampe
-Kayak,Canoë,Rafting,Hydrospeed,Nage
-Parapente,Deltaplane,Parachute,Élastique
-Safari,Observation,Photographie,Affût
+Kayak,Canoë,Rafting,Nage,Rivière,Lac
+Parapente,Deltaplane,Parachute,Vol
+Safari,Savane,Afrique,Chaud
 Volcanologie,Sismologie,Météorologie,Océanographie
-Archéologie,Fouille,Stratigraphie,Artéfact,Carbone
+Archéologie,Fouille,Artéfact,Carbone
 Paléontologie,Fossile,Dinosaure
-Généalogie,Ascendant,Descendant,Arbre,Acte
-Héraldique,Blason,Écu,Devise,Haubert
-Numismatique,Pièce,Timbre,Collection
+Généalogie,Ascendant,Descendant,Ancêtre
+Blason,Écu,Devise,Drapeau
+Numismatique,Timbre,Collection,Carte
+Pièces,Argent,Monnaie,Billets
 Timbre,Enveloppe,Collection,Numismatique
 Astrologie,Zodiaque,Horoscope,Etoile
 Alchimie,Pierre,Élixir,Transmutation
@@ -239,12 +240,10 @@ OGM,Champs,Maïs,Agriculture
 Énergie,Géothermique,Pompe,Forage
 Énergie,Marémotrice,Turbine,Usine
 Recyclage,Compostage,Tri,Déchetterie
-Économie,Circulaire,Réemploi,Réparation,Réutilisation
-Agriculture,Biologique,Permaculture,Agroécologie
-Commerce,Équitable,Label,Vendeur
+Récompence,Victoire,Médaille,Trophée
 Produit,Marché,Producteur
-Cuisine,Moléculaire,Sphérification,Gélification
-Mixologie,Cocktail,Shaker,Verre
+Cuisine,Manger,Aliments,Repas
+Cocktail,Shaker,Verre,Boisson
 Dégustation,Oenologie,Cépage,Terroir
 Fromagerie,Affineur,Caillé,Présure
 Chocolaterie,Tempérage,Moulage,Tablage
@@ -256,7 +255,7 @@ Primeur,Légume,Fruit,Cagette,Agriculture
 Restauration,Drive,Collect,KFC
 Cafétéria,Self,Restaurant,Manger
 Distillerie,Alambic,Condensation,Expérience
-Menuiserie,Ébénisterie,Marqueterie,Tournage,Bois
+Menuiserie,Ébénisterie,Bois,Meuble
 Forge,Enclume,Marteau,Epée
 Plomberie,Tuyauterie,Raccord,Robinet,Eau
 Électricité,Câblage,Tableau,Disjoncteur
@@ -282,7 +281,7 @@ Bibliothèque,Classification,Prêt,Interbibliothèque
 Archives,INA,Vieux,Histoire
 Musée,Collection,Exposition,Visite,Guide
 Galerie,Photo,Peinture,Tableau
-Vente,Enchère,Achat,Don,Occasion
+Vente,Enchère,Achat,Don
 Antiquités,Brocante,Chineur,Collectionneur
 Vente,Revente,Occasion,Don
 Location,Propriété,Bien
@@ -305,7 +304,7 @@ Droit,Travail,Contrat,Convention
 Droit,Consommation,Garantie,Rétractation
 Droit,Auteur,Copyright,Licence,Plagiat
 Brevet,Invention,Propriété,Industrielle
-Marque,Déposée,Logo,Slogan,Enseigne
+Marque,Logo,Slogan,Enseigne,Nom
 Assurance,Contrat,Prime,Sinistre
 Banque,Compte,Livret,Épargne,Crédit
 Bourse,Action,Obligation,Bitcoin,Banque,Portefeuille
@@ -324,8 +323,7 @@ Médecine,Douce,Homéopathie,Phytothérapie
 Thermalisme,Cure,Station,Thermale
 Algothérapie,Eau,Mer,Océan
 Spa,Hammam,Sauna,Jacuzzi
-Massage,Relaxant,Californien,Shiatsu
-Esthétique,Soin,Visage,Manucure,Épilation
+Massage,Relaxation,Douceur,Calme
 Coiffure,Coupe,Coloration,Permanente
 Barbier,Rasage,Blaireau,Savon
 Tatouage,Piercing,Dessin,Corporel
@@ -347,7 +345,8 @@ Doudou,Peluche,Câlin,Mignon
 Chenille,Papillon,Puceron,Fourmi,Abeille
 Pied,Chaussette,Main,Gant
 Canard,Oiseau,Oie,WC
-Pivot,Glissière,Rotule,Encastrement,Hélicoïdal
+Pivot,Glissière,Rotule,Hélicoïdal
+Translation,Rotation,Symétrie,Homothétie
 Vecteur,Matrice,Scalaire,Complexe,Polynôme,Fonction
 Python,While,For,If,Def,Return
 Laplace,Newton,Pythagore,Thalès,Bézout,Fermat
@@ -429,7 +428,7 @@ ruche,abeille,miel,pollen
 Abeille,Papillon,Fourmis,Pucerons
 statue,sculpture,peinture,fresque
 escargot,limace,ver,coccinelle
-puzzle,jeu,cartes,dé,Triche
+puzzle,jeu,cartes,dé
 lac,étang,marais,cascade
 casque,écouteurs,enceinte,microphone
 tente,caravane,camping,Voyage
@@ -492,7 +491,6 @@ araignée,toile,insecte,mouche
 saxophone,trombone,flûte,clarinette
 Gourde,Bouteille,Eau,Soif,Fontaine,Robinet
 Secret,Mystère,Enigme,Inconnu
-Triangle,Créneau,Sinusoïde
 Cercle,Carré,Triangle,Etoile,Hexagone,Ellipse
 Civil,Infiltré,Vide,Jeu
 Ah,Oh,Hi,Euh,Interjection
@@ -516,3 +514,5 @@ Mère,Père,Frère,Soeur,Papi,Mamie
 Tortue,Oiseau,Python,Chat
 Electron,Proton,Nucléon,Neutron
 Linux,Windows,Android,iOS,MacOS
+Vous n'avez pas de mot !,Vous avez un mot : fun !
+Mur,Parois,Muraille,Barrière
