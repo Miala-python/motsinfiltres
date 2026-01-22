@@ -319,22 +319,17 @@ Diététique,Calorie,Nutriment,Complément
 Méditation,Yoga,Sophrologie,Conscience
 Thérapie,Psychologie,Psychanalyse
 Neurone,Cerveau,Synapse,Electricité
-Médecine,Douce,Homéopathie,Phytothérapie
-Thermalisme,Cure,Station,Thermale
-Algothérapie,Eau,Mer,Océan
+Algue,Eau,Mer,Océan
 Spa,Hammam,Sauna,Jacuzzi
 Massage,Relaxation,Douceur,Calme
-Coiffure,Coupe,Coloration,Permanente
-Barbier,Rasage,Blaireau,Savon
-Tatouage,Piercing,Dessin,Corporel
+Coiffure,Coupe,Coloration,Cheveux
+Barbier,Rasage,Barbe,Moustache
 Mode,Collection,Couture,Vetement
 Styliste,Modéliste,Couturier
-Défilé,Mannequin,Présentation
+Défilé,Mannequin,Mode
 Solde,Réduction,Argent,Prix
 Uniforme,Tenue,Équipement
 Costume,Tailleur,Robe,Soirée
-Accessoire,Bijou,Lunettes,Soleil
-Maroquinerie,Sac,Cuir,Portefeuille,Ceinture
 Chaussure,Talon,Semelle,Cuir
 Pyjama,Nuit,Chambre,Dormir
 Robe,Jupe,Pantalon
@@ -514,5 +509,10 @@ Mère,Père,Frère,Soeur,Papi,Mamie
 Tortue,Oiseau,Python,Chat
 Electron,Proton,Nucléon,Neutron
 Linux,Windows,Android,iOS,MacOS
-Vous n'avez pas de mot !,Vous avez un mot : fun !
+Vous n'avez pas de mot !,Fun
 Mur,Parois,Muraille,Barrière
+Chaussure,Baskets,Bottes,Tongs
+Mouchoir,Sopalin,Serviette,Torchon
+Pizza,Carbonara,Bolognaise,Pates
+Raclette,Fondue,Fromage,Croziflette
+Nutella,Miel,Confiture,Tartine
