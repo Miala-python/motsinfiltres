@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infiltre-v1.1.526';
+const CACHE_NAME = 'infiltre-v1.1.525';
 const ASSETS = ['./', './index.html', './manifest.json', './mots.csv', './beta.html'];
 
 self.addEventListener('install', (event) => {
