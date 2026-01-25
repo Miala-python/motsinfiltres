@@ -63,7 +63,7 @@
             box-sizing: border-box;
         }
 
-        .screen { 
+        .screen .box { 
             display: none; width: 100%; max-width: 400px; 
             background: var(--card); padding: 25px; 
             border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
@@ -148,6 +148,7 @@
     <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">✨</button>
 
     <div id="screen1" class="screen active">
+        <div class="box">
         <h1>Mots Infiltrés</h1>
         <div class="input-group">
             <label>Nombre de joueurs</label>
@@ -161,10 +162,27 @@
             <label>Nombre de M.∅</label>
             <input type="number" id="nbVid" value="1" min="0">
         </div>
-        <button onclick="initGame()">Suivant</button>
+        <button onclick="initGame()">Suivant</button
+        </div>
+        <div id="screen-rules" class="box">
+    <h1>Règles du Jeu</h1>
+    
+    <div class="rules-container" style="text-align: left; margin-bottom: 20px; line-height: 1.5;">
+        <p><strong>Le but :</strong> Démasquer les Infiltrés et M.∅ sans se faire éliminer.</p>
+        
+        <ul style="padding-left: 20px;">
+            <li><strong>Civils :</strong> Vous avez tous le même mot secret.</li>
+            <li><strong>Infiltrés :</strong> Vous avez un mot légèrement différent.</li>
+            <li><strong>M.∅ :</strong> Vous n'avez pas de mot. Votre but est de deviner celui des Civils.</li>
+        </ul>
+        
+        <p>À chaque tour, evoquez <strong>un seul mot proche</strong> et différent du votre. Votez ensuite pour éliminer le joueur le plus suspect !</p>
+    </div>
+</div>
+
     </div>
 
-    <div id="screen2" class="screen">
+    <div id="screen2" class="screen box">
         <h2 id="stepTitle">Pseudo du Joueur 1</h2>
         <input type="text" id="playerNameInput" placeholder="Entrez votre nom">
 
@@ -177,7 +195,7 @@
         <button id="editNamesBtn" class="secondary-btn" onclick="if(confirm(`Perdre la saisie actuelle ?`)) {showScreen(1)}">Modifier les paramètres de la partie</button>
     </div>
 
-    <div id="screen3" class="screen">
+    <div id="screen3" class="screen box">
         <h2>Partie en cours</h2>
         <div id="gameStatus"></div>
         <p>Premier à parler : <br><strong id="starter" style="font-size: 1.2em;">-</strong></p>
@@ -403,7 +421,7 @@
 
 <!-- A conserver en bas du code pour une modification facile -->
 <footer>
-        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.1.501beta</span>
+        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.1.525beta</span>
     </footer>
 </body>
 </html>
