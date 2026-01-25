@@ -1,427 +1,578 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mots Infiltrés - Web App</title>
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mots Infiltrés - Web App</title>
+  <link rel="manifest" href="manifest.json">
 
-<link rel="icon" type="image/png" href="./favicon.png">
+  <link rel="icon" type="image/png" href="./favicon.png">
 
-<meta name="description" content="Démasquez l'Infiltré dans ce jeu de mots captivant ! Entre amis ou en famille, utilisez votre intuition pour survivre. Inspiré du célèbre jeu Undercover.">
-<meta name="keywords" content="jeu de mots, infiltré, undercover, jeu de soirée, déduction, imposteur, mots infiltrés">
+  <meta name="description" content="Démasquez l'Infiltré dans ce jeu de mots captivant ! Entre amis ou en famille, utilisez votre intuition pour survivre. Inspiré du célèbre jeu Undercover.">
+  <meta name="keywords" content="jeu de mots, infiltré, undercover, jeu de soirée, déduction, imposteur, mots infiltrés">
 
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://miala-python.github.io/motsinfiltres/?from=ogurl">
-<meta property="og:title" content="Mots Infiltrés : Qui est l'imposteur ?">
-<meta property="og:description" content="Un mot secret, une dose de bluff et beaucoup de soupçons. Jouez à Mots Infiltrés maintenant !">
-<meta property="og:image" content="./favicon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://miala-python.github.io/motsinfiltres/?from=ogurl">
+  <meta property="og:title" content="Mots Infiltrés : Qui est l'imposteur ?">
+  <meta property="og:description" content="Un mot secret, une dose de bluff et beaucoup de soupçons. Jouez à Mots Infiltrés maintenant !">
+  <meta property="og:image" content="./favicon.png">
 
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mots Infiltrés - Jeu de société en ligne">
-<meta name="twitter:description" content="Saurez-vous démasquer l'infiltré avant qu'il ne vous élimine ?">
-<meta name="twitter:image" content="./favicon.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Mots Infiltrés - Jeu de société en ligne">
+  <meta name="twitter:description" content="Saurez-vous démasquer l'infiltré avant qu'il ne vous élimine ?">
+  <meta name="twitter:image" content="./favicon.png">
 
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://miala-python.github.io/motsinfiltres/?from=linkCanonical">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://miala-python.github.io/motsinfiltres/?from=linkCanonical">
 
 
 
-<script data-goatcounter="https://infiltresgame.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-    <style>
-        :root {
-            --primary: #e75d00;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
-            --danger: #ef4444;
-            --success: #22c55e;
-            --input-border: #e2e8f0;
-        }
+  <script data-goatcounter="https://infiltresgame.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  <style>
+:root {
+    --primary: #e75d00;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --input-border: #e2e8f0;
+  }
 
-        /* --- Mode Sombre --- */
-        body.dark-mode { 
-            --bg: #0f172a; 
-            --card: #1e293b; 
-            --text: #f1f5f9; 
-            --input-border: #475569;
-        }
+    /* --- Mode Sombre --- */
+    body.dark-mode {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --input-border: #475569;
+    }
 
-        /* --- Transition Fluide --- */
-        body, .screen, input, .player-item, .secret-box, button {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
+    /* --- Transition Fluide --- */
+    body, .screen, input, .player-item, .secret-box, button {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg); 
-            color: var(--text);
-            margin: 0; padding: 20px;
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh;
-            padding-bottom: 80px;
-            box-sizing: border-box;
-        }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding-bottom: 80px;
+      box-sizing: border-box;
+    }
 
-        .screen .box { 
-            display: none; width: 100%; max-width: 400px; 
-            background: var(--card); padding: 25px; 
-            border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); 
-            box-sizing: border-box;
-        }
-        .active { display: block; animation: fadeIn 0.3s ease; }
+    .screen {
+      display: none;
+    }
+    .box {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+    .active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
 
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        h1, h2 { color: var(--primary); margin-top: 0; }
-        .input-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; font-size: 0.9em; margin-bottom: 5px; font-weight: bold; }
+    h1, h2 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+    .input-group {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
 
-        input { 
-            width: 100%; padding: 12px; border: 2px solid var(--input-border); 
-            border-radius: 10px; box-sizing: border-box; font-size: 16px; 
-            background: transparent; color: inherit;
-        }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--input-border);
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 16px;
+      background: transparent;
+      color: inherit;
+    }
 
-        button { 
-            width: 100%; background: var(--primary); color: white; border: none; 
-            padding: 15px; border-radius: 10px; font-size: 16px; font-weight: bold;
-            cursor: pointer; margin-top: 10px; transition: opacity 0.2s;
-        }
-        button:active { opacity: 0.8; }
-        .secondary-btn { background: #64748b; margin-top: 5px; font-size: 0.85em; padding: 10px; }
+    button {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.2s;
+    }
+    button:active {
+      opacity: 0.8;
+    }
+    .secondary-btn {
+      background: #64748b;
+      margin-top: 5px;
+      font-size: 0.85em;
+      padding: 10px;
+    }
 
-        .secret-box {
-            background: #1e293b; color: white; padding: 40px 20px;
-            border-radius: 15px; margin: 20px 0; cursor: pointer;
-            font-weight: bold; font-size: 1.2em; text-align: center;
-        }
-        .revealed { background: #f1f5f9; color: var(--danger); border: 2px dashed var(--danger); }
-        body.dark-mode .revealed { background: #334155; color: #fb7185; border-color: #fb7185; }
+    .secret-box {
+      background: #1e293b;
+      color: white;
+      padding: 40px 20px;
+      border-radius: 15px;
+      margin: 20px 0;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.2em;
+      text-align: center;
+    }
+    .revealed {
+      background: #f1f5f9;
+      color: var(--danger);
+      border: 2px dashed var(--danger);
+    }
+    body.dark-mode .revealed {
+      background: #334155;
+      color: #fb7185;
+      border-color: #fb7185;
+    }
 
-        .player-item { 
-            background: #f1f5f9; margin: 8px 0; padding: 12px; 
-            border-radius: 8px; display: flex; justify-content: space-between; align-items: center;
-        }
-        body.dark-mode .player-item { background: #334155; }
+    .player-item {
+      background: #f1f5f9;
+      margin: 8px 0;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    body.dark-mode .player-item {
+      background: #334155;
+    }
 
-        .eliminated { opacity: 0.6; background: #e2e8f0; border-left: 5px solid #64748b; }
-        body.dark-mode .eliminated { background: #1e293b; border-left-color: #475569; }
+    .eliminated {
+      opacity: 0.6;
+      background: #e2e8f0;
+      border-left: 5px solid #64748b;
+    }
+    body.dark-mode .eliminated {
+      background: #1e293b;
+      border-left-color: #475569;
+    }
 
-        .role-tag { font-size: 0.8em; font-weight: bold; color: var(--danger); margin-left: 10px; }
+    .role-tag {
+      font-size: 0.8em;
+      font-weight: bold;
+      color: var(--danger);
+      margin-left: 10px;
+    }
 
-        #guessArea {
-            margin-top: 20px; padding: 15px; background: #fff7ed; border: 1px solid #ffedd5; border-radius: 10px;
-        }
-        body.dark-mode #guessArea { background: #2d1a05; border-color: #452a0a; color: #fdba74; }
+    #guessArea {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff7ed;
+      border: 1px solid #ffedd5;
+      border-radius: 10px;
+    }
+    body.dark-mode #guessArea {
+      background: #2d1a05;
+      border-color: #452a0a;
+      color: #fdba74;
+    }
 
-        .status-msg {
-            padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; text-align: center;
-        }
-        .win { background: #dcfce7; color: #166534; }
-        .lose { background: #fee2e2; color: #991b1b; }
-        body.dark-mode .win { background: #064e3b; color: #6ee7b7; }
-        body.dark-mode .lose { background: #7f1d1d; color: #fca5a5; }
+    .status-msg {
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .win {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .lose {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    body.dark-mode .win {
+      background: #064e3b;
+      color: #6ee7b7;
+    }
+    body.dark-mode .lose {
+      background: #7f1d1d;
+      color: #fca5a5;
+    }
 
-        .theme-toggle {
-            position: absolute; top: 20px; right: 20px; width: auto; 
-            padding: 8px 12px; background: var(--card); color: var(--text);
-            border: 1px solid var(--primary); font-size: 1.2rem; border-radius: 10px;
-        }
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: auto;
+      padding: 8px 12px;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--primary);
+      font-size: 1.2rem;
+      border-radius: 10px;
+    }
 
-        footer {
-            position: fixed; bottom: 20px; text-align: center; width: 100%;
-            font-size: 0.85em; color: #94a3b8; pointer-events: none;
-        }
-        .version-badge {
-            background: #e2e8f0; padding: 2px 8px; border-radius: 12px;
-            font-weight: bold; margin-left: 5px; cursor: pointer; pointer-events: auto;
-        }
-        body.dark-mode .version-badge { background: #334155; color: #94a3b8; }
-    </style>
+    footer {
+      position: fixed;
+      bottom: 20px;
+      text-align: center;
+      width: 100%;
+      font-size: 0.85em;
+      color: #94a3b8;
+      pointer-events: none;
+    }
+    .version-badge {
+      background: #e2e8f0;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      margin-left: 5px;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    body.dark-mode .version-badge {
+      background: #334155;
+      color: #94a3b8;
+    }
+  </style>
 </head>
 <body>
 
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">✨</button>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">✨</button>
 
-    <div id="screen1" class="screen active">
-        <div class="box">
-        <h1>Mots Infiltrés</h1>
-        <div class="input-group">
-            <label>Nombre de joueurs</label>
-            <input type="number" id="nbPlayers" value="3" min="3">
-        </div>
-        <div class="input-group">
-            <label>Nombre d'Infiltrés</label>
-            <input type="number" id="nbInf" value="1" min="1">
-        </div>
-        <div class="input-group">
-            <label>Nombre de M.∅</label>
-            <input type="number" id="nbVid" value="1" min="0">
-        </div>
-        <button onclick="initGame()">Suivant</button
-        </div>
-        <div id="screen-rules" class="box">
-    <h1>Règles du Jeu</h1>
-    
-    <div class="rules-container" style="text-align: left; margin-bottom: 20px; line-height: 1.5;">
-        <p><strong>Le but :</strong> Démasquer les Infiltrés et M.∅ sans se faire éliminer.</p>
-        
+  <div id="screen1" class="screen active">
+    <div class="box">
+      <h1>Mots Infiltrés</h1>
+      <div class="input-group">
+        <label>Nombre de joueurs</label>
+        <input type="number" id="nbPlayers" value="3" min="3">
+      </div>
+      <div class="input-group">
+        <label>Nombre d'Infiltrés</label>
+        <input type="number" id="nbInf" value="1" min="1">
+      </div>
+      <div class="input-group">
+        <label>Nombre de M.∅</label>
+        <input type="number" id="nbVid" value="1" min="0">
+      </div>
+      <button onclick="initGame()">Suivant</button
+      </div>
+    </div>
+    <div id="screen-rules" class="box">
+      <h1>Règles du Jeu</h1>
+
+      <div class="rules-container" style="text-align: left; margin-bottom: 20px; line-height: 1.5;">
+        <p>
+          <strong>Le but :</strong> Démasquer les Infiltrés et M.∅ sans se faire éliminer.
+        </p>
+
         <ul style="padding-left: 20px;">
-            <li><strong>Civils :</strong> Vous avez tous le même mot secret.</li>
-            <li><strong>Infiltrés :</strong> Vous avez un mot légèrement différent.</li>
-            <li><strong>M.∅ :</strong> Vous n'avez pas de mot. Votre but est de deviner celui des Civils.</li>
+          <li><strong>Civils :</strong> Vous avez tous le même mot secret.</li>
+          <li><strong>Infiltrés :</strong> Vous avez un mot légèrement différent.</li>
+          <li><strong>M.∅ :</strong> Vous n'avez pas de mot. Votre but est de deviner celui des Civils.</li>
         </ul>
-        
-        <p>À chaque tour, evoquez <strong>un seul mot proche</strong> et différent du votre. Votez ensuite pour éliminer le joueur le plus suspect !</p>
-    </div>
-</div>
 
-    </div>
-
-    <div id="screen2" class="screen box">
-        <h2 id="stepTitle">Pseudo du Joueur 1</h2>
-        <input type="text" id="playerNameInput" placeholder="Entrez votre nom">
-
-        <div id="wordArea" style="display:none">
-            <div id="wordDisplay" class="secret-box" onclick="revealWord()">CLIQUEZ POUR VOIR</div>
-            <button id="nextPlayerBtn" style="display:none" onclick="nextPlayer()">Joueur Suivant ➔</button>
-        </div>
-
-        <button id="confirmNameBtn" onclick="confirmName()">Valider mon nom</button>
-        <button id="editNamesBtn" class="secondary-btn" onclick="if(confirm(`Perdre la saisie actuelle ?`)) {showScreen(1)}">Modifier les paramètres de la partie</button>
+        <p>
+          À chaque tour, evoquez <strong>un seul mot proche</strong> et différent du votre. Votez ensuite pour éliminer le joueur le plus suspect !
+        </p>
+      </div>
     </div>
 
-    <div id="screen3" class="screen box">
-        <h2>Partie en cours</h2>
-        <div id="gameStatus"></div>
-        <p>Premier à parler : <br><strong id="starter" style="font-size: 1.2em;">-</strong></p>
-        <hr>
-        <div id="playerList"></div>
+  </div>
 
-        <div id="guessArea" style="display:none">
-            <p><strong>M.∅ a été découvert !</strong> Il doit tenter de deviner le mot des civils :</p>
-            <input type="text" id="mrVideGuess" placeholder="Le mot est...">
-            <button onclick="checkMrVideGuess()" style="background:#f59e0b">Valider la tentative</button>
-        </div>
+  <div id="screen2" class="screen box">
+    <h2 id="stepTitle">Pseudo du Joueur 1</h2>
+    <input type="text" id="playerNameInput" placeholder="Entrez votre nom">
 
-        <button onclick="resetGame()" style="background:#64748b; margin-top:30px;">Nouvelle Partie</button>
+    <div id="wordArea" style="display:none">
+      <div id="wordDisplay" class="secret-box" onclick="revealWord()">
+        CLIQUEZ POUR VOIR
+      </div>
+      <button id="nextPlayerBtn" style="display:none" onclick="nextPlayer()">Joueur Suivant ➔</button>
     </div>
 
+    <button id="confirmNameBtn" onclick="confirmName()">Valider mon nom</button>
+    <button id="editNamesBtn" class="secondary-btn" onclick="if(confirm(`Perdre la saisie actuelle ?`)) {showScreen(1)}">Modifier les paramètres de la partie</button>
+  </div>
+
+  <div id="screen3" class="screen box">
+    <h2>Partie en cours</h2>
+    <div id="gameStatus"></div>
+    <p>
+      Premier à parler : <br><strong id="starter" style="font-size: 1.2em;">-</strong>
+    </p>
+    <hr>
+    <div id="playerList"></div>
+
+    <div id="guessArea" style="display:none">
+      <p>
+        <strong>M.∅ a été découvert !</strong> Il doit tenter de deviner le mot des civils :
+      </p>
+      <input type="text" id="mrVideGuess" placeholder="Le mot est...">
+      <button onclick="checkMrVideGuess()" style="background:#f59e0b">Valider la tentative</button>
+    </div>
+
+    <button onclick="resetGame()" style="background:#64748b; margin-top:30px;">Nouvelle Partie</button>
+  </div>
 
 
-    <script>
-        let config = { nbPlayers: 3, nbInf: 1, nbVid: 1 };
-        let players = [];
-        let currentIndex = 0;
-        let words = { civil: "", inf: "" };
-        let savedNames = JSON.parse(localStorage.getItem('infiltres_names') || "[]");
 
-        window.onload = () => {
-            const savedConfig = JSON.parse(localStorage.getItem('infiltres_config'));
-            if (savedConfig) {
-                document.getElementById('nbPlayers').value = savedConfig.nbPlayers;
-                document.getElementById('nbInf').value = savedConfig.nbInf;
-                document.getElementById('nbVid').value = savedConfig.nbVid;
-            }
-        };
+  <script>
+    let config = {
+      nbPlayers: 3,
+      nbInf: 1,
+      nbVid: 1
+    };
+    let players = [];
+    let currentIndex = 0;
+    let words = {
+      civil: "",
+      inf: ""
+    };
+    let savedNames = JSON.parse(localStorage.getItem('infiltres_names') || "[]");
 
-        function toggleTheme() {
-            const body = document.body;
-            const btn = document.getElementById('themeBtn');
-            body.classList.toggle('dark-mode');
-            btn.innerText = body.classList.contains('dark-mode') ? '🌙' : '☀️';
+    window.onload = () => {
+      const savedConfig = JSON.parse(localStorage.getItem('infiltres_config'));
+      if (savedConfig) {
+        document.getElementById('nbPlayers').value = savedConfig.nbPlayers;
+        document.getElementById('nbInf').value = savedConfig.nbInf;
+        document.getElementById('nbVid').value = savedConfig.nbVid;
+      }
+    };
+
+    function toggleTheme() {
+      const body = document.body;
+      const btn = document.getElementById('themeBtn');
+      body.classList.toggle('dark-mode');
+      btn.innerText = body.classList.contains('dark-mode') ? '🌙': '☀️';
+    }
+
+    async function initGame() {
+
+      document.getElementById('guessArea').style.display = "none";
+
+      config.nbPlayers = parseInt(document.getElementById('nbPlayers').value);
+      config.nbInf = parseInt(document.getElementById('nbInf').value);
+      config.nbVid = parseInt(document.getElementById('nbVid').value);
+
+      localStorage.setItem('infiltres_config', JSON.stringify(config));
+
+      if (config.nbInf + config.nbVid >= config.nbPlayers) {
+        alert("Trop d'infiltrés/M.∅ pour le nombre de joueurs !");
+        return;
+      }
+
+      try {
+        const res = await fetch('mots.csv');
+        const text = await res.text();
+        const lines = text.split('\n').filter(l => l.trim().length > 0);
+        const randomLine = lines[Math.floor(Math.random() * lines.length)].split(',');
+        const shuffledLine = randomLine.map(w => w.trim()).sort(() => Math.random() - 0.5);
+        words.civil = shuffledLine[0];
+        words.inf = shuffledLine[1];
+      } catch (e) {
+        words.civil = "Soleil";
+        words.inf = "Lune";
+      }
+
+      let roles = [];
+      for (let i = 0; i < config.nbInf; i++) roles.push({
+        type: 'INFILTRÉ', word: words.inf
+      });
+      for (let i = 0; i < config.nbVid; i++) roles.push({
+        type: 'M.∅', word: 'Vous n\'avez pas de mot !'
+      });
+      while (roles.length < config.nbPlayers) roles.push({
+        type: 'CIVIL', word: words.civil
+      });
+
+      roles.sort(() => Math.random() - 0.5);
+      players = roles.map((r, idx) => ({
+        ...r,
+        name: savedNames[idx] || "",
+        alive: true
+      }));
+
+      currentIndex = 0;
+      prepareNameInput();
+      showScreen(2);
+    }
+
+    function prepareNameInput() {
+      const nameInput = document.getElementById('playerNameInput');
+      nameInput.value = players[currentIndex].name;
+      nameInput.style.display = "block";
+      document.getElementById('wordArea').style.display = "none";
+      document.getElementById('confirmNameBtn').style.display = "block";
+      document.getElementById('stepTitle').innerText = "Pseudo du Joueur " + (currentIndex + 1);
+
+      const display = document.getElementById('wordDisplay');
+      display.classList.remove('revealed');
+      display.innerText = "CLIQUEZ POUR VOIR";
+      document.getElementById('nextPlayerBtn').style.display = "none";
+    }
+
+    function confirmName() {
+      const nameInput = document.getElementById('playerNameInput');
+      if (!nameInput.value) return alert("Choisis un pseudo !");
+
+      players[currentIndex].name = nameInput.value;
+      savedNames[currentIndex] = nameInput.value;
+      localStorage.setItem('infiltres_names', JSON.stringify(savedNames));
+
+      nameInput.style.display = "none";
+      document.getElementById('wordArea').style.display = "block";
+      document.getElementById('confirmNameBtn').style.display = "none";
+      document.getElementById('stepTitle').innerText = nameInput.value + ", regarde ton mot";
+    }
+
+    function revealWord() {
+      const display = document.getElementById('wordDisplay');
+      display.innerText = players[currentIndex].word;
+      display.classList.add('revealed');
+      document.getElementById('nextPlayerBtn').style.display = "block";
+    }
+
+    function nextPlayer() {
+      currentIndex++;
+      if (currentIndex < players.length) {
+        prepareNameInput();
+      } else {
+        startVoteScreen();
+      }
+    }
+
+    function startVoteScreen() {
+      showScreen(3);
+      const validStarters = players.filter(p => p.alive && p.type !== 'M.∅');
+      const starter = validStarters[Math.floor(Math.random() * validStarters.length)];
+      document.getElementById('starter').innerText = starter ? starter.name: "-";
+      document.getElementById('gameStatus').innerHTML = "";
+      document.getElementById('playerList').style.opacity = "1";
+      document.getElementById('playerList').style.pointerEvents = "auto";
+      renderPlayers();
+    }
+
+    function renderPlayers() {
+      const list = document.getElementById('playerList');
+      list.innerHTML = "";
+      players.forEach((p, idx) => {
+        const div = document.createElement('div');
+        div.className = `player-item ${p.alive ? '': 'eliminated'}`;
+        let content = `<span>${p.name}</span>`;
+        if (!p.alive) content += `<span class="role-tag">${p.type}</span>`;
+        div.innerHTML = content;
+
+        if (p.alive) {
+          const btn = document.createElement('button');
+          btn.innerText = "Éliminer";
+          btn.style.width = "auto"; btn.style.padding = "5px 10px"; btn.style.marginTop = "0";
+          btn.style.background = "#94a3b8";
+          btn.onclick = () => eliminatePlayer(idx);
+          div.appendChild(btn);
         }
+        list.appendChild(div);
+      });
+    }
 
-        async function initGame() {
-
-                    document.getElementById('guessArea').style.display = "none";
-
-            config.nbPlayers = parseInt(document.getElementById('nbPlayers').value);
-            config.nbInf = parseInt(document.getElementById('nbInf').value);
-            config.nbVid = parseInt(document.getElementById('nbVid').value);
-
-            localStorage.setItem('infiltres_config', JSON.stringify(config));
-
-            if (config.nbInf + config.nbVid >= config.nbPlayers) {
-                alert("Trop d'infiltrés/M.∅ pour le nombre de joueurs !");
-                return;
-            }
-
-            try {
-                const res = await fetch('mots.csv');
-                const text = await res.text();
-                const lines = text.split('\n').filter(l => l.trim().length > 0);
-                const randomLine = lines[Math.floor(Math.random() * lines.length)].split(',');
-                const shuffledLine = randomLine.map(w => w.trim()).sort(() => Math.random() - 0.5);
-                words.civil = shuffledLine[0];
-                words.inf = shuffledLine[1];
-            } catch (e) {
-                words.civil = "Soleil";
-                words.inf = "Lune";
-            }
-
-            let roles = [];
-            for(let i=0; i<config.nbInf; i++) roles.push({type: 'INFILTRÉ', word: words.inf});
-            for(let i=0; i<config.nbVid; i++) roles.push({type: 'M.∅', word: 'Vous n\'avez pas de mot !'});
-            while(roles.length < config.nbPlayers) roles.push({type: 'CIVIL', word: words.civil});
-
-            roles.sort(() => Math.random() - 0.5);
-            players = roles.map((r, idx) => ({ 
-                ...r, 
-                name: savedNames[idx] || "", 
-                alive: true 
-            }));
-
-            currentIndex = 0;
-            prepareNameInput();
-            showScreen(2);
+    function eliminatePlayer(idx) {
+      const p = players[idx];
+      if (confirm(`Confirmer l'élimination de ${p.name} ?`)) {
+        p.alive = false;
+        if (p.type === 'M.∅') {
+          document.getElementById('playerList').style.opacity = "0.3";
+          document.getElementById('playerList').style.pointerEvents = "none";
+          document.getElementById('guessArea').style.display = "block";
+          document.getElementById('mrVideGuess').value = "";
+        } else {
+          document.getElementById('guessArea').style.display = "none";
         }
+        renderPlayers();
+        checkEndGame();
+      }
+    }
 
-        function prepareNameInput() {
-            const nameInput = document.getElementById('playerNameInput');
-            nameInput.value = players[currentIndex].name;
-            nameInput.style.display = "block";
-            document.getElementById('wordArea').style.display = "none";
-            document.getElementById('confirmNameBtn').style.display = "block";
-            document.getElementById('stepTitle').innerText = "Pseudo du Joueur " + (currentIndex + 1);
+    function checkMrVideGuess() {
+      const guess = document.getElementById('mrVideGuess').value.trim().toLowerCase();
+      const actual = words.civil.toLowerCase();
+      const simplify = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[esx]+$/g, "");
 
-            const display = document.getElementById('wordDisplay');
-            display.classList.remove('revealed');
-            display.innerText = "CLIQUEZ POUR VOIR";
-            document.getElementById('nextPlayerBtn').style.display = "none";
-        }
+      if (simplify(guess) === simplify(actual)) {
+        document.getElementById('gameStatus').innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot (${words.civil}) ! VICTOIRE de M.∅.</div>`;
+      } else {
+        document.getElementById('gameStatus').innerHTML = `<div class="status-msg lose">Faux ! Élimination confirmée.</div>`;
+      }
+      document.getElementById('guessArea').style.display = "none";
+      document.getElementById('playerList').style.opacity = "1";
+      document.getElementById('playerList').style.pointerEvents = "auto";
+    }
 
-        function confirmName() {
-            const nameInput = document.getElementById('playerNameInput');
-            if(!nameInput.value) return alert("Choisis un pseudo !");
+    function checkEndGame() {
+      const alive = players.filter(p => p.alive);
+      const infiltrates = alive.filter(p => p.type === 'INFILTRÉ' || p.type === 'M.∅');
+      const civils = alive.filter(p => p.type === 'CIVIL');
+      const statusDiv = document.getElementById('gameStatus');
 
-            players[currentIndex].name = nameInput.value;
-            savedNames[currentIndex] = nameInput.value;
-            localStorage.setItem('infiltres_names', JSON.stringify(savedNames));
+      if (infiltrates.length === 0) {
+        statusDiv.innerHTML = `<div class="status-msg win">Tous les intrus sont éliminés ! VICTOIRE des Civils.</div>`;
+      } else if (infiltrates.length >= civils.length) {
+        statusDiv.innerHTML = `<div class="status-msg lose">Les infiltrés sont trop nombreux ! VICTOIRE des Infiltrés.</div>`;
+      }
+    }
 
-            nameInput.style.display = "none";
-            document.getElementById('wordArea').style.display = "block";
-            document.getElementById('confirmNameBtn').style.display = "none";
-            document.getElementById('stepTitle').innerText = nameInput.value + ", regarde ton mot";
-        }
+    function resetGame() {
+      initGame();
+    }
 
-        function revealWord() {
-            const display = document.getElementById('wordDisplay');
-            display.innerText = players[currentIndex].word;
-            display.classList.add('revealed');
-            document.getElementById('nextPlayerBtn').style.display = "block";
-        }
+    function showScreen(n) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen'+n).classList.add('active');
+    }
 
-        function nextPlayer() {
-            currentIndex++;
-            if(currentIndex < players.length) {
-                prepareNameInput();
-            } else {
-                startVoteScreen();
-            }
-        }
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
+      });
+    }
+  </script>
 
-        function startVoteScreen() {
-            showScreen(3);
-            const validStarters = players.filter(p => p.alive && p.type !== 'M.∅');
-            const starter = validStarters[Math.floor(Math.random() * validStarters.length)];
-            document.getElementById('starter').innerText = starter ? starter.name : "-";
-            document.getElementById('gameStatus').innerHTML = "";
-            document.getElementById('playerList').style.opacity = "1";
-            document.getElementById('playerList').style.pointerEvents = "auto";
-            renderPlayers();
-        }
-
-        function renderPlayers() {
-            const list = document.getElementById('playerList');
-            list.innerHTML = "";
-            players.forEach((p, idx) => {
-                const div = document.createElement('div');
-                div.className = `player-item ${p.alive ? '' : 'eliminated'}`;
-                let content = `<span>${p.name}</span>`;
-                if(!p.alive) content += `<span class="role-tag">${p.type}</span>`;
-                div.innerHTML = content;
-
-                if(p.alive) {
-                    const btn = document.createElement('button');
-                    btn.innerText = "Éliminer";
-                    btn.style.width = "auto"; btn.style.padding = "5px 10px"; btn.style.marginTop = "0";
-                    btn.style.background = "#94a3b8";
-                    btn.onclick = () => eliminatePlayer(idx);
-                    div.appendChild(btn);
-                }
-                list.appendChild(div);
-            });
-        }
-
-        function eliminatePlayer(idx) {
-            const p = players[idx];
-            if(confirm(`Confirmer l'élimination de ${p.name} ?`)) {
-                p.alive = false;
-                if(p.type === 'M.∅') {
-                    document.getElementById('playerList').style.opacity = "0.3";
-                    document.getElementById('playerList').style.pointerEvents = "none";
-                    document.getElementById('guessArea').style.display = "block";
-                    document.getElementById('mrVideGuess').value = "";
-                } else {
-                    document.getElementById('guessArea').style.display = "none";
-                }
-                renderPlayers();
-                checkEndGame();
-            }
-        }
-
-        function checkMrVideGuess() {
-            const guess = document.getElementById('mrVideGuess').value.trim().toLowerCase();
-            const actual = words.civil.toLowerCase();
-            const simplify = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[esx]+$/g, "");
-
-            if(simplify(guess) === simplify(actual)) {
-                document.getElementById('gameStatus').innerHTML = `<div class="status-msg win">M.∅ a trouvé le mot (${words.civil}) ! VICTOIRE de M.∅.</div>`;
-            } else {
-                document.getElementById('gameStatus').innerHTML = `<div class="status-msg lose">Faux ! Élimination confirmée.</div>`;
-            }
-            document.getElementById('guessArea').style.display = "none";
-            document.getElementById('playerList').style.opacity = "1";
-            document.getElementById('playerList').style.pointerEvents = "auto";
-        }
-
-        function checkEndGame() {
-            const alive = players.filter(p => p.alive);
-            const infiltrates = alive.filter(p => p.type === 'INFILTRÉ' || p.type === 'M.∅');
-            const civils = alive.filter(p => p.type === 'CIVIL');
-            const statusDiv = document.getElementById('gameStatus');
-
-            if (infiltrates.length === 0) {
-                statusDiv.innerHTML = `<div class="status-msg win">Tous les intrus sont éliminés ! VICTOIRE des Civils.</div>`;
-            } else if (infiltrates.length >= civils.length) {
-                statusDiv.innerHTML = `<div class="status-msg lose">Les infiltrés sont trop nombreux ! VICTOIRE des Infiltrés.</div>`;
-            }
-        }
-
-        function resetGame() {
-            initGame();
-        }
-
-        function showScreen(n) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen'+n).classList.add('active');
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
-            });
-        }
-    </script>
-
-<!-- A conserver en bas du code pour une modification facile -->
-<footer>
-        Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.1.525beta</span>
-    </footer>
+  <!-- A conserver en bas du code pour une modification facile -->
+  <footer>
+    Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.2.0beta</span>
+  </footer>
 </body>
 </html>
