@@ -74,7 +74,7 @@ Toit,Mur,Porte,Fenêtre,Escalier,Plafond,Plancher,Cheminée,Balcon
 Cuisine,Salon,Chambre,Bureau,Grenier,Cave,Garage,Couloir
 Lit,Armoire,Commode,Étagère,Bureau,Table,Buffet
 Miroir,Tableau,Cadre
-Papier,Crayon,Stylo,Gomme,Règle,Ciseaux,Colle,Agrafeuse,Perforatrice
+Papier,Crayon,Stylo,Gomme,Règle,Ciseaux,Colle
 Chemise,Maillot,Pull,Short,Pantalon,Jupe,Robe
 Chaussettes,Caleçon,Culotte,Maillot,Pyjama,brassière,Slip
 Sac,Valise,Cartable,Besace,Portefeuille,Pochette,Sacoche
@@ -186,7 +186,7 @@ Spéléologie,Canyon,Escalade,Gouffre,Tunnel
 Glace,Alpinisme,Hiver,Froid
 Plongée,Apnée,Bouteille,Eau,Oxygene
 Surf,Bodyboard,Kitesurf,Windsurf,Paddle
-Ski,Alpin,Fond,Snowboard,Raquettes,Luge
+Ski,Alpin,Snowboard,Raquettes,Luge
 Échecs,Dames,Backgammon,Monopoly,Scrabble
 Puzzle,Enigme,Recherche,Solution
 Bingo,Loto,Poker,Blackjack,Roulette,Machine
@@ -215,7 +215,6 @@ Numismatique,Timbre,Collection,Carte
 Pièces,Argent,Monnaie,Billets
 Timbre,Enveloppe,Collection,Numismatique
 Astrologie,Zodiaque,Horoscope,Etoile
-Alchimie,Pierre,Élixir,Transmutation
 Cryptographie,Chiffrement,Déchiffrement,Code
 Hiéroglyphes,Alphabet,Runes,Omega
 Téléphone,Radio,Ondes,Morse
@@ -313,7 +312,6 @@ Crédit,Prêt,Emprunt,Argent,Economie
 Social,Solidaire,Coopérative,Association
 Bénévolat,Volontariat,Participant
 Loterie,Jeu,Grattage,Tirage,Lot
-Paris,Sport,Cote,Mise
 Pronostic,Analyse,Statistique,Diagnostic
 Diététique,Calorie,Nutriment,Complément
 Méditation,Yoga,Sophrologie,Conscience
@@ -477,7 +475,7 @@ escrime,boxe,judo,Karaté
 panda,koala,lémurien,ornithorynque
 araignée,scorpion,Chenille,fourmi,Moustique
 sable,gravier,caillou,rocher
-parapluie,parasol,store,auvent
+parapluie,parasol,Auvent,Tonnelle
 brouillard,brume,rosée,givre
 tarte,flan,cookie,cheesecake
 kayak,canoë,voilier,planche,voile
