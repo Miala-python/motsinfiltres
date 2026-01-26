@@ -159,7 +159,8 @@ Grenouille,Crapaud,Salamandre,Triton
 École,Collège,Lycée,Université,Académie,Campus,Internat
 Code,Programme,Algorithme,Logiciel,Application,Serveur,Réseau
 Paix,Guerre,Conflit,Armistice,Trêve,Négociation,Dialogue,Conciliation
-Révolution,Réforme,Évolution,Transition,Changement,Transformation,Mutation
+Révolution,Réforme,Évolution,Transition,Changement
+Transformation,Mutation,Changement,Modification
 Discours,Débat,Conférence,Séminaire,Assemblée,Réunion
 Ventilateur,Climatiseur,Radiateur,Chaudière
 Écologie,Environnement,Recyclage,Biodiversité,Écosystème
@@ -450,7 +451,6 @@ guerre,paix,trêve,conflit
 escalier,ascenseur,escalator,rampe
 planète,étoile,astéroïde,comète
 balcon,terrasse,veranda,pergola
-coussin,couverture,tapis,rideau
 cartable,trousses,cahier,manuel
 pompiers,policier,ambulancier,secouriste
 tigre,léopard,jaguar,guépard
@@ -523,3 +523,4 @@ Personification,Allégorie,Métaphore,Comparaison
 Chimie,Bécher,Molécule,Réaction
 Recyclage,Poubelle,Eboueur,Déchet
 Singe,Primate,Chimpanzé,Gorille
+Âne,Chèvre,Poule,Mouton,Vache,Lama
