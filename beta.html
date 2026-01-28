@@ -417,7 +417,7 @@
       }
 
       try {
-        const res = await fetch('mots.csv');
+        const res = await fetch('motsEN.csv');
         const text = await res.text();
         const lines = text.split('\n').filter(l => l.trim().length > 0);
         const randomLine = lines[Math.floor(Math.random() * lines.length)].split(',');
@@ -592,7 +592,7 @@
 
   <!-- A conserver en bas du code pour une modification facile -->
   <footer>
-    Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.2.1beta</span>
+    Version du jeu <span class="version-badge" onclick="window.location.href='./beta.html'">v1.2.3EN</span>
   </footer>
 </body>
 </html>
