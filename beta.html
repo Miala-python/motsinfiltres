@@ -287,7 +287,7 @@
       </div>
       <div class="input-group">
         <label>Nombre de M.∅</label>
-        <input type="number" id="nbVid" value="1" min="0">
+        <input type="number" id="nbVid" value="0" min="0" disabled>
       </div>
       <button onclick="initGame()">Suivant</button
       </div>
@@ -355,7 +355,7 @@
     let config = {
       nbPlayers: 3,
       nbInf: 1,
-      nbVid: 1
+      nbVid: 0
     };
     let players = [];
     let currentIndex = 0;
@@ -366,7 +366,7 @@
     let savedNames = JSON.parse(localStorage.getItem('infiltres_names') || "[]");
 
     window.onload = () => {
-      const savedConfig = JSON.parse(localStorage.getItem('infiltres_config'));
+      const savedConfig = JSON.parse(localStorage.getItem('infiltres_configEN'));
       if (savedConfig) {
         document.getElementById('nbPlayers').value = savedConfig.nbPlayers;
         document.getElementById('nbInf').value = savedConfig.nbInf;
@@ -409,7 +409,7 @@
       config.nbInf = parseInt(document.getElementById('nbInf').value);
       config.nbVid = parseInt(document.getElementById('nbVid').value);
 
-      localStorage.setItem('infiltres_config', JSON.stringify(config));
+      localStorage.setItem('infiltres_configEN', JSON.stringify(config));
 
       if (config.nbInf + config.nbVid >= config.nbPlayers) {
         alert("Trop d'infiltrés/M.∅ pour le nombre de joueurs !");
