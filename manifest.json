@@ -12,5 +12,28 @@
       "sizes": "757x757",
       "type": "image/png"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Jouer",
+      "short_name": "Jouer",
+      "description": "Lancer une partie de Mots Infiltrés",
+      "url": "./index.html",
+      "icons": [{ "src": "favicon.png", "sizes": "757x757" }]
+    },
+    {
+      "name": "Version Beta",
+      "short_name": "Beta",
+      "description": "Tester les dernières fonctionnalités",
+      "url": "./beta.html",
+      "icons": [{ "src": "favicon.png", "sizes": "757x757" }]
+    },
+    {
+      "name": "English Version",
+      "short_name": "English",
+      "description": "Play in English",
+      "url": "./en.html",
+      "icons": [{ "src": "favicon.png", "sizes": "757x757" }]
+    }
   ]
 }
