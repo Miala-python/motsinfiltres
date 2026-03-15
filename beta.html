@@ -292,7 +292,7 @@
       <button onclick="initGame()">Suivant</button>
 
 <br><br>
-<button id="installBtn" style="display: none; background-color: #28a745; margin-bottom: 20px;">
+<button id="installBtn" style="display: none;">
       Installer l'application
     </button>
 
@@ -418,8 +418,9 @@
 
       localStorage.setItem('infiltres_config', JSON.stringify(config));
 
-      if (config.nbInf + config.nbVid >= config.nbPlayers) {
-        alert("Trop d'infiltrés/M.∅ pour le nombre de joueurs !");
+      if (config.nbInf >= config.nbPlayers) {
+        // + config.nbVid
+alert("Trop d'infiltrés/M.∅ pour le nombre de joueurs !");
         return;
       }
 
@@ -576,7 +577,7 @@
 
       if (infiltrates.length === 0) {
         statusDiv.innerHTML = `<div class="status-msg win">Tous les intrus sont éliminés ! VICTOIRE des Civils.</div>`;
-      } else if (infiltrates.length >= civils.length) {
+      } else if (infiltrates.length >= civils.length && false) {
         statusDiv.innerHTML = `<div class="status-msg lose">Les infiltrés sont trop nombreux ! VICTOIRE des Infiltrés.</div>`;
       }
     }
@@ -655,7 +656,7 @@ window.addEventListener('appinstalled', () => {
 
   <!-- A conserver en bas du code pour une modification facile -->
   <footer>
-    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html'">v1.2.5beta</span>
+    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html'">v1.3.1beta</span>
   </footer>
 </body>
 </html>
