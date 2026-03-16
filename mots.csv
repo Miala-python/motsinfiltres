@@ -220,7 +220,7 @@ Cryptographie,Chiffrement,Déchiffrement,Code
 Hiéroglyphes,Alphabet,Runes,Omega
 Téléphone,Radio,Ondes,Morse
 Noeud,Marin,Bateau,Pirate
-Route,Panneau,Feu,Marquage,Radar
+Route,Panneau,Feu,Radar,Conduite,Voiture
 Permis,Code,Examen,Contrôle
 GPS,Géolocalisation,Cartographie,Itinéraire
 Trafic,Contrôle,Radar,Espace
@@ -524,3 +524,4 @@ Chimie,Bécher,Molécule,Réaction
 Recyclage,Poubelle,Eboueur,Déchet
 Singe,Primate,Chimpanzé,Gorille
 Âne,Chèvre,Poule,Mouton,Vache,Lama
+Enfant,Bébé,Adolescent,Jeune
