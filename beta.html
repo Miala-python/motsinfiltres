@@ -110,7 +110,7 @@
       font-weight: bold;
     }
 
-    input {
+    input[type="number"] {
       width: 100%;
       padding: 12px;
       border: 2px solid var(--input-border);
@@ -161,6 +161,48 @@
       margin-top: 5px;
       font-size: 0.85em;
       padding: 10px;
+    }
+
+    /* === STYLES CHECKBOXES === */
+    .checkbox-group {
+      text-align: left;
+      margin: 15px 0;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      margin: 8px 0;
+      background: #f1f5f9;
+      border: 2px solid var(--input-border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    body.dark-mode .checkbox-item {
+      background: #334155;
+    }
+    
+    .checkbox-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(231, 93, 0, 0.1);
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--primary);
+      margin-right: 12px;
+    }
+    
+    .checkbox-item label {
+      margin: 0;
+      cursor: pointer;
+      font-weight: normal;
+      flex: 1;
     }
 
     .secret-box {
@@ -308,23 +350,17 @@
         <label>Nombre de M.∅</label>
         <input type="number" id="nbVid" value="1" min="0">
       </div>
-      <button onclick="initGame()">Suivant</button>
-      <div id="input-list" class="input-group">
-        <select id="listSelect" style="display: none;">
-          
-        </select>
-      </div>
+      <button onclick="showThemeSelectionScreen()">Choisir les thèmes</button>
+      <button onclick="initGame()" style="margin-top: 5px;">Jouer avec la sélection</button>
 
-      
       <button id="installBtn" style="display: none;">
         Installer l'application
       </button>
 
-
     </div>
 
     <div id="screen-rules" class="box">
-      <h2>Règles du Jeu</h1>
+      <h2>Règles du Jeu</h2>
 
       <div class="rules-container" style="text-align: left; margin-bottom: 20px; line-height: 1.5;">
         <p>
@@ -345,6 +381,21 @@
 
   </div>
 
+  <!-- ÉCRAN DE SÉLECTION DE THÈMES -->
+  <div id="screenThemeSelection" class="screen box">
+    <h2>Sélectionner les listes de mots</h2>
+    <p style="font-size: 0.95em; color: #64748b; margin-bottom: 15px;">
+      Cochez une ou plusieurs listes pour fusionner les mots
+    </p>
+    
+    <div id="themesCheckboxes" class="checkbox-group">
+      <!-- Les checkboxes seront générées par JavaScript -->
+    </div>
+
+    <button onclick="confirmThemeSelection()" style="margin-top: 20px;">Confirmer la sélection</button>
+    <button class="secondary-btn" onclick="showScreen('1')" style="margin-top: 5px;">Retour</button>
+  </div>
+
   <div id="screen2" class="screen box">
     <h2 id="stepTitle">Pseudo du Joueur 1</h2>
     <input type="text" id="playerNameInput" placeholder="Entrez votre nom">
@@ -357,7 +408,7 @@
     </div>
 
     <button id="confirmNameBtn" onclick="confirmName()">Valider mon nom</button>
-    <button id="editNamesBtn" class="secondary-btn" onclick="if(confirm(`Perdre la saisie actuelle ?`)) {showScreen(1)}">Modifier les paramètres de la partie</button>
+    <button id="editNamesBtn" class="secondary-btn" onclick="if(confirm(`Perdre la saisie actuelle ?`)) {showScreen('1')}">Modifier les paramètres de la partie</button>
   </div>
 
   <div id="screen3" class="screen box">
@@ -395,6 +446,11 @@
       inf: ""
     };
     let savedNames = JSON.parse(localStorage.getItem('infiltres_names') || "[]");
+    
+    // Nouvelles variables pour la sélection de thèmes
+    let allLists = [];
+    let selectedListPaths = [];
+    let mergedWords = [];
 
     window.onload = () => {
       const savedConfig = JSON.parse(localStorage.getItem('infiltres_config'));
@@ -403,19 +459,16 @@
         document.getElementById('nbInf').value = savedConfig.nbInf;
         document.getElementById('nbVid').value = savedConfig.nbVid;
       }
+      chargerListesDisponibles();
     };
 
     function toggleTheme() {
       const body = document.body;
       const btn = document.getElementById('themeBtn');
 
-      // 1. Alterne la classe
       body.classList.toggle('dark-mode');
-
-      // 2. Détermine le thème actuel
       const isDark = body.classList.contains('dark-mode');
 
-      // 3. Met à jour le bouton et le localStorage
       btn.innerText = isDark ? '🌙': '☀️';
       localStorage.setItem('theme', isDark ? 'dark': 'light');
     }
@@ -431,16 +484,10 @@
       }
     })();
 
-    // Selecteur de liste de mots
-    // Variable globale pour stocker le chemin sélectionné
-    let listPath = "mots.csv";
-    async function chargerListe() {
-      const select = document.getElementById('listSelect');
-
+    // === CHARGER LES LISTES DISPONIBLES ===
+    async function chargerListesDisponibles() {
       try {
         const response = await fetch('lists.csv');
-
-        // Vérifie si le fichier existe (404 etc.)
         if (!response.ok) throw new Error("Fichier introuvable");
 
         const data = await response.text();
@@ -448,72 +495,134 @@
 
         if (lignes.length === 0) throw new Error("Fichier vide");
 
-        lignes.forEach((ligne, index) => {
+        allLists = [];
+        lignes.forEach((ligne) => {
           const [nom, chemin] = ligne.split(',');
-
           if (nom && chemin) {
-            const option = document.createElement('option');
-            option.value = chemin.trim();
-            option.textContent = nom.trim();
-            select.appendChild(option);
-
-            // Si c'est le premier élément valide, on initialise la variable
-            if (index === 0) {
-              listPath = option.value;
-            }
+            allLists.push({
+              nom: nom.trim(),
+              chemin: chemin.trim()
+            });
           }
         });
 
-        // On n'affiche le select que s'il contient des options
-        if (select.options.length > 0) {
-          select.style.display = "block";
-          console.log("Initialisé avec :", listPath);
+        // Initialiser selectedListPaths avec la première liste
+        if (allLists.length > 0) {
+          selectedListPaths = [allLists[0].chemin];
         }
 
+        console.log("Listes disponibles:", allLists);
       } catch (error) {
-        console.warn("Le sélecteur reste caché :", error.message);
+        console.warn("Erreur lors du chargement des listes:", error.message);
+        allLists = [{nom: "Par défaut", chemin: "mots.csv"}];
+        selectedListPaths = ["mots.csv"];
       }
+    }
 
-      // Ecouteur de changement
-      select.addEventListener('change', (e) => {
-        listPath = e.target.value;
-        console.log("Nouveau chemin :", listPath);
+    // === AFFICHER L'ÉCRAN DE SÉLECTION ===
+    function showThemeSelectionScreen() {
+      renderCheckboxes();
+      showScreen('themeSelection');
+    }
+
+    // === GÉNÉRER LES CHECKBOXES ===
+    function renderCheckboxes() {
+      const container = document.getElementById('themesCheckboxes');
+      container.innerHTML = '';
+
+      allLists.forEach((liste, index) => {
+        const isChecked = selectedListPaths.includes(liste.chemin);
+        
+        const checkbox = document.createElement('div');
+        checkbox.className = 'checkbox-item';
+        checkbox.innerHTML = `
+          <input type="checkbox" id="list-${index}" value="${liste.chemin}" 
+                 ${isChecked ? 'checked' : ''} 
+                 onchange="updateSelectedLists()">
+          <label for="list-${index}">${liste.nom}</label>
+        `;
+        container.appendChild(checkbox);
       });
     }
 
-    chargerListe();
+    // === METTRE À JOUR LA SÉLECTION ===
+    function updateSelectedLists() {
+      selectedListPaths = [];
+      document.querySelectorAll('#themesCheckboxes input[type="checkbox"]:checked').forEach((checkbox) => {
+        selectedListPaths.push(checkbox.value);
+      });
 
-    // Initialisation
+      if (selectedListPaths.length === 0) {
+        selectedListPaths = [allLists[0]?.chemin || "mots.csv"];
+        // Recheck la première liste
+        document.getElementById('list-0').checked = true;
+      }
 
+      console.log("Listes sélectionnées:", selectedListPaths);
+    }
+
+    // === CONFIRMER LA SÉLECTION ===
+    function confirmThemeSelection() {
+      if (selectedListPaths.length === 0) {
+        alert("Sélectionnez au moins une liste !");
+        return;
+      }
+      showScreen('1');
+    }
+
+    // === CHARGER ET FUSIONNER LES MOTS ===
+    async function loadAndMergeWords() {
+      mergedWords = [];
+
+      for (const listPath of selectedListPaths) {
+        try {
+          const res = await fetch(listPath);
+          if (!res.ok) continue;
+
+          const text = await res.text();
+          const lines = text.split('\n').filter(l => l.trim().length > 0);
+          
+          lines.forEach(line => {
+            const parts = line.split(',').map(w => w.trim());
+            mergedWords.push(...parts);
+          });
+        } catch (e) {
+          console.warn(`Erreur lors du chargement de ${listPath}:`, e);
+        }
+      }
+
+      console.log("Mots fusionnés totaux:", mergedWords.length);
+      return mergedWords;
+    }
+
+    // === INITIALISER LE JEU ===
     async function initGame() {
-
       document.getElementById('guessArea').style.display = "none";
 
       config.nbPlayers = parseInt(document.getElementById('nbPlayers').value);
       config.nbInf = parseInt(document.getElementById('nbInf').value);
       config.nbVid = parseInt(document.getElementById('nbVid').value);
 
-      localStorage.setItem('infiltres_config',
-        JSON.stringify(config));
+      localStorage.setItem('infiltres_config', JSON.stringify(config));
 
       if (config.nbInf >= config.nbPlayers) {
-        // + config.nbVid
         alert("Trop d'infiltrés/M.∅ pour le nombre de joueurs !");
         return;
       }
 
-      try {
-        const res = await fetch(listPath);
-        const text = await res.text();
-        const lines = text.split('\n').filter(l => l.trim().length > 0);
-        const randomLine = lines[Math.floor(Math.random() * lines.length)].split(',');
-        const shuffledLine = randomLine.map(w => w.trim()).sort(() => Math.random() - 0.5);
-        words.civil = shuffledLine[0];
-        words.inf = shuffledLine[1];
-      } catch (e) {
+      // Charger et fusionner les mots
+      await loadAndMergeWords();
+
+      if (mergedWords.length >= 2) {
+        const shuffled = [...mergedWords].sort(() => Math.random() - 0.5);
+        words.civil = shuffled[0];
+        words.inf = shuffled[1];
+      } else {
         words.civil = "Soleil";
         words.inf = "Lune";
       }
+
+      console.log("Mots choisis - Civil:", words.civil, "Infiltré:", words.inf);
 
       let roles = [];
       for (let i = 0; i < config.nbInf; i++) roles.push({
@@ -535,7 +644,7 @@
 
       currentIndex = 0;
       prepareNameInput();
-      showScreen(2);
+      showScreen('2');
     }
 
     function prepareNameInput() {
@@ -583,7 +692,7 @@
     }
 
     function startVoteScreen() {
-      showScreen(3);
+      showScreen('3');
       const validStarters = players.filter(p => p.alive && p.type !== 'M.∅');
       const starter = validStarters[Math.floor(Math.random() * validStarters.length)];
       document.getElementById('starter').innerText = starter ? starter.name: "-";
@@ -666,7 +775,11 @@
 
     function showScreen(n) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('screen'+n).classList.add('active');
+      const screenId = n === '1' ? 'screen1' : n === '2' ? 'screen2' : n === '3' ? 'screen3' : 'screenThemeSelection';
+      const element = document.getElementById(screenId);
+      if (element) {
+        element.classList.add('active');
+      }
     }
 
     if ('serviceWorker' in navigator) {
@@ -677,45 +790,35 @@
 
 
     // Installation
-    // Variable de contrôle : true pour utiliser alert() et garder le bouton visible
     const debugMode = false;
-
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-
-      // Affiche le bouton
       installBtn.style.display = 'block';
 
       installBtn.addEventListener('click', () => {
-        // Si debugMode est false, on cache le bouton. Sinon, on le laisse.
         if (!debugMode) {
           installBtn.style.display = 'none';
         }
-
         deferredPrompt.prompt();
-
         deferredPrompt.userChoice.then((choiceResult) => {
           const message = choiceResult.outcome === 'accepted'
           ? 'L\'utilisateur a accepté l\'installation': 'L\'utilisateur a refusé l\'installation';
 
-          // Alerte si debugMode est true, sinon log classique
           if (debugMode) {
             alert(message);
           } else {
             console.log(message);
           }
-
           deferredPrompt = null;
         });
       });
     });
 
     window.addEventListener('appinstalled', () => {
-      // On ne cache le bouton au succès que si on n'est pas en debugMode
       if (!debugMode) {
         installBtn.style.display = 'none';
       }
@@ -733,7 +836,7 @@
 
   <!-- A conserver en bas du code pour une modification facile -->
   <footer>
-    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html'">v1.4.1beta</span>
+    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html'">v1.4.2beta</span>
   </footer>
 </body>
 </html>
