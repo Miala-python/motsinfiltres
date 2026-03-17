@@ -1,5 +1,7 @@
-const CACHE_NAME = 'infiltre-v1.2.3';
-const ASSETS = ['./', './index.html', './manifest.json', './mots.csv', './motsEN.csv', './beta.html', './en.html'];
+const CACHE_NAME = 'infiltre-v1.4.1';
+const ASSETS = ['./', './index.html', './manifest.json', './mots.csv', './motsEN.csv', './beta.html', './en.html',
+'lists.csv','zNat.csv','yM.csv','beta.csv'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
