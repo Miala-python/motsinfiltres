@@ -6,7 +6,7 @@ const ASSETS = ['./', './index.html', './manifest.json', './mots.csv', './motsEN
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(BASE_ASSETS).then(() => {
+      return cache.addAll(ASSETS).then(() => {
         // Récupérer et parser lists.csv
         return fetch('./lists.csv')
           .then(response => response.text())
