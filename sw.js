@@ -1,7 +1,31 @@
 const CACHE_NAME = 'infiltre-v1.4.1';
 const ASSETS = ['./', './index.html', './manifest.json', './mots.csv', './motsEN.csv', './beta.html', './en.html',
-'./lists.csv','./zNat.csv','./yM.csv','./beta.csv'
+'./lists.csv','./yM.csv'
 ];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(BASE_ASSETS).then(() => {
+        // Récupérer et parser lists.csv
+        return fetch('./lists.csv')
+          .then(response => response.text())
+          .then(csvText => {
+            const lines = csvText.trim().split('\n');
+            const csvFiles = lines.map(line => {
+              const parts = line.split(',');
+              return './' + parts[1].trim(); // Récupère le chemin du fichier
+            });
+            // Ajouter les fichiers CSV au cache
+            return cache.addAll(csvFiles);
+          })
+          .catch(err => console.error('Erreur lors du cache des listes:', err));
+      });
+    })
+  );
+  self.skipWaiting();
+});
+
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
