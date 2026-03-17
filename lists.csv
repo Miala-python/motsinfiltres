@@ -1,4 +1,13 @@
-Divers thèmes,mots.csv
+Divers thèmes (vérifiée),mots.csv
 Nature,zNat.csv
-Prépa Maths (Bêta),yM.csv
+Cuisine,zCui.csv
+Maison,zMai.csv
+Loisirs,zLoi.csv
+Voyage,zVoy.csv
+Corps,zCor.csv
+Métiers,zMet.csv
+Vêtements,zVet.csv
+Technologie,zTec.csv
+Sentiments,zSen.csv
+Prépa Maths,yM.csv
 Alphabet Grecque,beta.csv
