@@ -94,15 +94,12 @@ Acide,Base,Nucleophile,Electrophile
 Oxydant,Reducteur,Anode,Cathode
 Titrage,Dosage,Etalonnage,Prelevement
 Becher,Erouvette,Burette,Pipette
-Solvant,Solute,Solution,Melange
-Precipite,Cristal,Amorphe,Solide
+Solvant,Solution,Melange,Dilution
 Equilibre,Evolution,Cinetique,Catalyse
 Vitesse,Ordre,Constante,Facteur
 Mole,Masse,Volume,Quantite
-Molaire,Massique,Volumique,Adimensionnel
 Conductivite,Resistivite,Permittivite,Permeabilite
 Convection,Conduction,Rayonnement,Diffusion
-Laminarite,Turbulence,Viscosite,Pression
 Fluide,Gaz,Liquide,Ecoulement
 Pendule,Ressort,Oscillateur,Amortisseur
 Reel,Imaginaire,Complexe,Module
@@ -157,4 +154,4 @@ Miscible,Soluble,Volatile,Stable
 Filtration,Decantation,Distillation,Extraction
 Reflux,Chauffage,Montage,Synthese
 Rendement,Purete,Selectivite,Activite
-Proton,Neutron,Quark,Lepton
+Proton,Neutron,Quark,Electron
