@@ -1,4 +1,4 @@
-const CACHE_NAME = 'infiltre-v1.4.1';
+const CACHE_NAME = 'infiltre-v1.4.2';
 const ASSETS = ['./', './index.html', './manifest.json', './mots.csv', './motsEN.csv', './beta.html', './en.html',
 './lists.csv','./yM.csv'
 ];
