@@ -111,16 +111,16 @@
     }
 
     input[type="number"],
-input[type="text"] {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid var(--input-border);
-  border-radius: 10px;
-  box-sizing: border-box;
-  font-size: 16px;
-  background: transparent;
-  color: inherit;
-}
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--input-border);
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 16px;
+      background: transparent;
+      color: inherit;
+    }
 
     select {
       width: 100%;
@@ -169,7 +169,7 @@ input[type="text"] {
       text-align: left;
       margin: 15px 0;
     }
-    
+
     .checkbox-item {
       display: flex;
       align-items: center;
@@ -181,16 +181,16 @@ input[type="text"] {
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    
+
     body.dark-mode .checkbox-item {
       background: #334155;
     }
-    
+
     .checkbox-item:hover {
       border-color: var(--primary);
       box-shadow: 0 2px 8px rgba(231, 93, 0, 0.1);
     }
-    
+
     .checkbox-item input[type="checkbox"] {
       width: 18px;
       height: 18px;
@@ -198,7 +198,7 @@ input[type="text"] {
       accent-color: var(--primary);
       margin-right: 12px;
     }
-    
+
     .checkbox-item label {
       margin: 0;
       cursor: pointer;
@@ -351,7 +351,7 @@ input[type="text"] {
         <label>Nombre de M.∅</label>
         <input type="number" id="nbVid" value="1" min="0">
       </div>
-      <button class="secondary-btn"  onclick="showThemeSelectionScreen()">Listes de mots</button>
+      <button class="secondary-btn" onclick="showThemeSelectionScreen()">Listes de mots</button>
       <button onclick="initGame()" style="margin-top: 5px;">Suivant</button>
 
       <button id="installBtn" style="display: none;">
@@ -388,7 +388,7 @@ input[type="text"] {
     <p style="font-size: 0.95em; color: #64748b; margin-bottom: 15px;">
       Cochez une ou plusieurs listes pour fusionner les mots
     </p>
-    
+
     <div id="themesCheckboxes" class="checkbox-group">
       <!-- Les checkboxes seront générées par JavaScript -->
     </div>
@@ -447,11 +447,11 @@ input[type="text"] {
       inf: ""
     };
     let savedNames = JSON.parse(localStorage.getItem('infiltres_names') || "[]");
-    
+
     // Nouvelles variables pour la sélection de thèmes
     let allLists = [];
     let selectedListPaths = [];
-    let mergedWords = [];
+    let mergedLines = [];
 
     window.onload = () => {
       const savedConfig = JSON.parse(localStorage.getItem('infiltres_config'));
@@ -515,7 +515,10 @@ input[type="text"] {
         console.log("Listes disponibles:", allLists);
       } catch (error) {
         console.warn("Erreur lors du chargement des listes:", error.message);
-        allLists = [{nom: "Par défaut", chemin: "mots.csv"}];
+        allLists = [{
+          nom: "Par défaut",
+          chemin: "mots.csv"
+        }];
         selectedListPaths = ["mots.csv"];
       }
     }
@@ -533,14 +536,14 @@ input[type="text"] {
 
       allLists.forEach((liste, index) => {
         const isChecked = selectedListPaths.includes(liste.chemin);
-        
+
         const checkbox = document.createElement('div');
         checkbox.className = 'checkbox-item';
         checkbox.innerHTML = `
-          <input type="checkbox" id="list-${index}" value="${liste.chemin}" 
-                 ${isChecked ? 'checked' : ''} 
-                 onchange="updateSelectedLists()">
-          <label for="list-${index}">${liste.nom}</label>
+        <input type="checkbox" id="list-${index}" value="${liste.chemin}"
+        ${isChecked ? 'checked': ''}
+        onchange="updateSelectedLists()">
+        <label for="list-${index}">${liste.nom}</label>
         `;
         container.appendChild(checkbox);
       });
@@ -573,7 +576,7 @@ input[type="text"] {
 
     // === CHARGER ET FUSIONNER LES MOTS ===
     async function loadAndMergeWords() {
-      mergedWords = [];
+      mergedLines = [];
 
       for (const listPath of selectedListPaths) {
         try {
@@ -582,18 +585,17 @@ input[type="text"] {
 
           const text = await res.text();
           const lines = text.split('\n').filter(l => l.trim().length > 0);
-          
+
           lines.forEach(line => {
-            const parts = line.split(',').map(w => w.trim());
-            mergedWords.push(...parts);
+            mergedLines.push(line);
           });
         } catch (e) {
           console.warn(`Erreur lors du chargement de ${listPath}:`, e);
         }
       }
 
-      console.log("Mots fusionnés totaux:", mergedWords.length);
-      return mergedWords;
+      console.log("Listes fusionnées:", mergedLines.length);
+      return mergedLines;
     }
 
     // === INITIALISER LE JEU ===
@@ -614,10 +616,16 @@ input[type="text"] {
       // Charger et fusionner les mots
       await loadAndMergeWords();
 
-      if (mergedWords.length >= 2) {
-        const shuffled = [...mergedWords].sort(() => Math.random() - 0.5);
-        words.civil = shuffled[0];
-        words.inf = shuffled[1];
+      if (mergedLines.length > 0) {
+        const ligne = mergedLines[Math.floor(Math.random() * mergedLines.length)];
+        const i1 = Math.floor(Math.random() * ligne.length);
+        let i2 = Math.floor(Math.random() * ligne.length);
+        if (i1 === i2) {
+          if (i1==0) {i2 =1}
+          else {i2-=1}
+        };
+        words.civil = ligne[i1];
+        words.inf = ligne[i2];
       } else {
         words.civil = "Soleil";
         words.inf = "Lune";
@@ -776,7 +784,7 @@ input[type="text"] {
 
     function showScreen(n) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      const screenId = n === '1' ? 'screen1' : n === '2' ? 'screen2' : n === '3' ? 'screen3' : 'screenThemeSelection';
+      const screenId = n === '1' ? 'screen1': n === '2' ? 'screen2': n === '3' ? 'screen3': 'screenThemeSelection';
       const element = document.getElementById(screenId);
       if (element) {
         element.classList.add('active');
@@ -837,7 +845,7 @@ input[type="text"] {
 
   <!-- A conserver en bas du code pour une modification facile -->
   <footer>
-    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html'">v1.4.2beta</span>
+    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html'">v1.4.3beta</span>
   </footer>
 </body>
 </html>
