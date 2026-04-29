@@ -825,5 +825,34 @@
         updateGene();
         switchTab('reconstruct');
     </script>
+<script>
+// Auto-train sur lexb.csv au chargement de la page
+(async function() {
+    try {
+        const response = await fetch('lexb.csv');
+        if (!response.ok) return;
+        const text = await response.text();
+        const lines = text.split(/\r?\n/).filter(l => l.trim());
+        let total = 0;
+        lines.forEach(line => {
+            const normalized = line.replace(/,/g, ' ');
+            const words = normalized.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/g, "").split(/\s+/).filter(Boolean);
+            words.forEach(w => {
+                if (!brain.lex[w]) brain.lex[w] = { freq: 0, starts: 0, lastLearned: Date.now(), quality: 0 };
+                brain.lex[w].freq++;
+                brain.lex[w].lastLearned = Date.now();
+                if (words[0] === w) brain.lex[w].starts++;
+            });
+            for (let i = 0; i < words.length - 1; i++) {
+                const key = `${words[i]}|${words[i+1]}`;
+                brain.bigrams[key] = (brain.bigrams[key] || 0) + 1;
+            }
+            total += words.length;
+        });
+        save();
+        toast(`lexb.csv chargé : ${lines.length} lignes, ${total} mots.`);
+    } catch(e) {}
+})();
+</script>
 </body>
 </html>
