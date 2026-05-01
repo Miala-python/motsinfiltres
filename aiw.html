@@ -3,27 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anagrammes de phrases - IA locale (auto corpus)</title>
+    <title>Anagrammes de phrases - IA locale enrichissable</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; }
-        .section { margin-bottom: 30px; }
+        .section { margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
         label { display: block; margin-top: 10px; }
-        input[type="text"] { width: 100%; padding: 8px; }
-        button { padding: 10px 20px; margin: 5px; }
+        input[type="text"], textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        textarea { height: 120px; }
+        button { padding: 8px 16px; margin: 5px 5px 5px 0; cursor: pointer; }
         .results { margin-top: 20px; }
         .phrase { background: #f0f0f0; padding: 8px; margin: 5px 0; border-radius: 5px; }
-        .progress { color: #555; }
-        .checkbox-group { display: flex; gap: 20px; }
+        .progress { color: #555; font-style: italic; }
+        .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; }
+        .inline { display: inline-block; width: auto; margin-right: 10px; }
     </style>
 </head>
 <body>
     <h1>Générateur d'anagrammes de phrases (IA locale)</h1>
 
+    <!-- Corpus automatique -->
     <div class="section">
-        <h2>Corpus</h2>
-        <p id="corpusStatus" class="progress">Chargement de ./lexb.csv...</p>
+        <h2>Corpus (./lexb.csv)</h2>
+        <p id="corpusStatus" class="progress">Chargement...</p>
     </div>
 
+    <!-- Apprentissage additionnel -->
+    <div class="section">
+        <h2>Texte d'apprentissage supplémentaire</h2>
+        <textarea id="additionalText" placeholder="Collez ici des phrases ou des mots (séparés par . , ; ou retour à la ligne) pour enrichir le modèle..."></textarea>
+        <button id="addTextBtn">Ajouter au modèle</button>
+        <button id="resetModelBtn">Réinitialiser le modèle (garder lexb.csv)</button>
+    </div>
+
+    <!-- Paramètres -->
     <div class="section">
         <h2>Paramètres de génération</h2>
         <label>Poids fluidité (α) : <input type="range" id="alpha" min="0" max="2" step="0.1" value="1.0"> <span id="alphaVal">1.0</span></label>
@@ -31,34 +43,37 @@
         <label>Pénalité mot-outil : <input type="range" id="stopPenalty" min="0" max="10" step="0.5" value="3.0"> <span id="stopPenaltyVal">3.0</span></label>
         <label>Largeur du faisceau : <input type="number" id="beamWidth" value="150" min="10" max="500"></label>
         <label>Nombre min. de mots pleins : <input type="number" id="minContent" value="1" min="1" max="5"></label>
+        <label>Longueur minimale des mots : <input type="range" id="minWordLen" min="1" max="4" value="2"> <span id="minWordLenVal">2</span></label>
         <div class="checkbox-group">
             <label><input type="checkbox" id="respectCase"> Respecter la casse</label>
             <label><input type="checkbox" id="respectAccents" checked> Respecter les accents</label>
         </div>
     </div>
 
+    <!-- Génération -->
     <div class="section">
         <h2>Phrase source</h2>
         <input type="text" id="sourcePhrase" placeholder="Ex: Le chat dort" />
         <button id="generateBtn" disabled>Générer des anagrammes</button>
     </div>
 
+    <!-- Résultats -->
     <div class="section results">
         <h2>Anagrammes proposées :</h2>
-        <div id="resultsList"></div>
+        <div id="resultsList">-</div>
     </div>
 
     <script>
-        // Lettres autorisées avec ou sans accents
+        // ==== Configuration des lettres ====
         const LETTERS_BASE = 'abcdefghijklmnopqrstuvwxyz';
         const LETTERS_ACCENTS = 'àâçéèêëîïôûùüÿñæœ';
         const ALL_LETTERS = LETTERS_BASE + LETTERS_ACCENTS;
 
-        let LETTERS = ALL_LETTERS; // sera modifié si l'utilisateur décoche les accents
+        let LETTERS = ALL_LETTERS;
         let LETTER_REGEX = new RegExp(`[${LETTERS}]+`, 'g');
 
-        // Variables du modèle
-        let vocabulary = new Set(); // stocke les mots tels quels (peut inclure majuscules si respectCase)
+        // ==== Variables du modèle ====
+        let vocabulary = new Set();                // mots normalisés
         let unigramCount = {};
         let bigramCount = {};
         let totalSentences = 0;
@@ -71,7 +86,14 @@
         const START = '<s>';
         const END = '</s>';
 
-        // Mots-outils (liste indicative, en minuscules)
+        // Pour la restauration de la casse
+        window._normalizedVocab = new Map();   // norm -> Set(originaux)
+        window._originalVocabSet = new Set();
+
+        // Texte de base (lexb.csv) gardé en mémoire
+        let baseCorpusText = '';
+
+        // ==== Stop words (liste enrichie) ====
         function initStopWords() {
             const stops = [
                 'le','la','les','un','une','des','de','du','à','au','aux','ce','cet','cette','ces',
@@ -85,30 +107,29 @@
                 'répondre','servir','sembler','laisser','rester','penser','entendre','regarder','appeler',
                 'arriver','connaître','devenir','partir','sortir','comprendre','porter','ne','n','pas','plus',
                 'très','tout','tous','toute','toutes','autre','même','quel','quelle','quels','quelles','cela',
-                'ça','celui','celle','ceux','celles','est','sont','ont','avait','avais'
+                'ça','celui','celle','ceux','celles','est','sont','ont','avait','avais',
+                // lettres isolées
+                'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
             ];
             stopWords = new Set(stops);
         }
 
-        // Mise à jour de LETTERS selon les cases à cocher
+        // ==== Normalisation ====
         function updateLetterSet() {
             const keepAccents = document.getElementById('respectAccents').checked;
             LETTERS = keepAccents ? ALL_LETTERS : LETTERS_BASE;
             LETTER_REGEX = new RegExp(`[${LETTERS}]+`, 'g');
         }
 
-        // Normalise un mot selon les options (casse, accents)
         function normalizeWord(word, respectCase) {
             let w = word;
             if (!respectCase) w = w.toLowerCase();
-            // Si on ne respecte pas les accents, on les remplace par la lettre de base
             if (!document.getElementById('respectAccents').checked) {
                 w = w.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             }
             return w;
         }
 
-        // Normalise la source (phrase à anagrammer) de la même manière
         function normalizeSource(text, respectCase) {
             updateLetterSet();
             const cleaned = text.match(LETTER_REGEX);
@@ -121,39 +142,43 @@
             return str;
         }
 
-        // Entraînement à partir du texte
-        function trainModel(text) {
-            vocabulary.clear();
-            unigramCount = {};
-            bigramCount = {};
-            docFreq = {};
-            idf = {};
-            trieRoot = null;
-
-            // On conserve la casse d'origine dans le vocabulaire pour pouvoir la restituer
-            // Mais pour stopwords, on travaille en minuscules
-            const sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
-            if (sentences.length === 0) {
-                // Tenter un split par virgules/points-virgules
-                const alt = text.replace(/[,;|\n\r]+/g, '.').replace(/\s+/g, ' ');
-                const s2 = alt.split('.').filter(s => s.trim().length > 0);
-                sentences.push(...s2);
+        // ==== Entraînement ====
+        function trainModel(text, append = false) {
+            if (!append) {
+                // Réinitialisation complète
+                vocabulary.clear();
+                unigramCount = {};
+                bigramCount = {};
+                docFreq = {};
+                idf = {};
+                trieRoot = null;
+                window._normalizedVocab.clear();
+                window._originalVocabSet.clear();
+                totalSentences = 0;
             }
-            totalSentences = sentences.length;
-            if (totalSentences === 0) throw new Error('Aucune phrase exploitable.');
 
-            // On crée un vocabulaire "plein" (avec casse) et un vocabulaire normalisé pour le trie
-            const normalizedVocab = new Map(); // mot normalisé -> Set de mots originaux (ex: "chat" -> ["chat","Chat"])
-            const originalVocabSet = new Set();
+            // Découpage en phrases / mots
+            let sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
+            if (sentences.length === 0) {
+                // Tenter les virgules, points-virgules
+                const alt = text.replace(/[,;|\n\r]+/g, '.').replace(/\s+/g, ' ');
+                sentences = alt.split('.').filter(s => s.trim().length > 0);
+            }
+            if (sentences.length === 0) throw new Error('Aucune phrase exploitable.');
+
+            const normalizedVocab = window._normalizedVocab;
+            const originalVocabSet = window._originalVocabSet;
+            let newSentences = 0;
 
             for (const sentence of sentences) {
                 const words = sentence.match(LETTER_REGEX);
                 if (!words || words.length === 0) continue;
+                newSentences++;
 
-                // Stocker les originaux pour la restitution éventuelle
+                // Mots originaux
                 words.forEach(w => originalVocabSet.add(w));
-                // Construire les versions normalisées pour les modèles
-                const normWords = words.map(w => normalizeWord(w, false)); // force minuscule + accents
+                // Normalisés (base, minuscules, avec/sans accents selon réglage actuel)
+                const normWords = words.map(w => normalizeWord(w, false)); // force minuscule pour le modèle
                 const extended = [START, ...normWords, END];
 
                 for (let i = 0; i < extended.length - 1; i++) {
@@ -167,10 +192,10 @@
                 const uniqueNorm = new Set(normWords);
                 uniqueNorm.forEach(w => {
                     docFreq[w] = (docFreq[w] || 0) + 1;
+                    vocabulary.add(w);
                 });
 
-                normWords.forEach(w => vocabulary.add(w));
-                // Associer chaque mot normalisé à ses variantes de casse
+                // Associer chaque original à sa version normalisée
                 for (const orig of words) {
                     const norm = normalizeWord(orig, false);
                     if (!normalizedVocab.has(norm)) normalizedVocab.set(norm, new Set());
@@ -178,27 +203,25 @@
                 }
             }
 
-            // Calcul IDF sur les mots normalisés
+            totalSentences += newSentences;
+
+            // IDF
             for (const w of Object.keys(docFreq)) {
                 idf[w] = Math.log(totalSentences / docFreq[w]);
             }
 
-            // Construire le trie à partir du vocabulaire normalisé
+            // Reconstruire le trie (les signatures sont basées sur les mots normalisés)
             trieRoot = new TrieNode();
             for (const word of vocabulary) {
-                const sig = word.split('').sort().join(''); // signature sur lettres sans accents ni casse
+                const sig = word.split('').sort().join('');
                 trieRoot.insert(sig, word);
             }
 
-            // On stocke aussi la table de variantes pour la restitution finale
-            window._normalizedVocab = normalizedVocab; // pour usage dans la génération
-            window._originalVocabSet = originalVocabSet;
-
-            modelReady = true;
+            modelReady = (vocabulary.size > 0);
             return { vocabSize: vocabulary.size, sentences: totalSentences };
         }
 
-        // Trie pour signatures de lettres triées (utilise les lettres de la source)
+        // ==== Trie ====
         class TrieNode {
             constructor() {
                 this.children = new Map();
@@ -212,41 +235,44 @@
                     }
                     node = node.children.get(ch);
                 }
-                node.words.push(word); // mot normalisé
+                node.words.push(word);
             }
         }
 
-        function findWordsFromTrie(node, remaining, results) {
+        function findWordsFromTrie(node, remaining, results, minLen) {
+            // On ignore les mots trop courts
             if (node.words.length > 0) {
-                results.push(...node.words);
+                for (const w of node.words) {
+                    if (w.length >= minLen) results.push(w);
+                }
             }
             for (const [ch, child] of node.children) {
                 const idx = LETTERS.indexOf(ch);
                 if (idx !== -1 && remaining[idx] > 0) {
                     remaining[idx]--;
-                    findWordsFromTrie(child, remaining, results);
+                    findWordsFromTrie(child, remaining, results, minLen);
                     remaining[idx]++;
                 }
             }
         }
 
-        function getPossibleWords(remainingCounts) {
+        function getPossibleWords(remainingCounts, minWordLen) {
             const results = [];
             const remCopy = [...remainingCounts];
-            findWordsFromTrie(trieRoot, remCopy, results);
-            return Array.from(new Set(results)); // mots normalisés uniques
+            findWordsFromTrie(trieRoot, remCopy, results, minWordLen);
+            return Array.from(new Set(results)); // dédoublonnage
         }
 
-        // Modèle bigramme lissé (sur mots normalisés)
+        // ==== Modèle de langue ====
         function getBigramLogProb(w1, w2) {
-            const vocabSize = vocabulary.size;
+            if (!vocabulary.size) return -Infinity;
             const countBigram = bigramCount[`${w1}|${w2}`] || 0;
             const countUnigram = unigramCount[w1] || 0;
-            const prob = (countBigram + 1) / (countUnigram + vocabSize);
+            const prob = (countBigram + 1) / (countUnigram + vocabulary.size);
             return Math.log(prob);
         }
 
-        // Soustraire les lettres d'un mot normalisé
+        // ==== Compteurs ====
         function subtractLetters(counts, word) {
             const newCounts = [...counts];
             for (const ch of word) {
@@ -260,21 +286,19 @@
             return counts.every(c => c === 0);
         }
 
-        // Restauration de la casse : pour un mot normalisé, on choisit la variante la plus fréquente
         function restoreCase(normalizedWord, respectCase) {
-            if (!respectCase) return normalizedWord; // déjà en minuscules
+            if (!respectCase) return normalizedWord;
             const variants = window._normalizedVocab.get(normalizedWord);
             if (!variants || variants.size === 0) return normalizedWord;
-            // Choisir la première variante (on pourrait compter les fréquences)
             return Array.from(variants)[0];
         }
 
-        // Génération
-        function generateAnagrams(sourcePhrase, alpha, beta, stopPenalty, beamWidth, minContentWords, respectCase) {
+        // ==== Génération ====
+        function generateAnagrams(sourcePhrase, alpha, beta, stopPenalty, beamWidth, minContentWords, minWordLen, respectCase) {
             if (!modelReady) throw new Error('Modèle non entraîné.');
 
             const normSource = normalizeSource(sourcePhrase, respectCase);
-            if (normSource.length === 0) throw new Error('Phrase source vide après normalisation.');
+            if (normSource.length === 0) throw new Error('Phrase source vide.');
 
             const initialCounts = new Array(LETTERS.length).fill(0);
             for (const ch of normSource) {
@@ -285,7 +309,7 @@
             const initialState = {
                 remaining: initialCounts,
                 prevWord: START,
-                seq: [], // suite de mots normalisés
+                seq: [],
                 logProb: 0,
                 semanticSum: 0
             };
@@ -302,16 +326,16 @@
                         continue;
                     }
 
-                    const possibleWords = getPossibleWords(state.remaining);
-                    let candidates = possibleWords;
-                    if (candidates.length > 300) {
-                        candidates = candidates.sort((a, b) => b.length - a.length).slice(0, 300);
+                    let possibleWords = getPossibleWords(state.remaining, minWordLen);
+                    // Limiter le nombre de candidats pour les performances
+                    if (possibleWords.length > 300) {
+                        possibleWords = possibleWords.sort((a, b) => b.length - a.length).slice(0, 300);
                     }
 
-                    for (const word of candidates) {
+                    for (const word of possibleWords) {
                         const newRemaining = subtractLetters(state.remaining, word);
                         const transLogProb = getBigramLogProb(state.prevWord, word);
-                        const isStop = stopWords.has(word); // comparaison en minuscules
+                        const isStop = stopWords.has(word.toLowerCase ? word.toLowerCase() : word);
                         const semWeight = isStop ? 0 : (idf[word] || 0.1);
                         const penalty = isStop ? -stopPenalty : 0;
 
@@ -334,6 +358,7 @@
                 states = newStates.slice(0, beamWidth);
             }
 
+            // Derniers complets
             for (const state of states) {
                 if (allLettersUsed(state.remaining)) complete.push(state);
             }
@@ -353,11 +378,10 @@
             const filtered = finalCandidates.filter(c => c.contentWords >= minContentWords);
             filtered.sort((a, b) => b.score - a.score);
 
-            // Restaurer la casse si demandé
             return filtered.map(c => c.seq.map(w => restoreCase(w, respectCase)).join(' '));
         }
 
-        // --- Initialisation de l'interface ---
+        // ==== UI ====
         document.addEventListener('DOMContentLoaded', async () => {
             initStopWords();
             updateLetterSet();
@@ -366,50 +390,77 @@
             const generateBtn = document.getElementById('generateBtn');
             const sourceInput = document.getElementById('sourcePhrase');
             const resultsDiv = document.getElementById('resultsList');
-            const alphaSlider = document.getElementById('alpha');
-            const alphaVal = document.getElementById('alphaVal');
-            const betaSlider = document.getElementById('beta');
-            const betaVal = document.getElementById('betaVal');
-            const stopPenaltySlider = document.getElementById('stopPenalty');
-            const stopPenaltyVal = document.getElementById('stopPenaltyVal');
-            const beamWidthInput = document.getElementById('beamWidth');
-            const minContentInput = document.getElementById('minContent');
-            const respectAccentsCheckbox = document.getElementById('respectAccents');
+            const additionalText = document.getElementById('additionalText');
+            const addTextBtn = document.getElementById('addTextBtn');
+            const resetModelBtn = document.getElementById('resetModelBtn');
 
-            alphaSlider.oninput = () => alphaVal.textContent = alphaSlider.value;
-            betaSlider.oninput = () => betaVal.textContent = betaSlider.value;
-            stopPenaltySlider.oninput = () => stopPenaltyVal.textContent = stopPenaltySlider.value;
-            respectAccentsCheckbox.onchange = updateLetterSet;
+            // Sliders
+            document.getElementById('alpha').oninput = function() { document.getElementById('alphaVal').textContent = this.value; };
+            document.getElementById('beta').oninput = function() { document.getElementById('betaVal').textContent = this.value; };
+            document.getElementById('stopPenalty').oninput = function() { document.getElementById('stopPenaltyVal').textContent = this.value; };
+            document.getElementById('minWordLen').oninput = function() { document.getElementById('minWordLenVal').textContent = this.value; };
+            document.getElementById('respectAccents').onchange = updateLetterSet;
 
-            // Chargement automatique de ./lexb.csv
+            // Chargement auto de lexb.csv
             corpusStatus.textContent = 'Chargement de ./lexb.csv...';
             try {
                 const response = await fetch('./lexb.csv');
                 if (!response.ok) throw new Error(`Fichier introuvable (${response.status})`);
-                const text = await response.text();
-                const stats = trainModel(text);
+                baseCorpusText = await response.text();
+                const stats = trainModel(baseCorpusText, false);
                 corpusStatus.textContent = `Modèle prêt : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
                 generateBtn.disabled = false;
             } catch (e) {
-                corpusStatus.textContent = 'Erreur de chargement : ' + e.message;
+                corpusStatus.textContent = 'Erreur : ' + e.message + ' (vous pouvez coller du texte manuellement)';
             }
 
+            // Ajouter du texte additionnel
+            addTextBtn.onclick = () => {
+                const newText = additionalText.value.trim();
+                if (!newText) return;
+                try {
+                    const stats = trainModel(newText, true); // append
+                    corpusStatus.textContent = `Modèle mis à jour : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
+                    additionalText.value = ''; // vider
+                    generateBtn.disabled = false;
+                } catch (e) {
+                    alert('Erreur lors de l\'ajout : ' + e.message);
+                }
+            };
+
+            // Réinitialiser
+            resetModelBtn.onclick = () => {
+                if (!baseCorpusText) {
+                    alert('Aucun corpus de base chargé.');
+                    return;
+                }
+                try {
+                    const stats = trainModel(baseCorpusText, false);
+                    corpusStatus.textContent = `Modèle réinitialisé : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
+                    generateBtn.disabled = false;
+                } catch (e) {
+                    corpusStatus.textContent = 'Erreur de réinitialisation.';
+                }
+            };
+
+            // Génération
             generateBtn.onclick = () => {
                 const phrase = sourceInput.value.trim();
                 if (!phrase) return;
-                const alpha = parseFloat(alphaSlider.value);
-                const beta = parseFloat(betaSlider.value);
-                const stopPen = parseFloat(stopPenaltySlider.value);
-                const beamW = parseInt(beamWidthInput.value);
-                const minC = parseInt(minContentInput.value);
+                const alpha = parseFloat(document.getElementById('alpha').value);
+                const beta = parseFloat(document.getElementById('beta').value);
+                const stopPen = parseFloat(document.getElementById('stopPenalty').value);
+                const beamW = parseInt(document.getElementById('beamWidth').value);
+                const minC = parseInt(document.getElementById('minContent').value);
+                const minWordLen = parseInt(document.getElementById('minWordLen').value);
                 const respectCase = document.getElementById('respectCase').checked;
 
                 resultsDiv.innerHTML = '<em>Recherche en cours...</em>';
                 setTimeout(() => {
                     try {
-                        const anagrams = generateAnagrams(phrase, alpha, beta, stopPen, beamW, minC, respectCase);
+                        const anagrams = generateAnagrams(phrase, alpha, beta, stopPen, beamW, minC, minWordLen, respectCase);
                         if (anagrams.length === 0) {
-                            resultsDiv.innerHTML = '<p>Aucune anagramme trouvée. Essayez un corpus plus riche ou relâchez les contraintes.</p>';
+                            resultsDiv.innerHTML = '<p>Aucune anagramme trouvée. Essayez de réduire la longueur minimale des mots ou d\'ajouter du texte.</p>';
                         } else {
                             resultsDiv.innerHTML = anagrams.slice(0, 30).map(a => `<div class="phrase">${a}</div>`).join('');
                         }
