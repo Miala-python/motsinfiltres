@@ -387,5 +387,27 @@
             };
         });
     </script>
+<script>
+    // Tentative de chargement automatique de ./lexb.csv au démarrage
+    (async function autoLoadCorpus() {
+        try {
+            const response = await fetch('./lexb.csv');
+            if (response.ok) {
+                const text = await response.text();
+                if (text.trim().length > 0) {
+                    const stats = trainModel(text);
+                    document.getElementById('trainStatus').textContent = 
+                        `Modèle chargé automatiquement : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
+                    document.getElementById('generateBtn').disabled = false;
+                    // Marquer le champ file comme ayant déjà un corpus
+                    document.getElementById('corpusFile').dataset.autoloaded = 'true';
+                }
+            }
+        } catch (e) {
+            // Fichier non disponible, ce n'est pas grave
+            console.log('Pas de fichier lexb.csv trouvé localement. Chargement manuel requis.');
+        }
+    })();
+</script>
 </body>
 </html>
