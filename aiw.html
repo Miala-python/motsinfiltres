@@ -3,47 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anagrammes de phrases - IA locale enrichissable</title>
+    <title>Anagrammes de phrases - IA locale</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; }
-        .section { margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
-        label { display: block; margin-top: 10px; }
-        input[type="text"], textarea { width: 100%; padding: 8px; box-sizing: border-box; }
-        textarea { height: 120px; }
-        button { padding: 8px 16px; margin: 5px 5px 5px 0; cursor: pointer; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 960px; margin: 20px auto; padding: 20px; background: #fafafa; }
+        .section { margin-bottom: 25px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        h2 { margin-top: 0; }
+        label { display: block; margin: 12px 0 5px; font-weight: 500; }
+        input[type="text"], textarea { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        textarea { height: 120px; resize: vertical; }
+        button { padding: 10px 18px; margin: 8px 5px 0 0; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 14px; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #aaa; cursor: not-allowed; }
         .results { margin-top: 20px; }
-        .phrase { background: #f0f0f0; padding: 8px; margin: 5px 0; border-radius: 5px; }
+        .phrase { background: #e9f0f5; padding: 10px; margin: 6px 0; border-radius: 5px; font-family: 'Courier New', monospace; }
         .progress { color: #555; font-style: italic; }
-        .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; }
-        .inline { display: inline-block; width: auto; margin-right: 10px; }
+        .checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+        .checkbox-group label { margin: 0; }
+        .help-icon {
+            display: inline-block;
+            width: 18px; height: 18px;
+            background: #ddd; color: #333;
+            text-align: center; line-height: 18px;
+            border-radius: 50%; font-size: 12px; font-weight: bold;
+            cursor: help; margin-left: 6px;
+        }
+        .help-icon:hover { background: #bbb; }
+        /* Popup */
+        .popup-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .popup-content {
+            background: white; padding: 30px; border-radius: 8px; max-width: 500px; text-align: left;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative;
+        }
+        .popup-close { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h1>Générateur d'anagrammes de phrases (IA locale)</h1>
+    <h1>🧠 Anagrammes de phrases (IA locale)</h1>
 
-    <!-- Corpus automatique -->
+    <!-- Chargement du corpus -->
     <div class="section">
-        <h2>Corpus (./lexb.csv)</h2>
-        <p id="corpusStatus" class="progress">Chargement...</p>
+        <h2>📥 Corpus <code>lexb.csv</code></h2>
+        <p id="corpusStatus" class="progress">Chargement automatique...</p>
     </div>
 
     <!-- Apprentissage additionnel -->
     <div class="section">
-        <h2>Texte d'apprentissage supplémentaire</h2>
-        <textarea id="additionalText" placeholder="Collez ici des phrases ou des mots (séparés par . , ; ou retour à la ligne) pour enrichir le modèle..."></textarea>
+        <h2>✏️ Texte d'apprentissage supplémentaire</h2>
+        <textarea id="additionalText" placeholder="Collez ici des phrases ou mots (séparés par . , ; ou retour à la ligne) pour enrichir le modèle..."></textarea>
         <button id="addTextBtn">Ajouter au modèle</button>
-        <button id="resetModelBtn">Réinitialiser le modèle (garder lexb.csv)</button>
+        <button id="resetModelBtn">🔄 Réinitialiser (garder lexb.csv)</button>
     </div>
 
-    <!-- Paramètres -->
+    <!-- Paramètres avec aides -->
     <div class="section">
-        <h2>Paramètres de génération</h2>
-        <label>Poids fluidité (α) : <input type="range" id="alpha" min="0" max="2" step="0.1" value="1.0"> <span id="alphaVal">1.0</span></label>
-        <label>Poids sémantique (β) : <input type="range" id="beta" min="0" max="2" step="0.1" value="0.8"> <span id="betaVal">0.8</span></label>
-        <label>Pénalité mot-outil : <input type="range" id="stopPenalty" min="0" max="10" step="0.5" value="3.0"> <span id="stopPenaltyVal">3.0</span></label>
-        <label>Largeur du faisceau : <input type="number" id="beamWidth" value="150" min="10" max="500"></label>
-        <label>Nombre min. de mots pleins : <input type="number" id="minContent" value="1" min="1" max="5"></label>
-        <label>Longueur minimale des mots : <input type="range" id="minWordLen" min="1" max="4" value="2"> <span id="minWordLenVal">2</span></label>
+        <h2>⚙️ Paramètres de génération</h2>
+        <label>Poids fluidité (α) <span class="help-icon" data-help="Fluidité : favorise les enchaînements de mots probables dans le corpus (modèle bigramme). Plus α est élevé, plus la phrase ressemblera à une phrase naturelle du corpus, quitte à utiliser des mots fréquents.">?</span>
+            <input type="range" id="alpha" min="0" max="2" step="0.1" value="1.2"> <span id="alphaVal">1.2</span></label>
+        <label>Poids sémantique (β) <span class="help-icon" data-help="Sémantique : récompense les mots riches de sens (rares, spécifiques) mesurés par leur IDF. Plus β est grand, plus le générateur évite les mots vides (le, de, un...) et cherche des termes significatifs.">?</span>
+            <input type="range" id="beta" min="0" max="2" step="0.1" value="0.8"> <span id="betaVal">0.8</span></label>
+        <label>Pénalité mot-outil <span class="help-icon" data-help="Pénalité appliquée à chaque mot grammatical (stop word) utilisé. Augmentez-la pour décourager les 'le', 'de', 'et' sauf s'ils sont indispensables à la continuité.">?</span>
+            <input type="range" id="stopPenalty" min="0" max="10" step="0.5" value="4.0"> <span id="stopPenaltyVal">4.0</span></label>
+        <label>Largeur du faisceau <span class="help-icon" data-help="Nombre maximum de pistes explorées en parallèle. Plus la valeur est élevée, plus la recherche est exhaustive (mais plus lente). 100-200 donne un bon équilibre.">?</span>
+            <input type="number" id="beamWidth" value="150" min="10" max="500"></label>
+        <label>Nb min. de mots pleins <span class="help-icon" data-help="Exige que la phrase finale contienne au moins ce nombre de mots porteurs de sens (noms, verbes, adjectifs, adverbes). Utile pour éviter les phrases uniquement fonctionnelles.">?</span>
+            <input type="number" id="minContent" value="1" min="1" max="5"></label>
+        <label>Longueur minimale des mots <span class="help-icon" data-help="Ignore les mots plus courts que cette taille. Mettez 2 pour exclure les lettres isolées, 3 pour n'avoir que des mots d'au moins 3 lettres.">?</span>
+            <input type="range" id="minWordLen" min="1" max="4" value="2"> <span id="minWordLenVal">2</span></label>
+        <label>Bonus longueur de mot <span class="help-icon" data-help="Ajoute un bonus proportionnel à la longueur du mot pour favoriser les mots longs et décourager les petits fragments. Une valeur de 0.3 à 0.7 améliore la continuité.">?</span>
+            <input type="range" id="lenBonus" min="0" max="1" step="0.1" value="0.5"> <span id="lenBonusVal">0.5</span></label>
         <div class="checkbox-group">
             <label><input type="checkbox" id="respectCase"> Respecter la casse</label>
             <label><input type="checkbox" id="respectAccents" checked> Respecter les accents</label>
@@ -52,28 +82,36 @@
 
     <!-- Génération -->
     <div class="section">
-        <h2>Phrase source</h2>
+        <h2>📝 Phrase source</h2>
         <input type="text" id="sourcePhrase" placeholder="Ex: Le chat dort" />
         <button id="generateBtn" disabled>Générer des anagrammes</button>
     </div>
 
     <!-- Résultats -->
     <div class="section results">
-        <h2>Anagrammes proposées :</h2>
+        <h2>✨ Anagrammes proposées</h2>
         <div id="resultsList">-</div>
     </div>
 
+    <!-- Popup d'aide -->
+    <div id="helpPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="popup-close" id="popupClose">&times;</span>
+            <h3>Aide</h3>
+            <p id="popupText"></p>
+        </div>
+    </div>
+
     <script>
-        // ==== Configuration des lettres ====
+        // ==================== CONFIGURATION DES LETTRES ====================
         const LETTERS_BASE = 'abcdefghijklmnopqrstuvwxyz';
         const LETTERS_ACCENTS = 'àâçéèêëîïôûùüÿñæœ';
         const ALL_LETTERS = LETTERS_BASE + LETTERS_ACCENTS;
-
         let LETTERS = ALL_LETTERS;
         let LETTER_REGEX = new RegExp(`[${LETTERS}]+`, 'g');
 
-        // ==== Variables du modèle ====
-        let vocabulary = new Set();                // mots normalisés
+        // ==================== MODÈLE ====================
+        let vocabulary = new Set();
         let unigramCount = {};
         let bigramCount = {};
         let totalSentences = 0;
@@ -82,18 +120,13 @@
         let trieRoot = null;
         let stopWords = new Set();
         let modelReady = false;
-
         const START = '<s>';
         const END = '</s>';
-
-        // Pour la restauration de la casse
-        window._normalizedVocab = new Map();   // norm -> Set(originaux)
+        window._normalizedVocab = new Map();
         window._originalVocabSet = new Set();
-
-        // Texte de base (lexb.csv) gardé en mémoire
         let baseCorpusText = '';
 
-        // ==== Stop words (liste enrichie) ====
+        // ==================== STOP WORDS (élargie, lettres isolées) ====================
         function initStopWords() {
             const stops = [
                 'le','la','les','un','une','des','de','du','à','au','aux','ce','cet','cette','ces',
@@ -108,13 +141,13 @@
                 'arriver','connaître','devenir','partir','sortir','comprendre','porter','ne','n','pas','plus',
                 'très','tout','tous','toute','toutes','autre','même','quel','quelle','quels','quelles','cela',
                 'ça','celui','celle','ceux','celles','est','sont','ont','avait','avais',
-                // lettres isolées
-                'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'
+                // Lettres seules et petits fragments parasites
+                ...'abcdefghijklmnopqrstuvwxyz'.split('')
             ];
             stopWords = new Set(stops);
         }
 
-        // ==== Normalisation ====
+        // ==================== NORMALISATION ====================
         function updateLetterSet() {
             const keepAccents = document.getElementById('respectAccents').checked;
             LETTERS = keepAccents ? ALL_LETTERS : LETTERS_BASE;
@@ -142,10 +175,9 @@
             return str;
         }
 
-        // ==== Entraînement ====
+        // ==================== ENTRAÎNEMENT ====================
         function trainModel(text, append = false) {
             if (!append) {
-                // Réinitialisation complète
                 vocabulary.clear();
                 unigramCount = {};
                 bigramCount = {};
@@ -157,10 +189,8 @@
                 totalSentences = 0;
             }
 
-            // Découpage en phrases / mots
             let sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
             if (sentences.length === 0) {
-                // Tenter les virgules, points-virgules
                 const alt = text.replace(/[,;|\n\r]+/g, '.').replace(/\s+/g, ' ');
                 sentences = alt.split('.').filter(s => s.trim().length > 0);
             }
@@ -175,10 +205,8 @@
                 if (!words || words.length === 0) continue;
                 newSentences++;
 
-                // Mots originaux
                 words.forEach(w => originalVocabSet.add(w));
-                // Normalisés (base, minuscules, avec/sans accents selon réglage actuel)
-                const normWords = words.map(w => normalizeWord(w, false)); // force minuscule pour le modèle
+                const normWords = words.map(w => normalizeWord(w, false));
                 const extended = [START, ...normWords, END];
 
                 for (let i = 0; i < extended.length - 1; i++) {
@@ -195,7 +223,6 @@
                     vocabulary.add(w);
                 });
 
-                // Associer chaque original à sa version normalisée
                 for (const orig of words) {
                     const norm = normalizeWord(orig, false);
                     if (!normalizedVocab.has(norm)) normalizedVocab.set(norm, new Set());
@@ -204,13 +231,10 @@
             }
 
             totalSentences += newSentences;
-
-            // IDF
             for (const w of Object.keys(docFreq)) {
                 idf[w] = Math.log(totalSentences / docFreq[w]);
             }
 
-            // Reconstruire le trie (les signatures sont basées sur les mots normalisés)
             trieRoot = new TrieNode();
             for (const word of vocabulary) {
                 const sig = word.split('').sort().join('');
@@ -221,18 +245,13 @@
             return { vocabSize: vocabulary.size, sentences: totalSentences };
         }
 
-        // ==== Trie ====
+        // ==================== TRIE ====================
         class TrieNode {
-            constructor() {
-                this.children = new Map();
-                this.words = [];
-            }
+            constructor() { this.children = new Map(); this.words = []; }
             insert(signature, word) {
                 let node = this;
                 for (const ch of signature) {
-                    if (!node.children.has(ch)) {
-                        node.children.set(ch, new TrieNode());
-                    }
+                    if (!node.children.has(ch)) node.children.set(ch, new TrieNode());
                     node = node.children.get(ch);
                 }
                 node.words.push(word);
@@ -240,11 +259,8 @@
         }
 
         function findWordsFromTrie(node, remaining, results, minLen) {
-            // On ignore les mots trop courts
             if (node.words.length > 0) {
-                for (const w of node.words) {
-                    if (w.length >= minLen) results.push(w);
-                }
+                for (const w of node.words) { if (w.length >= minLen) results.push(w); }
             }
             for (const [ch, child] of node.children) {
                 const idx = LETTERS.indexOf(ch);
@@ -260,10 +276,10 @@
             const results = [];
             const remCopy = [...remainingCounts];
             findWordsFromTrie(trieRoot, remCopy, results, minWordLen);
-            return Array.from(new Set(results)); // dédoublonnage
+            return Array.from(new Set(results));
         }
 
-        // ==== Modèle de langue ====
+        // ==================== MODÈLE DE LANGUE ====================
         function getBigramLogProb(w1, w2) {
             if (!vocabulary.size) return -Infinity;
             const countBigram = bigramCount[`${w1}|${w2}`] || 0;
@@ -272,7 +288,7 @@
             return Math.log(prob);
         }
 
-        // ==== Compteurs ====
+        // ==================== COMPTEURS ====================
         function subtractLetters(counts, word) {
             const newCounts = [...counts];
             for (const ch of word) {
@@ -282,9 +298,7 @@
             return newCounts;
         }
 
-        function allLettersUsed(counts) {
-            return counts.every(c => c === 0);
-        }
+        function allLettersUsed(counts) { return counts.every(c => c === 0); }
 
         function restoreCase(normalizedWord, respectCase) {
             if (!respectCase) return normalizedWord;
@@ -293,12 +307,13 @@
             return Array.from(variants)[0];
         }
 
-        // ==== Génération ====
-        function generateAnagrams(sourcePhrase, alpha, beta, stopPenalty, beamWidth, minContentWords, minWordLen, respectCase) {
+        // ==================== GÉNÉRATION ====================
+        function generateAnagrams(sourcePhrase, alpha, beta, stopPenalty, beamWidth,
+                                  minContentWords, minWordLen, lenBonus, respectCase) {
             if (!modelReady) throw new Error('Modèle non entraîné.');
 
             const normSource = normalizeSource(sourcePhrase, respectCase);
-            if (normSource.length === 0) throw new Error('Phrase source vide.');
+            if (!normSource.length) throw new Error('Phrase source vide.');
 
             const initialCounts = new Array(LETTERS.length).fill(0);
             for (const ch of normSource) {
@@ -327,21 +342,22 @@
                     }
 
                     let possibleWords = getPossibleWords(state.remaining, minWordLen);
-                    // Limiter le nombre de candidats pour les performances
-                    if (possibleWords.length > 300) {
-                        possibleWords = possibleWords.sort((a, b) => b.length - a.length).slice(0, 300);
+                    // Limiter le nombre de candidats (priorité aux plus longs)
+                    if (possibleWords.length > 200) {
+                        possibleWords = possibleWords.sort((a,b) => b.length - a.length).slice(0, 200);
                     }
 
                     for (const word of possibleWords) {
                         const newRemaining = subtractLetters(state.remaining, word);
                         const transLogProb = getBigramLogProb(state.prevWord, word);
-                        const isStop = stopWords.has(word.toLowerCase ? word.toLowerCase() : word);
+                        const isStop = stopWords.has(word.toLowerCase());
                         const semWeight = isStop ? 0 : (idf[word] || 0.1);
                         const penalty = isStop ? -stopPenalty : 0;
+                        const lengthBonus = lenBonus * word.length;  // ← Favorise les mots longs
 
                         const newLogProb = state.logProb + transLogProb;
                         const newSemanticSum = state.semanticSum + semWeight;
-                        const score = alpha * newLogProb + beta * newSemanticSum + penalty;
+                        const score = alpha * newLogProb + beta * newSemanticSum + penalty + lengthBonus;
 
                         newStates.push({
                             remaining: newRemaining,
@@ -354,11 +370,10 @@
                     }
                 }
 
-                newStates.sort((a, b) => b.score - a.score);
+                newStates.sort((a,b) => b.score - a.score);
                 states = newStates.slice(0, beamWidth);
             }
 
-            // Derniers complets
             for (const state of states) {
                 if (allLettersUsed(state.remaining)) complete.push(state);
             }
@@ -368,27 +383,23 @@
                 const finalLogProb = state.logProb + endLogProb;
                 const finalScore = alpha * finalLogProb + beta * state.semanticSum;
                 const contentWordsCount = state.seq.filter(w => !stopWords.has(w)).length;
-                return {
-                    seq: state.seq,
-                    score: finalScore,
-                    contentWords: contentWordsCount
-                };
+                return { seq: state.seq, score: finalScore, contentWords: contentWordsCount };
             });
 
             const filtered = finalCandidates.filter(c => c.contentWords >= minContentWords);
-            filtered.sort((a, b) => b.score - a.score);
+            filtered.sort((a,b) => b.score - a.score);
 
             return filtered.map(c => c.seq.map(w => restoreCase(w, respectCase)).join(' '));
         }
 
-        // ==== UI ====
+        // ==================== INTERFACE ====================
         document.addEventListener('DOMContentLoaded', async () => {
             initStopWords();
             updateLetterSet();
 
+            // Éléments du DOM
             const corpusStatus = document.getElementById('corpusStatus');
             const generateBtn = document.getElementById('generateBtn');
-            const sourceInput = document.getElementById('sourcePhrase');
             const resultsDiv = document.getElementById('resultsList');
             const additionalText = document.getElementById('additionalText');
             const addTextBtn = document.getElementById('addTextBtn');
@@ -399,53 +410,59 @@
             document.getElementById('beta').oninput = function() { document.getElementById('betaVal').textContent = this.value; };
             document.getElementById('stopPenalty').oninput = function() { document.getElementById('stopPenaltyVal').textContent = this.value; };
             document.getElementById('minWordLen').oninput = function() { document.getElementById('minWordLenVal').textContent = this.value; };
+            document.getElementById('lenBonus').oninput = function() { document.getElementById('lenBonusVal').textContent = this.value; };
             document.getElementById('respectAccents').onchange = updateLetterSet;
 
-            // Chargement auto de lexb.csv
+            // Popup d'aide
+            const helpIcons = document.querySelectorAll('.help-icon');
+            const popupOverlay = document.getElementById('helpPopup');
+            const popupText = document.getElementById('popupText');
+            const popupClose = document.getElementById('popupClose');
+            helpIcons.forEach(icon => {
+                icon.addEventListener('click', () => {
+                    popupText.textContent = icon.getAttribute('data-help');
+                    popupOverlay.style.display = 'flex';
+                });
+            });
+            popupClose.onclick = () => popupOverlay.style.display = 'none';
+            popupOverlay.onclick = (e) => { if (e.target === popupOverlay) popupOverlay.style.display = 'none'; };
+
+            // Chargement automatique de lexb.csv
             corpusStatus.textContent = 'Chargement de ./lexb.csv...';
             try {
                 const response = await fetch('./lexb.csv');
-                if (!response.ok) throw new Error(`Fichier introuvable (${response.status})`);
+                if (!response.ok) throw new Error(`Statut ${response.status}`);
                 baseCorpusText = await response.text();
                 const stats = trainModel(baseCorpusText, false);
-                corpusStatus.textContent = `Modèle prêt : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
+                corpusStatus.textContent = `✅ Modèle prêt : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
                 generateBtn.disabled = false;
             } catch (e) {
-                corpusStatus.textContent = 'Erreur : ' + e.message + ' (vous pouvez coller du texte manuellement)';
+                corpusStatus.textContent = '⚠️ ' + e.message + ' (vous pouvez ajouter du texte manuellement)';
             }
 
-            // Ajouter du texte additionnel
+            // Ajout de texte supplémentaire
             addTextBtn.onclick = () => {
                 const newText = additionalText.value.trim();
                 if (!newText) return;
                 try {
-                    const stats = trainModel(newText, true); // append
-                    corpusStatus.textContent = `Modèle mis à jour : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
-                    additionalText.value = ''; // vider
+                    const stats = trainModel(newText, true);
+                    corpusStatus.textContent = `✅ Modèle enrichi : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
+                    additionalText.value = '';
                     generateBtn.disabled = false;
-                } catch (e) {
-                    alert('Erreur lors de l\'ajout : ' + e.message);
-                }
+                } catch (e) { alert('Erreur : ' + e.message); }
             };
 
-            // Réinitialiser
+            // Réinitialisation
             resetModelBtn.onclick = () => {
-                if (!baseCorpusText) {
-                    alert('Aucun corpus de base chargé.');
-                    return;
-                }
-                try {
-                    const stats = trainModel(baseCorpusText, false);
-                    corpusStatus.textContent = `Modèle réinitialisé : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
-                    generateBtn.disabled = false;
-                } catch (e) {
-                    corpusStatus.textContent = 'Erreur de réinitialisation.';
-                }
+                if (!baseCorpusText) { alert('Aucun corpus de base.'); return; }
+                const stats = trainModel(baseCorpusText, false);
+                corpusStatus.textContent = `✅ Modèle réinitialisé : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
+                generateBtn.disabled = false;
             };
 
             // Génération
             generateBtn.onclick = () => {
-                const phrase = sourceInput.value.trim();
+                const phrase = document.getElementById('sourcePhrase').value.trim();
                 if (!phrase) return;
                 const alpha = parseFloat(document.getElementById('alpha').value);
                 const beta = parseFloat(document.getElementById('beta').value);
@@ -453,14 +470,15 @@
                 const beamW = parseInt(document.getElementById('beamWidth').value);
                 const minC = parseInt(document.getElementById('minContent').value);
                 const minWordLen = parseInt(document.getElementById('minWordLen').value);
+                const lenBonus = parseFloat(document.getElementById('lenBonus').value);
                 const respectCase = document.getElementById('respectCase').checked;
 
                 resultsDiv.innerHTML = '<em>Recherche en cours...</em>';
                 setTimeout(() => {
                     try {
-                        const anagrams = generateAnagrams(phrase, alpha, beta, stopPen, beamW, minC, minWordLen, respectCase);
+                        const anagrams = generateAnagrams(phrase, alpha, beta, stopPen, beamW, minC, minWordLen, lenBonus, respectCase);
                         if (anagrams.length === 0) {
-                            resultsDiv.innerHTML = '<p>Aucune anagramme trouvée. Essayez de réduire la longueur minimale des mots ou d\'ajouter du texte.</p>';
+                            resultsDiv.innerHTML = '<p>❌ Aucune anagramme trouvée. Réduisez la longueur minimale des mots ou ajoutez du texte au corpus.</p>';
                         } else {
                             resultsDiv.innerHTML = anagrams.slice(0, 30).map(a => `<div class="phrase">${a}</div>`).join('');
                         }
