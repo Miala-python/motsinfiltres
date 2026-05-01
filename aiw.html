@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anagrammes de phrases avec IA locale</title>
+    <title>Générateur d'anagrammes de phrases - IA locale</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; }
         .section { margin-bottom: 30px; }
         label { display: block; margin-top: 10px; }
-        input[type=text] { width: 100%; padding: 8px; }
+        input[type="text"] { width: 100%; padding: 8px; }
         textarea { width: 100%; height: 150px; }
         button { padding: 10px 20px; margin: 5px; }
         .results { margin-top: 20px; }
@@ -20,7 +20,7 @@
     <h1>Générateur d'anagrammes de phrases (IA locale)</h1>
 
     <div class="section">
-        <h2>1. Charger le corpus d'entraînement (lexb.csv)</h2>
+        <h2>1. Charger le corpus (lexb.csv)</h2>
         <input type="file" id="corpusFile" accept=".csv,.txt">
         <button id="trainBtn" disabled>Entraîner le modèle</button>
         <span id="trainStatus" class="progress"></span>
@@ -32,7 +32,7 @@
         <label>Poids sémantique (β) : <input type="range" id="beta" min="0" max="2" step="0.1" value="0.8"> <span id="betaVal">0.8</span></label>
         <label>Pénalité mot-outil : <input type="range" id="stopPenalty" min="0" max="10" step="0.5" value="3.0"> <span id="stopPenaltyVal">3.0</span></label>
         <label>Largeur du faisceau : <input type="number" id="beamWidth" value="150" min="10" max="500"></label>
-        <label>Nombre minimum de mots pleins requis : <input type="number" id="minContent" value="1" min="1" max="5"></label>
+        <label>Nombre min. de mots pleins : <input type="number" id="minContent" value="1" min="1" max="5"></label>
     </div>
 
     <div class="section">
@@ -47,10 +47,14 @@
     </div>
 
     <script>
-        // Variables globales pour le modèle
+        // lettres autorisées dans les mots (y compris accents français)
+        const LETTERS = 'abcdefghijklmnopqrstuvwxyzàâçéèêëîïôûùüÿñæœ';
+        const LETTER_REGEX = new RegExp(`[${LETTERS}]+`, 'gi'); // + pour capturer des mots entiers
+
+        // Variables du modèle
         let vocabulary = new Set();
         let unigramCount = {};
-        let bigramCount = {}; // clé "prev|word"
+        let bigramCount = {};
         let totalSentences = 0;
         let docFreq = {};
         let idf = {};
@@ -58,13 +62,10 @@
         let stopWords = new Set();
         let modelReady = false;
 
-        // Constantes
         const START = '<s>';
         const END = '</s>';
-        const LETTERS = 'abcdefghijklmnopqrstuvwxyzàâçéèêëîïôûùüÿñæœ';
-        const LETTER_REGEX = new RegExp(`[${LETTERS}]`, 'gi');
 
-        // --- Initialisation des stop words français ---
+        // --- Stop words français (liste indicative) ---
         function initStopWords() {
             const stops = [
                 'le','la','les','un','une','des','de','du','à','au','aux','ce','cet','cette','ces',
@@ -78,19 +79,31 @@
                 'répondre','servir','sembler','laisser','rester','penser','entendre','regarder','appeler',
                 'arriver','connaître','devenir','partir','sortir','comprendre','porter','ne','n','pas','plus',
                 'très','tout','tous','toute','toutes','autre','même','quel','quelle','quels','quelles','cela',
-                'ça','celui','celle','ceux','celles','dont','où','est','son','sont','ont','avait','avais'
+                'ça','celui','celle','ceux','celles','est','sont','ont','avait','avais'
             ];
             stopWords = new Set(stops);
         }
 
-        // --- Traitement du corpus ---
-        function tokenizeSentence(sentence) {
+        // --- Découpage en phrases ou en mots ---
+        function tokenizeText(text) {
+            // Divise le texte en phrases en utilisant . ! ? comme séparateurs
+            let sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
+            // Si très peu de phrases, considérer que le fichier est une liste de mots (virgules, points-virgules, retours à la ligne)
+            if (sentences.length < 2) {
+                // Remplacer les séparateurs par des points pour unifier
+                text = text.replace(/[,;|\n\r]+/g, '.').replace(/\s+/g, ' ');
+                sentences = text.split('.').map(s => s.trim()).filter(s => s.length > 0);
+            }
+            return sentences;
+        }
+
+        function extractWords(sentence) {
             const words = sentence.match(LETTER_REGEX);
             return words ? words.map(w => w.toLowerCase()) : [];
         }
 
+        // --- Entraînement ---
         function trainModel(text) {
-            // Réinitialisation
             vocabulary.clear();
             unigramCount = {};
             bigramCount = {};
@@ -98,43 +111,40 @@
             idf = {};
             trieRoot = new TrieNode();
 
-            // Découpage en phrases (ponctuations ., !, ?)
-            const sentences = text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
+            const sentences = tokenizeText(text);
             totalSentences = sentences.length;
             if (totalSentences === 0) throw new Error('Aucune phrase trouvée.');
 
-            // Première passe : collecte des mots, unigrammes, bigrammes, fréquences documentaires
             for (const sentence of sentences) {
-                const tokens = tokenizeSentence(sentence);
-                if (tokens.length === 0) continue;
+                const words = extractWords(sentence);
+                if (words.length === 0) continue;
 
-                // Unigrammes et bigrammes avec balises
-                const extended = [START, ...tokens, END];
+                // Balises de début/fin
+                const extended = [START, ...words, END];
                 for (let i = 0; i < extended.length - 1; i++) {
                     const w1 = extended[i];
                     const w2 = extended[i+1];
                     unigramCount[w1] = (unigramCount[w1] || 0) + 1;
                     unigramCount[w2] = (unigramCount[w2] || 0) + 1;
-                    const bigramKey = `${w1}|${w2}`;
-                    bigramCount[bigramKey] = (bigramCount[bigramKey] || 0) + 1;
+                    bigramCount[`${w1}|${w2}`] = (bigramCount[`${w1}|${w2}`] || 0) + 1;
                 }
 
-                // Fréquence documentaire (par phrase unique)
-                const uniqueWords = new Set(tokens);
+                // Fréquence documentaire (phrases)
+                const uniqueWords = new Set(words);
                 for (const w of uniqueWords) {
                     docFreq[w] = (docFreq[w] || 0) + 1;
                 }
 
                 // Vocabulaire
-                tokens.forEach(w => vocabulary.add(w));
+                words.forEach(w => vocabulary.add(w));
             }
 
-            // Calcul des IDF
+            // Calcul IDF
             for (const w of Object.keys(docFreq)) {
                 idf[w] = Math.log(totalSentences / docFreq[w]);
             }
 
-            // Construction du trie des signatures
+            // Trie des signatures
             for (const word of vocabulary) {
                 const sig = word.split('').sort().join('');
                 trieRoot.insert(sig, word);
@@ -144,13 +154,12 @@
             return { vocabSize: vocabulary.size, sentences: totalSentences };
         }
 
-        // --- Trie pour les signatures ---
+        // --- Trie pour signatures de lettres triées ---
         class TrieNode {
             constructor() {
-                this.children = new Map();
-                this.words = []; // mots correspondant à cette signature (fin de chemin)
+                this.children = new Map(); // lettre -> TrieNode
+                this.words = []; // mots correspondant au chemin complet
             }
-
             insert(signature, word) {
                 let node = this;
                 for (const ch of signature) {
@@ -163,17 +172,16 @@
             }
         }
 
-        // Énumère tous les mots réalisables à partir d'un compteur de lettres restantes
-        function findWordsFromTrie(node, remaining, prefix, results) {
+        // Énumérer tous les mots possibles à partir des lettres restantes
+        function findWordsFromTrie(node, remaining, results) {
             if (node.words.length > 0) {
                 results.push(...node.words);
             }
-            // Explorer les enfants uniquement si la lettre est disponible
             for (const [ch, child] of node.children) {
                 const idx = LETTERS.indexOf(ch);
                 if (idx !== -1 && remaining[idx] > 0) {
                     remaining[idx]--;
-                    findWordsFromTrie(child, remaining, prefix + ch, results);
+                    findWordsFromTrie(child, remaining, results);
                     remaining[idx]++;
                 }
             }
@@ -181,23 +189,22 @@
 
         function getPossibleWords(remainingCounts) {
             const results = [];
-            const remCopy = [...remainingCounts]; // copie pour ne pas modifier l'original
-            findWordsFromTrie(trieRoot, remCopy, '', results);
-            // Supprimer les doublons possibles (même mot via plusieurs signatures ? Non, pas possible)
-            return results;
+            const remCopy = [...remainingCounts];
+            findWordsFromTrie(trieRoot, remCopy, results);
+            // On retire les doublons éventuels (un mot peut apparaître via plusieurs chemins si doublons dans le vocabulaire)
+            return Array.from(new Set(results));
         }
 
-        // --- Modèle de langue lissé ---
+        // --- Modèle de langue bigramme lissé ---
         function getBigramLogProb(w1, w2) {
             const vocabSize = vocabulary.size;
             const countBigram = bigramCount[`${w1}|${w2}`] || 0;
             const countUnigram = unigramCount[w1] || 0;
-            // Lissage de Laplace
             const prob = (countBigram + 1) / (countUnigram + vocabSize);
             return Math.log(prob);
         }
 
-        // --- Soustraire les lettres d'un mot du compteur restant ---
+        // --- Gestion des compteurs de lettres ---
         function subtractLetters(counts, word) {
             const newCounts = [...counts];
             for (const ch of word) {
@@ -207,7 +214,6 @@
             return newCounts;
         }
 
-        // --- Vérification si toutes les lettres sont consommées ---
         function allLettersUsed(counts) {
             return counts.every(c => c === 0);
         }
@@ -216,16 +222,16 @@
         function generateAnagrams(sourcePhrase, alpha, beta, stopPenalty, beamWidth, minContentWords) {
             if (!modelReady) throw new Error('Modèle non entraîné.');
 
-            // Extraction des lettres de la phrase source
+            // Lettres de la source
             const clean = sourcePhrase.toLowerCase().match(LETTER_REGEX);
             if (!clean || clean.length === 0) throw new Error('Aucune lettre dans la phrase source.');
+            const allLetters = clean.join('');
             const initialCounts = new Array(LETTERS.length).fill(0);
-            for (const ch of clean.join('')) {
+            for (const ch of allLetters) {
                 const idx = LETTERS.indexOf(ch);
                 if (idx !== -1) initialCounts[idx]++;
             }
 
-            // État initial
             const initialState = {
                 remaining: initialCounts,
                 prevWord: START,
@@ -235,8 +241,6 @@
             };
             let states = [initialState];
             const complete = [];
-
-            // Limitation du nombre d'itérations (longueur max d'une phrase)
             const maxWords = 30;
 
             for (let step = 0; step < maxWords && states.length > 0; step++) {
@@ -248,14 +252,12 @@
                         continue;
                     }
 
-                    // Lister les mots candidats
                     const possibleWords = getPossibleWords(state.remaining);
-
-                    // Pour éviter explosion, on limite le nombre de candidats évalués (les plus longs d'abord)
+                    // Limiter le nombre de candidats pour les performances
                     let candidates = possibleWords;
-                    if (possibleWords.length > 200) {
-                        // On prend les 200 mots les plus longs (heuristique pour épuiser les lettres)
-                        candidates = possibleWords.sort((a,b) => b.length - a.length).slice(0, 200);
+                    if (candidates.length > 300) {
+                        // Trier par longueur décroissante pour consommer les lettres plus vite
+                        candidates = candidates.sort((a, b) => b.length - a.length).slice(0, 300);
                     }
 
                     for (const word of candidates) {
@@ -280,43 +282,35 @@
                     }
                 }
 
-                // Trier par score décroissant et conserver le faisceau
+                // Élagage
                 newStates.sort((a, b) => b.score - a.score);
                 states = newStates.slice(0, beamWidth);
             }
 
-            // Ajouter les états finaux restés dans le faisceau
+            // Derniers états complets
             for (const state of states) {
                 if (allLettersUsed(state.remaining)) {
                     complete.push(state);
                 }
             }
 
-            // Finalisation des candidats complets
+            // Finalisation
             const finalCandidates = complete.map(state => {
                 const endLogProb = getBigramLogProb(state.prevWord, END);
                 const finalLogProb = state.logProb + endLogProb;
                 const finalScore = alpha * finalLogProb + beta * state.semanticSum;
-
-                // Nombre de mots pleins (non stop)
                 const contentWordsCount = state.seq.filter(w => !stopWords.has(w)).length;
-
                 return {
                     seq: state.seq,
                     score: finalScore,
-                    logProb: finalLogProb,
-                    semanticSum: state.semanticSum,
                     contentWords: contentWordsCount
                 };
             });
 
-            // Filtrer : au moins minContentWords mots pleins
+            // Filtrer par nombre de mots pleins
             const filtered = finalCandidates.filter(c => c.contentWords >= minContentWords);
-
-            // Trier par score décroissant
             filtered.sort((a, b) => b.score - a.score);
 
-            // Retourner les phrases
             return filtered.map(c => c.seq.join(' '));
         }
 
@@ -372,11 +366,11 @@
                 const minC = parseInt(minContentInput.value);
 
                 resultsDiv.innerHTML = '<em>Recherche en cours...</em>';
-                setTimeout(() => { // pour ne pas bloquer l'UI
+                setTimeout(() => {
                     try {
                         const anagrams = generateAnagrams(phrase, alpha, beta, stopPen, beamW, minC);
                         if (anagrams.length === 0) {
-                            resultsDiv.innerHTML = '<p>Aucune anagramme trouvée avec ces paramètres.</p>';
+                            resultsDiv.innerHTML = '<p>Aucune anagramme trouvée avec ces paramètres. Essayez un corpus plus riche.</p>';
                         } else {
                             resultsDiv.innerHTML = anagrams.slice(0, 30).map(a => `<div class="phrase">${a}</div>`).join('');
                         }
@@ -387,27 +381,5 @@
             };
         });
     </script>
-<script>
-    // Tentative de chargement automatique de ./lexb.csv au démarrage
-    (async function autoLoadCorpus() {
-        try {
-            const response = await fetch('./lexb.csv');
-            if (response.ok) {
-                const text = await response.text();
-                if (text.trim().length > 0) {
-                    const stats = trainModel(text);
-                    document.getElementById('trainStatus').textContent = 
-                        `Modèle chargé automatiquement : ${stats.vocabSize} mots, ${stats.sentences} phrases.`;
-                    document.getElementById('generateBtn').disabled = false;
-                    // Marquer le champ file comme ayant déjà un corpus
-                    document.getElementById('corpusFile').dataset.autoloaded = 'true';
-                }
-            }
-        } catch (e) {
-            // Fichier non disponible, ce n'est pas grave
-            console.log('Pas de fichier lexb.csv trouvé localement. Chargement manuel requis.');
-        }
-    })();
-</script>
 </body>
 </html>
