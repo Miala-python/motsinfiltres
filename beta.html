@@ -458,6 +458,18 @@
     let selectedListPaths = [];
     let mergedLines = [];
 
+function shuffle(array) {
+  // On parcourt le tableau de la fin vers le début
+  for (let i = array.length - 1; i > 0; i--) {
+    // On choisit un index aléatoire entre 0 et i
+    const j = Math.floor(Math.random() * (i + 1));
+
+    // On échange les éléments aux positions i et j
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
     window.onload = () => {
       const savedConfig = JSON.parse(localStorage.getItem('infiltres_config'));
       if (savedConfig) {
@@ -654,7 +666,8 @@ mergedLines.push(parts);
         type: 'CIVIL', word: words.civil
       });
 
-      roles.sort(() => Math.random() - 0.5);
+      #roles.sort(() => Math.random() - 0.5);
+      shuffle(roles);
       players = roles.map((r, idx) => ({
         ...r,
         name: savedNames[idx] || "",
@@ -855,7 +868,7 @@ mergedLines.push(parts);
 
   <!-- A conserver en bas du code pour une modification facile -->
   <footer>
-    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html?ref=idx&campaign=btnV'">v1.4.5beta</span>
+    Version du jeu <span class="version-badge" onclick="window.location.href='./en.html?ref=idx&campaign=btnV'">v1.4.5</span>
   </footer>
 </body>
 </html>
