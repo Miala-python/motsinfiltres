@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spy Game - Maquette Interactive No-Scroll (Pur CSS/HTML)</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- CADRE SIMULATEUR MOBILE -->
+    <div class="simulator-frame">
+
+        <!-- BARRE STATUT (Haut de page) -->
+        <div class="status-bar">
+            <span class="brand-name">AGENT DECK v1.4</span>
+            <span id="screen-badge" class="badge">CONFIG</span>
+        </div>
+
+        <!-- HEADER UTILITAIRE -->
+        <div class="header-utility">
+            <!-- Bouton aide -->
+            <button onclick="toggleInfoModal()" class="spy-btn btn-help spy-tilt-left">
+                ?
+            </button>
+
+            <!-- Titre d'écran dynamique -->
+            <div id="screen-header-title" class="screen-title spy-tilt-slight">
+                INSCRIPTION
+            </div>
+
+            <!-- Configuration rapide -->
+            <button onclick="switchActivePage('settings')" class="spy-btn btn-settings spy-tilt-left" aria-label="Paramètres">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- ZONE DE RENDU DES MAQUETTES -->
+        <div class="main-content-area">
+
+            <!-- ================= ÉCRAN 1 : INSCRIPTION DES JOUEURS ================= -->
+            <div id="screen-register" class="screen-layout active">
+                <div class="info-card spy-tilt-slight">
+                    <h2>Enregistrez 5 à 9 agents.</h2>
+                </div>
+
+                <!-- Liste défilable -->
+                <div id="agents-list-container" class="agents-scroll-list">
+                    <!-- Injecté par JavaScript -->
+                </div>
+
+                <!-- Zone d'ajout compacte -->
+                <div class="input-area">
+                    <div class="spy-tilt-left">
+                        <input id="input-new-agent" type="text" placeholder="NOM D'AGENT" maxlength="10" class="spy-input">
+                    </div>
+                    <button onclick="handleAddAgent()" class="spy-btn btn-add-agent spy-tilt-right">
+                        + AJOUTER L'AGENT DANS LA BASE
+                    </button>
+                </div>
+
+                <!-- Footer indicatif de l'écran 1 -->
+                <div class="register-footer">
+                    <div class="register-footer-card bg-spy-paper border-spy-black spy-tilt-slight">
+                        <p id="register-helper-text" class="register-footer-text text-red">Enregistrez au moins 5 joueurs pour continuer.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 2 : RÔLE J1 (THE SERVICE) ================= -->
+            <div id="screen-service" class="screen-layout">
+                <div class="role-wrapper">
+                    <!-- Sceau Le Service -->
+                    <div class="seal-logo spy-tilt-left">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="44" fill="none" stroke="black" stroke-width="4.5"/>
+                            <circle cx="50" cy="50" r="37" fill="none" stroke="black" stroke-dasharray="3 3" stroke-width="1.5"/>
+                            <path d="M15 50 C 30 22, 70 22, 85 50 C 70 78, 30 78, 15 50 Z" fill="none" stroke="black" stroke-width="4.5"/>
+                            <circle cx="50" cy="50" r="13" fill="black" />
+                            <circle cx="50" cy="50" r="5" fill="white" />
+                            <text x="50" y="23" text-anchor="middle" font-size="7.5" font-weight="900" letter-spacing="0.5">THE SERVICE</text>
+                        </svg>
+                    </div>
+
+                    <!-- Enveloppe Révélation d'informations -->
+                    <div class="hidden-role block-reveal-role envelope-details">
+                        <div class="envelope-line spy-tilt-slight">
+                            <p>Pour le moment, vous travaillez pour <span class="text-highlight-service">Le Service</span>.</p>
+                        </div>
+                        <div class="envelope-line spy-tilt-right">
+                            <p>Il y a <span class="text-highlight-bold">2 agents</span> du VIRUS.</p>
+                        </div>
+                        <div class="envelope-line spy-tilt-left">
+                            <p>Pour gagner, vous devez emprisonner l'une de leurs recrues.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 3 : RÔLE J2 (ADORATION) ================= -->
+            <div id="screen-adoration" class="screen-layout">
+                <div class="role-wrapper">
+                    <div class="info-card bg-adoration-red spy-tilt-left">
+                        <h2 class="title-adoration">ADORATION</h2>
+                    </div>
+
+                    <!-- Enveloppe Adoration floutée -->
+                    <div class="hidden-role block-reveal-role envelope-details">
+                        <div class="envelope-line spy-tilt-right">
+                            <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire gagner J1</span>.</p>
+                        </div>
+                        <div class="envelope-line spy-tilt-left">
+                            <p>Vous vous éprenez d'amour pour J1, dont le bonheur est la seule chose qui compte.</p>
+                        </div>
+                        <div class="envelope-line spy-tilt-slight">
+                            <span class="target-subtext">Vous adorez :</span>
+                            <span class="target-name">J1</span>
+                        </div>
+                        <div class="envelope-line spy-tilt-right">
+                            <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et aidez-les de toutes les manières possibles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 4 : RÔLE SOPHIE (VIRUS) ================= -->
+            <div id="screen-virus" class="screen-layout">
+                <div class="role-wrapper">
+                    <div class="header-sophie spy-tilt-left">
+                        <h2>SOPHIE</h2>
+                    </div>
+
+                    <!-- Insigne Serpent VIRUS -->
+                    <div class="seal-logo virus-badge spy-tilt-right">
+                        <svg viewBox="0 0 100 100">
+                            <!-- Shield path with custom color directly -->
+                            <path d="M50 8 L 82 22 L 78 62 C 72 80, 50 90, 50 90 C 50 90, 28 80, 22 62 L 18 22 Z" fill="none" stroke="#b91c1c" stroke-width="4.5"/>
+                            <line x1="50" y1="14" x2="50" y2="84" stroke="#b91c1c" stroke-width="4"/>
+                            <path d="M34 28 Q 50 42, 66 28 T 34 56 Q 50 70, 66 56" fill="none" stroke="#b91c1c" stroke-width="4"/>
+                            <text x="50" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="black" stroke="white" stroke-width="1">V.I.R.U.S.</text>
+                        </svg>
+                    </div>
+
+                    <!-- Enveloppe Révélation d'informations -->
+                    <div class="hidden-role block-reveal-role envelope-details">
+                        <div class="envelope-line spy-tilt-slight">
+                            <p>Pour le moment, vous travaillez pour le <span class="text-highlight-virus">VIRUS</span>. Votre mission est de ne pas être découvert et de faire en sorte que Le Service emprisonne l'un des leurs.</p>
+                        </div>
+                        <div class="envelope-line spy-tilt-left complice-row">
+                            <span class="complice-label">Complice :</span>
+                            <span class="complice-value">HUGO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 5 : ACTION (INFORMATEUR SECRET) ================= -->
+            <div id="screen-informant" class="screen-layout">
+                <div class="info-card spy-tilt-slight">
+                    <h2>INFORMATEUR SECRET</h2>
+                </div>
+
+                <div class="envelope-line spy-tilt-right" style="margin: 6px 0;">
+                    <p style="font-size: 10px;">Choisissez deux agents. Votre informateur vous révélera si l'un deux est un agent du VIRUS.</p>
+                </div>
+
+                <!-- Grille suspects -->
+                <div class="suspects-grid">
+                    <button onclick="toggleSuspect(this, 'O\'KS')" class="suspect-btn dark-theme spy-tilt-left">
+                        <span class="suspect-label">O'KS</span>
+                        <span class="check-box-indicator"></span>
+                    </button>
+                    <button onclick="toggleSuspect(this, 'DBDJ')" class="suspect-btn dark-theme spy-tilt-right">
+                        <span class="suspect-label">DBDJ</span>
+                        <span class="check-box-indicator"></span>
+                    </button>
+                    <button onclick="toggleSuspect(this, 'J2')" class="suspect-btn light-theme spy-tilt-left">
+                        <span class="suspect-label">J2</span>
+                        <span class="check-box-indicator"></span>
+                    </button>
+                    <button onclick="toggleSuspect(this, 'J1')" class="suspect-btn light-theme spy-tilt-right">
+                        <span class="suspect-label">J1</span>
+                        <span class="check-box-indicator"></span>
+                    </button>
+                </div>
+
+                <!-- Bouton de validation d'analyse -->
+                <button onclick="verifySuspectFactions()" class="spy-btn btn-confirm-suspects spy-tilt-slight">
+                    APPUYEZ POUR CONFIRMER LA SÉLECTION
+                </button>
+            </div>
+
+            <!-- ================= ÉCRAN 6 : RÉSULTATS FINAUX ================= -->
+            <div id="screen-results" class="screen-layout">
+                <div class="results-container">
+                    <!-- GAGNANTS -->
+                    <div class="results-category">
+                        <div class="results-category-header spy-tilt-left">
+                            GAGNANTS
+                        </div>
+                        <div class="results-row-grid">
+                            <div class="result-card spy-tilt-right">
+                                <span class="result-icon">☣️</span>
+                                <span class="result-text-main">DBDJ</span>
+                            </div>
+                            <div class="result-card spy-tilt-left">
+                                <span class="result-icon">☣️</span>
+                                <span class="result-text-main">O'KS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PERDANTS -->
+                    <div class="results-category" style="padding-top: 4px;">
+                        <div class="results-category-header spy-tilt-right">
+                            PERDANTS
+                        </div>
+                        <div class="results-category">
+                            <div class="result-card-wide spy-tilt-left">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="result-icon">👁️</span>
+                                    <span class="result-text-main">J1</span>
+                                </div>
+                                <span class="result-icon" style="color: var(--spy-red);">❤️</span>
+                            </div>
+                            <div class="result-card-wide spy-tilt-right">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="result-icon">👁️</span>
+                                    <span class="result-text-main">J2</span>
+                                </div>
+                                <span class="result-icon">👤</span>
+                            </div>
+                            <div class="result-card-wide spy-tilt-left">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span class="result-icon">👁️</span>
+                                    <span class="result-text-main">DJDJ</span>
+                                </div>
+                                <span class="result-subtext">RÉVÉLÉ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton Rejouer -->
+                <div class="restart-wrapper">
+                    <button onclick="restartGameSession()" class="btn-restart spy-tilt-slight" aria-label="Recommencer">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1-1.2 7.632M20 20v-5h-.581m0 0a8.003 8.003 0 01-15.357-2F" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 7 : PARAMÈTRES ================= -->
+            <div id="screen-settings" class="screen-layout">
+                <div class="info-card spy-tilt-slight">
+                    <h2>⚙️ INTERFACES TECHNIQUES</h2>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-card spy-tilt-left">
+                        <label class="settings-label">🔊 EFFETS DE SCAN</label>
+                        <input type="range" class="settings-range" min="0" max="100" value="70">
+                    </div>
+
+                    <div class="settings-card spy-tilt-right">
+                        <label class="settings-label">💀 DIFFICULTÉ TACTIQUE</label>
+                        <div class="difficulty-selector">
+                            <button onclick="setScenarioDifficulty(this)" class="difficulty-option active">CLASSIQUE</button>
+                            <button onclick="setScenarioDifficulty(this)" class="difficulty-option">DOUBLE JEU</button>
+                            <button onclick="setScenarioDifficulty(this)" class="difficulty-option">EXTRÊME</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card spy-tilt-left settings-chrono">
+                        <span class="settings-label">⏱️ CHRONO DU BRIEFING</span>
+                        <div class="chrono-control-group">
+                            <button onclick="changeChronoValue(-10)" class="chrono-btn">-10s</button>
+                            <span id="chrono-value" class="chrono-display-value">60s</span>
+                            <button onclick="changeChronoValue(10)" class="chrono-btn">+10s</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton de retour -->
+                <button onclick="switchActivePage('register')" class="spy-btn btn-apply-settings spy-tilt-right">
+                    APPLIQUER LA CONFIGURATION
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ================= COMPOSANT BAS PERSISTANT : SCANNER & NAVIGATION ================= -->
+        <div class="persistent-bottom">
+
+            <!-- CONTENANT DU SCANNER -->
+            <div class="scanner-container">
+
+                <!-- Bloc d'identification agent bas -->
+                <div class="agent-id-badge spy-tilt-left">
+                    <div class="icon-container">
+                        <!-- Silhouette d'espion simplifiée -->
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="badge-text">POUR VOS YEUX<br>UNIQUEMENT</span>
+                    </div>
+                </div>
+
+                <!-- Texte instructif dynamique -->
+                <div class="instruction-box">
+                    <p class="instruction-primary">Maintien décrypte</p>
+                    <p class="instruction-secondary">Clic : Page suivante ➔</p>
+                </div>
+
+                <!-- LE SCANNER D'EMPREINTE TACTILE -->
+                <div id="trigger-fingerprint" 
+                     onclick="handleSequentialClick()"
+                     onmousedown="handleSensorHoldStart(event)" 
+                     onmouseup="handleSensorHoldEnd()" 
+                     onmouseleave="handleSensorHoldEnd()"
+                     ontouchstart="handleSensorHoldStart(event)" 
+                     ontouchend="handleSensorHoldEnd()"
+                     class="fingerprint-sensor spy-tilt-right">
+                    <div class="svg-wrapper">
+                        <!-- Design de l'empreinte digitale -->
+                        <svg class="animate-scan" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11a13.92 13.92 0 012.348-7.558M12 11c0-1.88-.317-3.685-.904-5.364M4.2 16c.342.92.83 1.776 1.44 2.536M18 10a13.9 13.9 0 01-5.044 10.74M21 16.001a13.904 13.904 0 01-2.28 2.817M12 3a13.904 13.904 0 016.904 1.817M12 3v3.315" />
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BANDEAU DE TOAST / NOTIFICATION INTÉGRÉ -->
+    <div id="toast-notif" class="system-toast spy-tilt-slight">
+        Notification système
+    </div>
+
+    <!-- MODAL POPUP D'AIDE TECHNIQUE -->
+    <div id="help-modal" class="modal-overlay" onclick="handleOutsideModalClick(event)">
+        <div class="modal-card spy-tilt-slight">
+            <h3>🕵️ INTERFACE EMBARQUÉE</h3>
+            <p>
+                Chaque page est calibrée sans aucun défilement vertical. Le bouton en forme d'empreinte digitale au bas de l'appareil remplace la commande "Suivant". Un clic rapide change d'écran, tandis qu'un maintien prolongé déverrouille les briefings de mission floutés.
+            </p>
+            <button onclick="toggleInfoModal()" class="spy-btn btn-modal-close">
+                REPRENDRE
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- ARCHITECTURE INTERACTIVE & LOGIQUE DES PAGES ---
+        const pageOrderList = [
+            'register',
+            'service',
+            'adoration',
+            'virus',
+            'informant',
+            'results',
+            'settings'
+        ];
+        let currentActiveIndex = 0;
+
+        // Base de simulation d'agents inscrits
+        let mockAgents = ["J1", "J2", "SOPHIE", "HUGO", "O'KS"];
+        let configuredChrono = 60;
+        let suspectsSelected = [];
+        let sensorHoldTimer;
+
+        // Rendu de la liste d'agents de l'écran 1
+        function renderInscribedAgents() {
+            const listContainer = document.getElementById('agents-list-container');
+            listContainer.innerHTML = '';
+
+            mockAgents.forEach((agent, index) => {
+                const angleClass = index % 2 === 1 ? 'spy-tilt-left' : 'spy-tilt-right';
+
+                listContainer.innerHTML += `
+                    <div class="agent-item ${angleClass}">
+                        <span class="agent-name">${agent}</span>
+                        <button onclick="deleteAgent(${index})" class="agent-delete-btn" aria-label="Supprimer l'agent">
+                            <svg fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            });
+
+            // Affichage de l'aide à l'enregistrement
+            const helper = document.getElementById('register-helper-text');
+            if (mockAgents.length < 5) {
+                helper.textContent = "Enregistrez au moins 5 joueurs pour continuer.";
+                helper.className = "register-footer-text text-red";
+            } else {
+                helper.textContent = "Effectif réglementaire ! Prêt à jouer.";
+                helper.className = "register-footer-text text-green";
+            }
+        }
+
+        // Ajouter un agent de simulation
+        function handleAddAgent() {
+            const field = document.getElementById('input-new-agent');
+            const name = field.value.trim().toUpperCase();
+
+            if (!name) {
+                triggerSystemToast("Veuillez saisir un nom.");
+                return;
+            }
+            if (mockAgents.includes(name)) {
+                triggerSystemToast("Cet agent est déjà enregistré.");
+                return;
+            }
+            if (mockAgents.length >= 9) {
+                triggerSystemToast("9 agents maximum.");
+                return;
+            }
+
+            mockAgents.push(name);
+            field.value = '';
+            renderInscribedAgents();
+            triggerSystemToast(`Recruté : ${name}`);
+        }
+
+        // Supprimer un agent
+        function deleteAgent(index) {
+            const removed = mockAgents[index];
+            mockAgents.splice(index, 1);
+            renderInscribedAgents();
+            triggerSystemToast(`Retiré : ${removed}`);
+        }
+
+        // Navigation séquentielle déclenchée par clic sur l'empreinte digitale
+        function handleSequentialClick() {
+            currentActiveIndex = (currentActiveIndex + 1) % pageOrderList.length;
+            switchActivePage(pageOrderList[currentActiveIndex]);
+        }
+
+        // Gestion de l'affichage global des pages d'exemple
+        function switchActivePage(screenId) {
+            // Cacher tous les écrans
+            document.querySelectorAll('.screen-layout').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Afficher l'écran ciblé
+            const screenElement = document.getElementById(`screen-${screenId}`);
+            if (screenElement) {
+                screenElement.classList.add('active');
+            }
+
+            // Mettre à jour l'index
+            currentActiveIndex = pageOrderList.indexOf(screenId);
+
+            // Re-flouter les rôles au changement d'écran pour la simulation
+            document.querySelectorAll('.block-reveal-role').forEach(el => {
+                el.classList.add('hidden-role');
+                el.classList.remove('revealed-role');
+            });
+
+            // Synchronisation de l'en-tête de page
+            const headerTitle = document.getElementById('screen-header-title');
+            const badge = document.getElementById('screen-badge');
+
+            switch (screenId) {
+                case 'register':
+                    headerTitle.textContent = "INSCRIPTION";
+                    badge.textContent = "CONFIG";
+                    badge.className = "badge";
+                    badge.style.backgroundColor = "var(--spy-yellow)";
+                    badge.style.color = "var(--spy-black)";
+                    break;
+                case 'service':
+                    headerTitle.textContent = "BRIEFING J1";
+                    badge.textContent = "SERVICE";
+                    badge.className = "badge";
+                    badge.style.backgroundColor = "var(--spy-orange)";
+                    badge.style.color = "var(--spy-white)";
+                    break;
+                case 'adoration':
+                    headerTitle.textContent = "BRIEFING J2";
+                    badge.textContent = "ADORATION";
+                    badge.className = "badge";
+                    badge.style.backgroundColor = "var(--spy-red)";
+                    badge.style.color = "var(--spy-white)";
+                    break;
+                case 'virus':
+                    headerTitle.textContent = "BRIEFING SOPHIE";
+                    badge.textContent = "VIRUS";
+                    badge.className = "badge";
+                    badge.style.backgroundColor = "var(--spy-red-dark)";
+                    badge.style.color = "var(--spy-white)";
+                    break;
+                case 'informant':
+                    headerTitle.textContent = "RECHERCHER";
+                    badge.textContent = "INSPECTER";
+                    badge.className = "badge";
+                    badge.style.backgroundColor = "var(--spy-black)";
+                    badge.style.color = "var(--spy-white)";
+                    break;
+                case 'results':
+                    headerTitle.textContent = "VERDICT";
+                    badge.textContent = "CLASSEMENT";
+                    badge.className = "badge";
+                    badge.style.backgroundColor = "#15803d"; // Green 700
+                    badge.style.color = "var(--spy-white)";
+                    break;
+                case 'settings':
+                    headerTitle.textContent = "PARAMÈTRES";
+                    badge.textContent = "SYSTÈME";
+                    badge.className = "badge";
+                    badge.style.backgroundColor = "var(--spy-stone-700)";
+                    badge.style.color = "var(--spy-white)";
+                    break;
+            }
+        }
+
+        // --- DECRYPTAGE PAR DETECTEUR D'EMPREINTE (CLIC LONG / HOLD) ---
+        function handleSensorHoldStart(e) {
+            e.preventDefault();
+            // Lancer le chronomètre de maintien (600ms requis)
+            sensorHoldTimer = setTimeout(() => {
+                document.querySelectorAll('.block-reveal-role').forEach(el => {
+                    el.classList.remove('hidden-role');
+                    el.classList.add('revealed-role');
+                });
+                triggerSystemToast("🔑 ENVELOPPE DÉCRYPTÉE !");
+            }, 600);
+        }
+
+        function handleSensorHoldEnd() {
+            clearTimeout(sensorHoldTimer);
+            document.querySelectorAll('.block-reveal-role').forEach(el => {
+                el.classList.add('hidden-role');
+                el.classList.remove('revealed-role');
+            });
+        }
+
+        // --- PHASE ENQUÊTE : CHOIX DES SUSPECTS ---
+        function toggleSuspect(btnElement, suspectName) {
+            const checkIndicator = btnElement.querySelector('.check-box-indicator');
+            
+            if (suspectsSelected.includes(suspectName)) {
+                // Désélection
+                suspectsSelected = suspectsSelected.filter(name => name !== suspectName);
+                
+                // Retirer le style actif en rétablissant les classes d'origine
+                if (suspectName === "O'KS" || suspectName === "DBDJ") {
+                    btnElement.className = "suspect-btn dark-theme";
+                } else {
+                    btnElement.className = "suspect-btn light-theme";
+                }
+                checkIndicator.textContent = '';
+            } else {
+                // Sélection
+                if (suspectsSelected.length >= 2) {
+                    triggerSystemToast("Deux suspects maximum.");
+                    return;
+                }
+                suspectsSelected.push(suspectName);
+                
+                // Appliquer style sélectionné uniforme jaune
+                btnElement.className = "suspect-btn";
+                btnElement.style.backgroundColor = "var(--spy-yellow)";
+                btnElement.style.color = "var(--spy-black)";
+                
+                checkIndicator.textContent = '✓';
+            }
+        }
+
+        function verifySuspectFactions() {
+            if (suspectsSelected.length < 2) {
+                triggerSystemToast("Désignez d'abord 2 coupables.");
+                return;
+            }
+            triggerSystemToast(`Analyse : ${suspectsSelected.join(' & ')}`);
+            setTimeout(() => {
+                const virusCheck = suspectsSelected.some(name => name === "O'KS" || name === "DBDJ");
+                if (virusCheck) {
+                    triggerSystemToast("☢️ ALERTE : L'un d'eux est un agent du VIRUS !");
+                } else {
+                    triggerSystemToast("👁️ RAS : Les deux agents sont sains.");
+                }
+            }, 1000);
+        }
+
+        // --- OPTIONS / PARAMÈTRES INTERACTIFS ---
+        function setScenarioDifficulty(btn) {
+            document.querySelectorAll('.difficulty-option').forEach(el => {
+                el.classList.remove('active');
+            });
+            btn.classList.add('active');
+            triggerSystemToast(`Difficulté : ${btn.textContent}`);
+        }
+
+        function changeChronoValue(amount) {
+            configuredChrono = Math.max(10, configuredChrono + amount);
+            document.getElementById('chrono-value').textContent = `${configuredChrono}s`;
+        }
+
+        // Notification visuelle intégrée
+        function triggerSystemToast(message) {
+            const toast = document.getElementById('toast-notif');
+            toast.textContent = message;
+            toast.classList.add('visible');
+
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2200);
+        }
+
+        // Ouvrir / Fermer la fenêtre d'aide
+        function toggleInfoModal() {
+            const modal = document.getElementById('help-modal');
+            modal.classList.toggle('active');
+        }
+
+        function handleOutsideModalClick(e) {
+            if (e.target.id === 'help-modal') {
+                toggleInfoModal();
+            }
+        }
+
+        // Réinitialiser la partie
+        function restartGameSession() {
+            suspectsSelected = [];
+            document.querySelectorAll('.suspect-btn').forEach(btn => {
+                btn.style.backgroundColor = "";
+                btn.style.color = "";
+                
+                const nameSpan = btn.querySelector('.suspect-label');
+                const isNpc = nameSpan.textContent === "O'KS" || nameSpan.textContent === "DBDJ";
+                if (isNpc) {
+                    btn.className = "suspect-btn dark-theme";
+                } else {
+                    btn.className = "suspect-btn light-theme";
+                }
+                btn.querySelector('.check-box-indicator').textContent = '';
+            });
+            switchActivePage('register');
+            triggerSystemToast("🔄 Table de jeu nettoyée.");
+        }
+
+        // Lancement initial de l'application
+        window.onload = function() {
+            renderInscribedAgents();
+        }
+    </script>
+</body>
+</html>
+

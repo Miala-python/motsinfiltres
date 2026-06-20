@@ -1,0 +1,1061 @@
+/* Variables globales pour la palette de couleurs Spy Game */
+:root {
+    --spy-orange: #b54d24;
+    --spy-paper: #f2eedb;
+    --spy-paper-hover: #eae4cb;
+    --spy-paper-red: #fee2e2;
+    --spy-black: #111111;
+    --spy-white: #ffffff;
+    --spy-gray: #837c6d;
+    --spy-yellow: #facc15;
+    --spy-yellow-hover: #eab308;
+    --spy-red: #dc2626;
+    --spy-red-dark: #991b1b;
+    --spy-stone-700: #44403c;
+    --spy-stone-800: #292524;
+    --spy-stone-900: #1c1917;
+    --border-width: 3px;
+}
+
+/* Réinitialisation & Conception No-Scroll */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    /* Empêche tout défilement */
+    background-color: #0d0907;
+    /* Combinaison de polices système typées BD / Espionnage compactes */
+    font-family: 'Impact', 'Arial Black', 'Franklin Gothic Bold', 'Arial Narrow', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+@media (min-width: 640px) {
+    body {
+        padding: 16px;
+    }
+}
+
+/* --- CADRE CONSOLE MOBILE PRINCIPALE --- */
+.simulator-frame {
+    position: relative;
+    width: 100%;
+    max-width: 375px;
+    height: 100%;
+    max-height: 740px;
+    background-color: var(--spy-orange);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 4px 4px 0px 0px var(--spy-black);
+    border-radius: 2rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* --- BARRE DE STATUT SUPÉRIEURE --- */
+.status-bar {
+    width: 100%;
+    background-color: var(--spy-black);
+    padding: 4px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--spy-white);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    flex-shrink: 0;
+    z-index: 30;
+}
+
+.status-bar .brand-name {
+    font-weight: bold;
+}
+
+.status-bar .badge {
+    background-color: var(--spy-yellow);
+    color: var(--spy-black);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 8px;
+}
+
+/* --- ACCESSOIRES DE NAVIGATION DE L'EN-TÊTE --- */
+.header-utility {
+    width: 100%;
+    padding: 8px 12px 2px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    z-index: 30;
+}
+
+/* --- CLASSES COMPOSANTS SPY (ESTHÉTIQUE BD RETRO) --- */
+.bg-spy-paper {
+    background-color: var(--spy-paper);
+}
+
+.border-spy-black {
+    border: var(--border-width) solid var(--spy-black);
+}
+
+.shadow-spy {
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+}
+
+/* Boutons interactifs */
+.spy-btn {
+    font-family: inherit;
+    cursor: pointer;
+    border: var(--border-width) solid var(--spy-black);
+    background-color: var(--spy-paper);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.05s ease, box-shadow 0.05s ease, background-color 0.15s ease;
+}
+
+.spy-btn:hover {
+    background-color: var(--spy-paper-hover);
+}
+
+.spy-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px 0px var(--spy-black);
+}
+
+/* Bouton aide */
+.btn-help {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+/* Titre dynamique */
+.screen-title {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 2px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Bouton engrenage paramètres */
+.btn-settings {
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+}
+
+.btn-settings svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+    color: var(--spy-black);
+}
+
+/* --- INCLINAISONS ASYMÉTRIQUES STYLE BD --- */
+.spy-tilt-left {
+    transform: rotate(-1.2deg) skewX(-1deg);
+}
+
+.spy-tilt-right {
+    transform: rotate(1deg) skewX(0.8deg);
+}
+
+.spy-tilt-slight {
+    transform: rotate(-0.5deg);
+}
+
+/* --- ZONE DE RENDU DES MAQUETTES ÉCRANS (FLEXBOX) --- */
+.main-content-area {
+    flex: 1;
+    width: 100%;
+    padding: 4px 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Layout des écrans */
+.screen-layout {
+    display: none;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.screen-layout.active {
+    display: flex;
+}
+
+/* --- ÉCRAN 1 : INSCRIPTION DES JOUEURS --- */
+.info-card {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 4px 12px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.info-card h2 {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+/* Liste défilable des agents */
+.agents-scroll-list {
+    flex: 1;
+    margin: 8px 0;
+    overflow-y: auto;
+    max-height: 170px;
+    padding-right: 2px;
+}
+
+/* Personnalisation de la barre de défilement */
+.agents-scroll-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.agents-scroll-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.agents-scroll-list::-webkit-scrollbar-thumb {
+    background: var(--spy-black);
+    border-radius: 2px;
+}
+
+/* Item de la liste des agents */
+.agent-item {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 4px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+}
+
+.agent-name {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+}
+
+.agent-delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--spy-red);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.05s ease;
+}
+
+.agent-delete-btn:active {
+    transform: scale(0.9);
+}
+
+.agent-delete-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Inputs de formulaires compacts */
+.input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.spy-input {
+    width: 100%;
+    border: 2.5px solid var(--spy-black);
+    background-color: var(--spy-paper);
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 10px;
+    text-align: center;
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+}
+
+.spy-input::placeholder {
+    color: var(--spy-gray);
+    font-style: italic;
+}
+
+.btn-add-agent {
+    width: 100%;
+    padding: 6px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Pied informatif écran d'enregistrement */
+.register-footer {
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+
+.register-footer-card {
+    border: var(--border-width) solid var(--spy-black);
+    padding: 2px 12px;
+    text-align: center;
+}
+
+.register-footer-text {
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.text-red {
+    color: var(--spy-red);
+}
+
+.text-green {
+    color: #15803d;
+}
+
+/* --- ÉCRANS DE RÔLE : SECRETS & REVELATIONS --- */
+.role-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 8px;
+    margin: auto 0;
+}
+
+/* Sceaux/Insignes vectoriels */
+.seal-logo {
+    width: 64px;
+    height: 64px;
+    background-color: var(--spy-paper);
+    border-radius: 50%;
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.seal-logo.virus-badge {
+    border-radius: 12px;
+}
+
+.seal-logo svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* États cachés/Révélables */
+.hidden-role {
+    filter: blur(8px);
+    opacity: 0.2;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.revealed-role {
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Blocs d'informations enveloppes */
+.envelope-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.envelope-line {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 4px 12px;
+    text-align: center;
+}
+
+.envelope-line p {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.text-highlight-service {
+    color: #7c2d12;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.text-highlight-virus {
+    color: var(--spy-red-dark);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.text-highlight-bold {
+    color: var(--spy-red);
+    font-weight: 800;
+    font-size: 12px;
+}
+
+/* Style Adoration J2 */
+.bg-adoration-red {
+    background-color: var(--spy-paper-red);
+}
+
+.title-adoration {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: var(--spy-red);
+}
+
+.target-subtext {
+    font-size: 8px;
+    color: #4b5563;
+    text-transform: uppercase;
+    display: block;
+    line-height: 1;
+}
+
+.target-name {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--spy-red);
+    letter-spacing: 0.05em;
+}
+
+.tips-text {
+    font-size: 9px;
+    color: #44403c;
+    font-style: italic;
+    line-height: 1.1;
+}
+
+/* Style Sophie Virus */
+.header-sophie {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 2px 16px;
+    width: 100%;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.header-sophie h2 {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+
+.complice-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.complice-label {
+    font-size: 9px;
+    color: #6b7280;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.complice-value {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: var(--spy-red-dark);
+}
+
+/* --- ÉCRAN 5 : ACTION RECHERCHE (INFORMATEUR) --- */
+.suspects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin: 4px 0;
+    flex: 1;
+    align-items: center;
+    overflow: hidden;
+}
+
+.suspect-btn {
+    height: 44px;
+    padding: 0 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    font-family: inherit;
+    cursor: pointer;
+    transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+.suspect-btn.dark-theme {
+    background-color: var(--spy-stone-700);
+    color: var(--spy-white);
+}
+
+.suspect-btn.light-theme {
+    background-color: var(--spy-paper);
+    color: var(--spy-black);
+}
+
+.suspect-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px 0px var(--spy-black);
+}
+
+.suspect-btn .suspect-label {
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+}
+
+.suspect-btn .check-box-indicator {
+    font-weight: 900;
+    font-size: 12px;
+}
+
+.suspect-btn.dark-theme .check-box-indicator {
+    color: var(--spy-yellow);
+}
+
+.btn-confirm-suspects {
+    width: 100%;
+    background-color: var(--spy-yellow);
+    padding: 6px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.btn-confirm-suspects:hover {
+    background-color: var(--spy-yellow-hover);
+}
+
+/* --- ÉCRAN 6 : RÉSULTATS FINAUX --- */
+.results-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.results-category {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.results-category-header {
+    background-color: var(--spy-black);
+    color: var(--spy-white);
+    padding: 2px 12px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+}
+
+.results-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.result-card {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.result-card-wide {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 4px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result-text-main {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+}
+
+.result-icon {
+    font-size: 12px;
+}
+
+.result-subtext {
+    color: #6b7280;
+    font-size: 9px;
+    text-transform: uppercase;
+}
+
+/* Bouton Rejouer circulaire */
+.restart-wrapper {
+    margin-top: auto;
+    padding-top: 6px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-restart {
+    width: 40px;
+    height: 40px;
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.05s;
+}
+
+.btn-restart:hover {
+    background-color: #fef08a;
+}
+
+.btn-restart:active {
+    transform: scale(0.9);
+}
+
+.btn-restart svg {
+    width: 16px;
+    height: 16px;
+    color: var(--spy-black);
+}
+
+/* --- ÉCRAN 7 : PARAMÈTRES (INTERFACES TECHNIQUES) --- */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    margin: 8px 0;
+    flex: 1;
+}
+
+.settings-card {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 8px;
+}
+
+.settings-label {
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+/* Range */
+.settings-range {
+    width: 100%;
+    accent-color: var(--spy-orange);
+    cursor: pointer;
+}
+
+/* Grille de sélection de difficulté */
+.difficulty-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.difficulty-option {
+    background-color: var(--spy-paper);
+    border: 2px solid var(--spy-black);
+    padding: 2px 0;
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.1s;
+}
+
+.difficulty-option.active {
+    background-color: var(--spy-yellow);
+}
+
+/* Chrono contrôle */
+.settings-chrono {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chrono-control-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.chrono-btn {
+    background-color: var(--spy-paper);
+    border: 2px solid var(--spy-black);
+    padding: 0 6px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 1px 1px 0px 0px var(--spy-black);
+}
+
+.chrono-btn:active {
+    transform: translate(0.5px, 0.5px);
+    box-shadow: 0px 0px 0px 0px var(--spy-black);
+}
+
+.chrono-display-value {
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.btn-apply-settings {
+    width: 100%;
+    background-color: #fef3c7;
+    /* Amber 100 */
+    padding: 6px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.btn-apply-settings:hover {
+    background-color: #fde68a;
+    /* Amber 200 */
+}
+
+/* --- COMPOSANT BAS PERSISTANT : EMPREINTE DIGITALE NAV --- */
+.persistent-bottom {
+    width: 100%;
+    background-color: var(--spy-stone-900);
+    border-top: 4px solid var(--spy-black);
+    padding: 8px;
+    flex-shrink: 0;
+    z-index: 40;
+}
+
+.scanner-container {
+    width: 100%;
+    background-color: var(--spy-orange);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 8px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Bloc d'identification de l'agent */
+.agent-id-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    padding: 4px 10px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.agent-id-badge .icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.agent-id-badge svg {
+    width: 20px;
+    height: 20px;
+    color: var(--spy-black);
+    margin-bottom: 2px;
+}
+
+.agent-id-badge .badge-text {
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    line-height: 1;
+    text-align: center;
+}
+
+/* Consignes interactives */
+.instruction-box {
+    flex: 1;
+    padding: 0 8px;
+    text-align: center;
+    user-select: none;
+}
+
+.instruction-primary {
+    font-size: 9px;
+    font-weight: 900;
+    color: #f5f5f4;
+    /* Stone 100 */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+}
+
+.instruction-secondary {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--spy-yellow);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    animation: pulse-animation 1.5s infinite;
+}
+
+@keyframes pulse-animation {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Scanner d'empreinte interactif */
+.fingerprint-sensor {
+    width: 56px;
+    height: 64px;
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 3px 3px 0px 0px var(--spy-black);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.05s;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.fingerprint-sensor:hover {
+    background-color: var(--spy-paper-hover);
+}
+
+.fingerprint-sensor:active {
+    transform: scale(0.95);
+}
+
+.fingerprint-sensor .svg-wrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+.fingerprint-sensor svg {
+    width: 100%;
+    height: 100%;
+    color: var(--spy-black);
+}
+
+/* Animation de scan de l'empreinte */
+@keyframes scan-animation {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.85;
+    }
+
+    50% {
+        transform: scale(1.04);
+        opacity: 1;
+    }
+}
+
+.animate-scan {
+    animation: scan-animation 1.5s infinite ease-in-out;
+}
+
+/* --- BARRE DE NAVIGATION RAPIDE DESIGNER --- */
+.audit-nav-bar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    font-size: 7px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 6px;
+}
+
+.audit-nav-btn {
+    background-color: var(--spy-stone-800);
+    border: none;
+    color: var(--spy-white);
+    padding: 2px 0;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.1s;
+}
+
+.audit-nav-btn:hover {
+    background-color: var(--spy-stone-700);
+}
+
+/* --- BANDEAU TOAST INTÉGRÉ --- */
+.system-toast {
+    position: fixed;
+    bottom: 24px;
+    background-color: var(--spy-yellow);
+    color: var(--spy-black);
+    border: 4px solid var(--spy-black);
+    font-weight: 900;
+    padding: 8px 16px;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 50;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
+.system-toast.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* --- POPUP MODAL D'AIDE TECHNIQUE --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 50;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-card {
+    background-color: var(--spy-paper);
+    border: var(--border-width) solid var(--spy-black);
+    box-shadow: 4px 4px 0px 0px var(--spy-black);
+    padding: 16px;
+    max-width: 320px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modal-card h3 {
+    font-size: 14px;
+    font-weight: 900;
+    text-align: center;
+    border-bottom: 2px solid var(--spy-black);
+    padding-bottom: 4px;
+}
+
+.modal-card p {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--spy-stone-700);
+    line-height: 1.4;
+    text-align: justify;
+}
+
+.btn-modal-close {
+    width: 100%;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #fef3c7;
+    /* Amber 100 */
+}
+
+.btn-modal-close:hover {
+    background-color: #fde68a;
+    /* Amber 200 */
+}
