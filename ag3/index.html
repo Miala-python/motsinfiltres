@@ -1,13 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spy Game - Maquette Interactive No-Scroll (Pur CSS/HTML)</title>
+    <title>Enquete</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <!-- CADRE SIMULATEUR MOBILE -->
@@ -32,9 +33,12 @@
             </div>
 
             <!-- Configuration rapide -->
-            <button onclick="switchActivePage('settings')" class="spy-btn btn-settings spy-tilt-left" aria-label="Paramètres">
+            <button onclick="switchActivePage('settings')" class="spy-btn btn-settings spy-tilt-left"
+                aria-label="Paramètres">
                 <svg fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd"
+                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                        clip-rule="evenodd" />
                 </svg>
             </button>
         </div>
@@ -42,7 +46,7 @@
         <!-- ZONE DE RENDU DES MAQUETTES -->
         <div class="main-content-area">
 
-            <!-- ================= ÉCRAN 1 : INSCRIPTION DES JOUEURS ================= -->
+            <!-- ================= ÉCRAN 01 : INSCRIPTION DES JOUEURS ================= -->
             <div id="screen-register" class="screen-layout active">
                 <div class="info-card spy-tilt-slight">
                     <h2>Enregistrez 5 à 9 agents.</h2>
@@ -56,46 +60,122 @@
                 <!-- Zone d'ajout compacte -->
                 <div class="input-area">
                     <div class="spy-tilt-left">
-                        <input id="input-new-agent" type="text" placeholder="NOM D'AGENT" maxlength="10" class="spy-input">
+                        <input id="input-new-agent" type="text" placeholder="NOM D'AGENT" maxlength="10"
+                            class="spy-input">
                     </div>
                     <button onclick="handleAddAgent()" class="spy-btn btn-add-agent spy-tilt-right">
                         + AJOUTER L'AGENT DANS LA BASE
                     </button>
                 </div>
 
+                <!-- Quantité de roles -->
+                <div class="settings-card spy-tilt-left settings-chrono">
+                    <span class="settings-label">Nombre de virus</span>
+                    <div class="select-control-group">
+                        <button onclick="changeQuantityValue('virus', -1)" class="select-btn">-1</button>
+                        <span id="select-virus-value" class="select-display-value">0</span>
+                        <button onclick="changeQuantityValue('virus', 1)" class="select-btn">+1</button>
+                    </div>
+                </div>
+
                 <!-- Footer indicatif de l'écran 1 -->
                 <div class="register-footer">
                     <div class="register-footer-card bg-spy-paper border-spy-black spy-tilt-slight">
-                        <p id="register-helper-text" class="register-footer-text text-red">Enregistrez au moins 5 joueurs pour continuer.</p>
+                        <p id="register-helper-text" class="register-footer-text text-red">Enregistrez au moins 5
+                            joueurs pour continuer.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= ÉCRAN 2 : RÔLE J1 (THE SERVICE) ================= -->
-            <div id="screen-service" class="screen-layout">
+            <!-- ================= ÉCRAN 02 : RÔLE ================= -->
+            <div id="screen-role" class="screen-layout">
                 <div class="role-wrapper">
-                    <!-- Sceau Le Service -->
-                    <div class="seal-logo spy-tilt-left">
+                    <div class="header-name spy-tilt-left">
+                        <h1 id="header-name">&NAME_HERE&</h1>
+                    </div>
+
+                    <!-- Sceau Role inconnu -->
+                    <div class="seal-logo spy-tilt-left anti-reveal-role">
                         <svg viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="44" fill="none" stroke="black" stroke-width="4.5"/>
-                            <circle cx="50" cy="50" r="37" fill="none" stroke="black" stroke-dasharray="3 3" stroke-width="1.5"/>
-                            <path d="M15 50 C 30 22, 70 22, 85 50 C 70 78, 30 78, 15 50 Z" fill="none" stroke="black" stroke-width="4.5"/>
-                            <circle cx="50" cy="50" r="13" fill="black" />
-                            <circle cx="50" cy="50" r="5" fill="white" />
-                            <text x="50" y="23" text-anchor="middle" font-size="7.5" font-weight="900" letter-spacing="0.5">THE SERVICE</text>
+                            <circle cx="50" cy="50" r="44" fill="none" stroke="black" stroke-width="4.5" />
+                            <circle cx="50" cy="50" r="36" fill="none" stroke="black" stroke-dasharray="3 3"
+                                stroke-width="1.5" />
+
+                            <!-- Ornamental laurel -->
+                            <path d="M18 58 C26 44, 34 38, 46 34" fill="none" stroke="black" stroke-width="2"
+                                stroke-linecap="round" />
+                            <path d="M82 58 C74 44, 66 38, 54 34" fill="none" stroke="black" stroke-width="2"
+                                stroke-linecap="round" />
+
+                            <!-- Top banner -->
+                            <rect x="18" y="8" width="64" height="12" rx="3" fill="black" />
+                            <text x="50" y="16" text-anchor="middle" font-size="7" font-weight="800" fill="white"
+                                style="letter-spacing:0.8">INCONNU</text>
+
+                            <!-- Central question mark -->
+                            <text x="50" y="62" text-anchor="middle" font-size="34" font-weight="900" fill="black"
+                                stroke="white" stroke-width="1">?</text>
+                            <circle cx="50" cy="78" r="3.5" fill="black" />
+
+                            <!-- Subtle inner accent -->
+                            <circle cx="50" cy="50" r="12" fill="none" stroke="black" stroke-width="1.2"
+                                opacity="0.6" />
                         </svg>
                     </div>
 
                     <!-- Enveloppe Révélation d'informations -->
-                    <div class="hidden-role block-reveal-role envelope-details">
+                    <div id="envelope-service" class="hidden hidden-role block-reveal-role envelope-details">
+                        <div class="seal-logo spy-tilt-left">
+                            <svg viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="44" fill="none" stroke="black" stroke-width="4.5" />
+                                <circle cx="50" cy="50" r="37" fill="none" stroke="black" stroke-dasharray="3 3"
+                                    stroke-width="1.5" />
+                                <path d="M15 50 C 30 22, 70 22, 85 50 C 70 78, 30 78, 15 50 Z" fill="none"
+                                    stroke="black" stroke-width="4.5" />
+                                <circle cx="50" cy="50" r="13" fill="black" />
+                                <circle cx="50" cy="50" r="5" fill="white" />
+                                <text x="50" y="23" text-anchor="middle" font-size="7.5" font-weight="900"
+                                    letter-spacing="0.5">THE SERVICE</text>
+                            </svg>
+                        </div>
                         <div class="envelope-line spy-tilt-slight">
-                            <p>Pour le moment, vous travaillez pour <span class="text-highlight-service">Le Service</span>.</p>
+                            <p>Pour le moment, vous travaillez pour <span class="text-highlight-service">Le
+                                    Service</span>.</p>
                         </div>
                         <div class="envelope-line spy-tilt-right">
-                            <p>Il y a <span class="text-highlight-bold">2 agents</span> du VIRUS.</p>
+                            <p>Il y a <span class="text-highlight-bold">
+                                    <div id="nb-virus">n</div> agents
+                                </span> du VIRUS.</p>
                         </div>
-                        <div class="envelope-line spy-tilt-left">
+                        <div class="envelope-line spy-tilt-left fix-sized-20">
                             <p>Pour gagner, vous devez emprisonner l'une de leurs recrues.</p>
+                        </div>
+                    </div>
+
+                    <div id="envelope-virus" class="hidden hidden-role block-reveal-role envelope-details">
+                        <div class="seal-logo spy-tilt-left">
+                            <svg viewBox="0 0 100 100">
+                                <!-- Shield path with custom color directly -->
+                                <path d="M50 8 L 82 22 L 78 62 C 72 80, 50 90, 50 90 C 50 90, 28 80, 22 62 L 18 22 Z"
+                                    fill="none" stroke="#b91c1c" stroke-width="4.5" />
+                                <line x1="50" y1="14" x2="50" y2="84" stroke="#b91c1c" stroke-width="4" />
+                                <path d="M34 28 Q 50 42, 66 28 T 34 56 Q 50 70, 66 56" fill="none" stroke="#b91c1c"
+                                    stroke-width="4" />
+                                <text x="50" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="black"
+                                    stroke="white" stroke-width="1">V.I.R.U.S.</text>
+                            </svg>
+                        </div>
+                        <div class="envelope-line spy-tilt-slight">
+                            <p>Voici votre role machiavélique:</p>
+                        </div>
+                        <div class="envelope-line spy-tilt-right">
+                            <p>Pour le moment, vous travaillez pour le <span class="text-highlight-virus">VIRUS</span>.
+                                Votre mission est de ne pas être découvert et de faire en sorte que Le Service
+                                emprisonne l'un des leurs.</p>
+                        </div>
+                        <div id="virus-list" class="envelope-line spy-tilt-left complice-row fix-sized-20">
+                            <span class="complice-label">Complices :</span>
+                            <!--<span class="complice-value">WAZO</span>-->
                         </div>
                     </div>
                 </div>
@@ -111,7 +191,8 @@
                     <!-- Enveloppe Adoration floutée -->
                     <div class="hidden-role block-reveal-role envelope-details">
                         <div class="envelope-line spy-tilt-right">
-                            <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire gagner J1</span>.</p>
+                            <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire
+                                    gagner J1</span>.</p>
                         </div>
                         <div class="envelope-line spy-tilt-left">
                             <p>Vous vous éprenez d'amour pour J1, dont le bonheur est la seule chose qui compte.</p>
@@ -121,7 +202,8 @@
                             <span class="target-name">J1</span>
                         </div>
                         <div class="envelope-line spy-tilt-right">
-                            <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et aidez-les de toutes les manières possibles.</p>
+                            <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et
+                                aidez-les de toutes les manières possibles.</p>
                         </div>
                     </div>
                 </div>
@@ -130,7 +212,7 @@
             <!-- ================= ÉCRAN 4 : RÔLE SOPHIE (VIRUS) ================= -->
             <div id="screen-virus" class="screen-layout">
                 <div class="role-wrapper">
-                    <div class="header-sophie spy-tilt-left">
+                    <div class="header-name spy-tilt-left">
                         <h2>SOPHIE</h2>
                     </div>
 
@@ -138,17 +220,22 @@
                     <div class="seal-logo virus-badge spy-tilt-right">
                         <svg viewBox="0 0 100 100">
                             <!-- Shield path with custom color directly -->
-                            <path d="M50 8 L 82 22 L 78 62 C 72 80, 50 90, 50 90 C 50 90, 28 80, 22 62 L 18 22 Z" fill="none" stroke="#b91c1c" stroke-width="4.5"/>
-                            <line x1="50" y1="14" x2="50" y2="84" stroke="#b91c1c" stroke-width="4"/>
-                            <path d="M34 28 Q 50 42, 66 28 T 34 56 Q 50 70, 66 56" fill="none" stroke="#b91c1c" stroke-width="4"/>
-                            <text x="50" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="black" stroke="white" stroke-width="1">V.I.R.U.S.</text>
+                            <path d="M50 8 L 82 22 L 78 62 C 72 80, 50 90, 50 90 C 50 90, 28 80, 22 62 L 18 22 Z"
+                                fill="none" stroke="#b91c1c" stroke-width="4.5" />
+                            <line x1="50" y1="14" x2="50" y2="84" stroke="#b91c1c" stroke-width="4" />
+                            <path d="M34 28 Q 50 42, 66 28 T 34 56 Q 50 70, 66 56" fill="none" stroke="#b91c1c"
+                                stroke-width="4" />
+                            <text x="50" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="black"
+                                stroke="white" stroke-width="1">V.I.R.U.S.</text>
                         </svg>
                     </div>
 
                     <!-- Enveloppe Révélation d'informations -->
                     <div class="hidden-role block-reveal-role envelope-details">
                         <div class="envelope-line spy-tilt-slight">
-                            <p>Pour le moment, vous travaillez pour le <span class="text-highlight-virus">VIRUS</span>. Votre mission est de ne pas être découvert et de faire en sorte que Le Service emprisonne l'un des leurs.</p>
+                            <p>Pour le moment, vous travaillez pour le <span class="text-highlight-virus">VIRUS</span>.
+                                Votre mission est de ne pas être découvert et de faire en sorte que Le Service
+                                emprisonne l'un des leurs.</p>
                         </div>
                         <div class="envelope-line spy-tilt-left complice-row">
                             <span class="complice-label">Complice :</span>
@@ -165,7 +252,8 @@
                 </div>
 
                 <div class="envelope-line spy-tilt-right" style="margin: 6px 0;">
-                    <p style="font-size: 10px;">Choisissez deux agents. Votre informateur vous révélera si l'un deux est un agent du VIRUS.</p>
+                    <p style="font-size: 10px;">Choisissez deux agents. Votre informateur vous révélera si l'un deux est
+                        un agent du VIRUS.</p>
                 </div>
 
                 <!-- Grille suspects -->
@@ -249,7 +337,8 @@
                 <div class="restart-wrapper">
                     <button onclick="restartGameSession()" class="btn-restart spy-tilt-slight" aria-label="Recommencer">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1-1.2 7.632M20 20v-5h-.581m0 0a8.003 8.003 0 01-15.357-2F" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 1-1.2 7.632M20 20v-5h-.581m0 0a8.003 8.003 0 01-15.357-2F" />
                         </svg>
                     </button>
                 </div>
@@ -270,7 +359,8 @@
                     <div class="settings-card spy-tilt-right">
                         <label class="settings-label">💀 DIFFICULTÉ TACTIQUE</label>
                         <div class="difficulty-selector">
-                            <button onclick="setScenarioDifficulty(this)" class="difficulty-option active">CLASSIQUE</button>
+                            <button onclick="setScenarioDifficulty(this)"
+                                class="difficulty-option active">CLASSIQUE</button>
                             <button onclick="setScenarioDifficulty(this)" class="difficulty-option">DOUBLE JEU</button>
                             <button onclick="setScenarioDifficulty(this)" class="difficulty-option">EXTRÊME</button>
                         </div>
@@ -278,10 +368,10 @@
 
                     <div class="settings-card spy-tilt-left settings-chrono">
                         <span class="settings-label">⏱️ CHRONO DU BRIEFING</span>
-                        <div class="chrono-control-group">
-                            <button onclick="changeChronoValue(-10)" class="chrono-btn">-10s</button>
-                            <span id="chrono-value" class="chrono-display-value">60s</span>
-                            <button onclick="changeChronoValue(10)" class="chrono-btn">+10s</button>
+                        <div class="select-control-group">
+                            <button onclick="changeChronoValue(-10)" class="select-btn">-10s</button>
+                            <span id="select-value" class="select-display-value">60s</span>
+                            <button onclick="changeChronoValue(10)" class="select-btn">+10s</button>
                         </div>
                     </div>
                 </div>
@@ -302,17 +392,20 @@
 
                 <!-- Bloc d'identification agent bas -->
                 <div class="agent-id-badge spy-tilt-left">
-                    <div class="icon-container" id="privacy-all">
+                    <div id="for-all-icon" class="icon-container">
                         <!-- Silhouette d'espion simplifiée -->
                         <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                clip-rule="evenodd" />
                         </svg>
                         <span class="badge-text">INFORMATION<br>PUBLIQUE</span>
                     </div>
-                    <div class="icon-container" id="privacy-all">
+                    <div id="private-icon" class="icon-container hidden">
                         <!-- Silhouette d'oeil barré: à l'abri des regards -->
                         <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 3a7 7 0 00-7 7v1a7 7 0 0014 0V10a7 7 0 00-7-7zm3.707 9.707a1 1 0 01-1.414-1.414L12.586 10H11V8h1.586l-.293-.293a1 1 0 011.414-1.414L15.414 8H17v2h-1.586l-.293.293z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd"
+                                d="M10 3a7 7 0 00-7 7v1a7 7 0 0014 0V10a7 7 0 00-7-7zm3.707 9.707a1 1 0 01-1.414-1.414L12.586 10H11V8h1.586l-.293-.293a1 1 0 011.414-1.414L15.414 8H17v2h-1.586l-.293.293z"
+                                clip-rule="evenodd" />
                         </svg>
                         <span class="badge-text">POUR VOS YEUX<br>UNIQUEMENT</span>
                     </div>
@@ -325,30 +418,29 @@
                 </div> -->
 
                 <!-- LE SCANNER D'EMPREINTE TACTILE -->
-                <div id="trigger-fingerprint">
+                <div id="trigger-fingerprint" class="fingerprint-sensor spy-tilt-right hidden"
+                    onmousedown="handleSensorHoldStart(event)" onmouseup="handleSensorHoldEnd()"
+                    onmouseleave="handleSensorHoldEnd()" ontouchstart="handleSensorHoldStart(event)"
+                    ontouchend="handleSensorHoldEnd()">
                     <!--
-                     onclick="handleSequentialClick()"
-                     onmousedown="handleSensorHoldStart(event)" 
-                     onmouseup="handleSensorHoldEnd()" 
-                     onmouseleave="handleSensorHoldEnd()"
-                     ontouchstart="handleSensorHoldStart(event)" 
-                     ontouchend="handleSensorHoldEnd()"-->
-                     class="fingerprint-sensor spy-tilt-right">
-                    
+                     onclick="handleSequentialClick()" -->
+
                     <div class="svg-wrapper">
                         <!-- Icon empreinte digitale -->
-                        <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 2a8 8 0 00-8 8v1a8 8 0 0016 0V10a8 8 0 00-8-8zm3.707 9.707a1 1 0 01-1.414-1.414L12.586 10H11V8h1.586l-.293-.293a1 1 0 011.414-1.414L15.414 8H17v2h-1.586l-.293.293z" clip-rule="evenodd"/>
+                        <svg class="animate-scan" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11a13.92 13.92 0 012.348-7.558M12 11c0-1.88-.317-3.685-.904-5.364M4.2 16c.342.92.83 1.776 1.44 2.536M18 10a13.9 13.9 0 01-5.044 10.74M21 16.001a13.904 13.904 0 01-2.28 2.817M12 3a13.904 13.904 0 016.904 1.817M12 3v3.315" />
                         </svg>
                     </div>
                 </div>
 
-                <!-- LE SCANNER D'EMPREINTE TACTILE -->
-                <div id="trigger-next" class="fingerprint-sensor spy-tilt-right">
+                <!-- SUIVANT -->
+                <div id="trigger-next" class="fingerprint-sensor spy-tilt-right" onclick="clickNext()">
                     <div class="svg-wrapper">
                         <!-- Icon flèche droite -->
                         <svg fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 2a8 8 0 00-8 8v1a8 8 0 0016 0V10a8 8 0 00-8-8zm3.707 9.707a1 1 0 01-1.414-1.414L12.586 10H11V8h1.586l-.293-.293a1 1 0 011.414-1.414L15.414 8H17v2h-1.586l-.293.293z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd"
+                                d="M10 2a8 8 0 00-8 8v1a8 8 0 0016 0V10a8 8 0 00-8-8zm3.707 9.707a1 1 0 01-1.414-1.414L12.586 10H11V8h1.586l-.293-.293a1 1 0 011.414-1.414L15.414 8H17v2h-1.586l-.293.293z"
+                                clip-rule="evenodd" />
                         </svg>
                     </div>
                 </div>
@@ -369,7 +461,9 @@
         <div class="modal-card spy-tilt-slight">
             <h3>🕵️ INTERFACE EMBARQUÉE</h3>
             <p>
-                Chaque page est calibrée sans aucun défilement vertical. Le bouton en forme d'empreinte digitale au bas de l'appareil remplace la commande "Suivant". Un clic rapide change d'écran, tandis qu'un maintien prolongé déverrouille les briefings de mission floutés.
+                Chaque page est calibrée sans aucun défilement vertical. Le bouton en forme d'empreinte digitale au bas
+                de l'appareil remplace la commande "Suivant". Un clic rapide change d'écran, tandis qu'un maintien
+                prolongé déverrouille les briefings de mission floutés.
             </p>
             <button onclick="toggleInfoModal()" class="spy-btn btn-modal-close">
                 REPRENDRE
@@ -379,5 +473,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
 
+</html>

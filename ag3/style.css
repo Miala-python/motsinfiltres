@@ -233,7 +233,7 @@ body {
     flex: 1;
     margin: 8px 0;
     overflow-y: auto;
-    max-height: 170px;
+    max-height: 50vh;
     padding-right: 2px;
 }
 
@@ -473,7 +473,7 @@ body {
 }
 
 /* Style Sophie Virus */
-.header-sophie {
+.header-name {
     background-color: var(--spy-paper);
     border: var(--border-width) solid var(--spy-black);
     box-shadow: 3px 3px 0px 0px var(--spy-black);
@@ -483,7 +483,7 @@ body {
     flex-shrink: 0;
 }
 
-.header-sophie h2 {
+.header-name h2 {
     font-size: 14px;
     font-weight: 800;
     letter-spacing: 0.05em;
@@ -746,13 +746,13 @@ body {
     align-items: center;
 }
 
-.chrono-control-group {
+.select-control-group {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-.chrono-btn {
+.select-btn {
     background-color: var(--spy-paper);
     border: 2px solid var(--spy-black);
     padding: 0 6px;
@@ -763,12 +763,12 @@ body {
     box-shadow: 1px 1px 0px 0px var(--spy-black);
 }
 
-.chrono-btn:active {
+.select-btn:active {
     transform: translate(0.5px, 0.5px);
     box-shadow: 0px 0px 0px 0px var(--spy-black);
 }
 
-.chrono-display-value {
+.select-display-value {
     font-size: 12px;
     font-weight: 900;
 }
@@ -1058,4 +1058,16 @@ body {
 .btn-modal-close:hover {
     background-color: #fde68a;
     /* Amber 200 */
+}
+
+
+/* Additionnel */
+
+
+.hidden {
+    display: none !important;
+}
+
+.fix-sized-20 {
+    height: 20vh;
 }

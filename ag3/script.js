@@ -13,7 +13,6 @@ const pageOrderList = [
 let currentActiveIndex = 0;
 
 // Base de simulation d'agents inscrits
-let mockAgents = ["J1", "J2", "SOPHIE", "HUGO", "O'KS"];
 let configuredChrono = 60;
 let suspectsSelected = [];
 let sensorHoldTimer;
@@ -23,7 +22,7 @@ function renderInscribedAgents() {
     const listContainer = document.getElementById('agents-list-container');
     listContainer.innerHTML = '';
 
-    mockAgents.forEach((agent, index) => {
+    GDt.agents.forEach((agent, index) => {
         const angleClass = index % 2 === 1 ? 'spy-tilt-left' : 'spy-tilt-right';
 
         listContainer.innerHTML += `
@@ -40,7 +39,7 @@ function renderInscribedAgents() {
 
     // Affichage de l'aide à l'enregistrement
     const helper = document.getElementById('register-helper-text');
-    if (mockAgents.length < 5) {
+    if (GDt.agents.length < 5) {
         helper.textContent = "Enregistrez au moins 5 joueurs pour continuer.";
         helper.className = "register-footer-text text-red";
     } else {
@@ -58,16 +57,16 @@ function handleAddAgent() {
         triggerSystemToast("Veuillez saisir un nom.");
         return;
     }
-    if (mockAgents.includes(name)) {
+    if (GDt.agents.includes(name)) {
         triggerSystemToast("Cet agent est déjà enregistré.");
         return;
     }
-    if (mockAgents.length >= 9) {
+    if (GDt.agents.length >= 9) {
         triggerSystemToast("9 agents maximum.");
         return;
     }
 
-    mockAgents.push(name);
+    GDt.agents.push(name);
     field.value = '';
     renderInscribedAgents();
     triggerSystemToast(`Recruté : ${name}`);
@@ -75,8 +74,8 @@ function handleAddAgent() {
 
 // Supprimer un agent
 function deleteAgent(index) {
-    const removed = mockAgents[index];
-    mockAgents.splice(index, 1);
+    const removed = GDt.agents[index];
+    GDt.agents.splice(index, 1);
     renderInscribedAgents();
     triggerSystemToast(`Retiré : ${removed}`);
 }
@@ -175,6 +174,10 @@ function handleSensorHoldStart(e) {
             el.classList.remove('hidden-role');
             el.classList.add('revealed-role');
         });
+        document.querySelectorAll('.anti-reveal-role').forEach(el => {
+            el.classList.add('hidden-role');
+            el.classList.remove('revealed-role');
+        });
         triggerSystemToast("🔑 ENVELOPPE DÉCRYPTÉE !");
     }, 600);
 }
@@ -184,6 +187,10 @@ function handleSensorHoldEnd() {
     document.querySelectorAll('.block-reveal-role').forEach(el => {
         el.classList.add('hidden-role');
         el.classList.remove('revealed-role');
+    });
+    document.querySelectorAll('.anti-reveal-role').forEach(el => {
+        el.classList.remove('hidden-role');
+        el.classList.add('revealed-role');
     });
 }
 
@@ -246,7 +253,7 @@ function setScenarioDifficulty(btn) {
 
 function changeChronoValue(amount) {
     configuredChrono = Math.max(10, configuredChrono + amount);
-    document.getElementById('chrono-value').textContent = `${configuredChrono}s`;
+    document.getElementById('select-value').textContent = `${configuredChrono}s`;
 }
 
 // Notification visuelle intégrée
@@ -296,12 +303,88 @@ function restartGameSession() {
 window.onload = function () {
     renderInscribedAgents();
 }
-
-
 // Code plus
 
+var GDt = {
+    page: 'register',
+    agents: ["J1", "J2", "SOPHIE", "HUGO", "O'KS"],
+    roles: [],
+    ajouer: [],
+    selects: {
+        'virus': { max: 0, min: 0, value: 0 }
+    }
+}
 
+function randint(a, b) {
+    return Math.floor(Math.random() * (b - a)) + a
+}
 
+function fillAjouer() {
+    GDt.ajouer = Array.from({ length: GDt.agents.length }, (_, i) => i)
+}
+
+function popAjouer() {
+    const idxs = randint(0, GDt.ajouer.length)
+    const idxr = GDt.ajouer[idxs]
+    GDt.ajouer.splice(idxs, 1)
+    return idxr
+}
+
+function clickNext() {
+    if (GDt.page == 'register') {
+        GDt.page = 'role';
+        document.getElementById('screen-register').classList.remove('active');
+        document.getElementById('screen-role').classList.add('active');
+
+        GDt.roles = Array(GDt.agents.length).fill('service');
+        fillAjouer();
+        for (let i = 0; i < GDt.selects.virus.value; i++) {
+            const idxr = popAjouer();
+            GDt.roles[idxr] = 'virus';
+        }
+
+        fillAjouer();
+        document.getElementById('for-all-icon').classList.add('hidden');
+        document.getElementById('private-icon').classList.remove('hidden');
+        document.getElementById('trigger-fingerprint').classList.remove('hidden');
+    }
+
+    if (GDt.page == 'role') {
+
+        if (GDt.ajouer.length == 0) {
+
+        } else {
+            const idx = popAjouer();
+            const name = GDt.agents[idx];
+            const role = GDt.roles[idx];
+            document.getElementById('header-name').innerText = name;
+            document.getElementById('envelope-virus').classList.add('hidden');
+            document.getElementById('envelope-service').classList.add('hidden');
+            document.getElementById('envelope-' + role).classList.remove('hidden');
+            if (role == 'service') {
+                document.getElementById('nb-virus').innerText = GDt.selects.virus.value;
+            } else {
+                let txt = '<span class="complice-label">Complices :</span>'
+                for (i = 0; i < GDt.roles.length; i++) {
+                    if (i != idx && GDt.roles[i] == 'virus') {
+                        txt += '<span class="complice-value">' + GDt.agents[i] + '</span>'
+                    }
+                }
+                document.getElementById('virus-list').innerHTML = txt;
+            }
+        }
+
+    }
+
+}
+
+function changeQuantityValue(id, amount) {
+    GDt.selects.virus.max = GDt.agents.length;
+    const select = GDt.selects[id];
+    select.value = Math.max(Math.min(select.max, select.value + amount), select.min);
+    document.getElementById(`select-${id}-value`).textContent = `${select.value}`;
+    return select.value;
+}
 
 
 

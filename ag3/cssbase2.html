@@ -177,7 +177,7 @@
             </div>
 
             <!-- ================= ÉCRAN 2 : RÔLE J1 (THE SERVICE) ================= -->
-            <div id="screen-service" class="screen-layout">
+            <div id="screen-role" class="screen-layout">
                 <div class="flex flex-col items-center justify-center flex-1 space-y-2 my-auto">
                     <!-- Sceau Le Service -->
                     <div class="w-16 h-16 bg-spy-paper rounded-full border-spy-black shadow-spy flex items-center justify-center spy-tilt-left p-1 shrink-0">
@@ -386,7 +386,7 @@
                         <span class="text-[10px] font-bold uppercase">⏱️ CHRONO DU BRIEFING</span>
                         <div class="flex items-center gap-1">
                             <button onclick="changeChronoValue(-10)" class="spy-btn border-2 border-black bg-spy-paper px-1.5 text-xs font-bold">-10s</button>
-                            <span id="chrono-value" class="font-extrabold text-xs">60s</span>
+                            <span id="select-value" class="font-extrabold text-xs">60s</span>
                             <button onclick="changeChronoValue(10)" class="spy-btn border-2 border-black bg-spy-paper px-1.5 text-xs font-bold">+10s</button>
                         </div>
                     </div>
@@ -707,7 +707,7 @@
 
         function changeChronoValue(amount) {
             configuredChrono = Math.max(10, configuredChrono + amount);
-            document.getElementById('chrono-value').textContent = `${configuredChrono}s`;
+            document.getElementById('select-value').textContent = `${configuredChrono}s`;
         }
 
         // Notification visuelle intégrée

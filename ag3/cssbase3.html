@@ -476,7 +476,7 @@
         }
 
         /* Style Sophie Virus */
-        .header-sophie {
+        .header-name {
             background-color: var(--spy-paper);
             border: var(--border-width) solid var(--spy-black);
             box-shadow: 3px 3px 0px 0px var(--spy-black);
@@ -486,7 +486,7 @@
             flex-shrink: 0;
         }
 
-        .header-sophie h2 {
+        .header-name h2 {
             font-size: 14px;
             font-weight: 800;
             letter-spacing: 0.05em;
@@ -749,13 +749,13 @@
             align-items: center;
         }
 
-        .chrono-control-group {
+        .select-control-group {
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .chrono-btn {
+        .select-btn {
             background-color: var(--spy-paper);
             border: 2px solid var(--spy-black);
             padding: 0 6px;
@@ -766,12 +766,12 @@
             box-shadow: 1px 1px 0px 0px var(--spy-black);
         }
 
-        .chrono-btn:active {
+        .select-btn:active {
             transform: translate(0.5px, 0.5px);
             box-shadow: 0px 0px 0px 0px var(--spy-black);
         }
 
-        .chrono-display-value {
+        .select-display-value {
             font-size: 12px;
             font-weight: 900;
         }
@@ -1107,7 +1107,7 @@
             </div>
 
             <!-- ================= ÉCRAN 2 : RÔLE J1 (THE SERVICE) ================= -->
-            <div id="screen-service" class="screen-layout">
+            <div id="screen-role" class="screen-layout">
                 <div class="role-wrapper">
                     <!-- Sceau Le Service -->
                     <div class="seal-logo spy-tilt-left">
@@ -1165,7 +1165,7 @@
             <!-- ================= ÉCRAN 4 : RÔLE SOPHIE (VIRUS) ================= -->
             <div id="screen-virus" class="screen-layout">
                 <div class="role-wrapper">
-                    <div class="header-sophie spy-tilt-left">
+                    <div class="header-name spy-tilt-left">
                         <h2>SOPHIE</h2>
                     </div>
 
@@ -1313,10 +1313,10 @@
 
                     <div class="settings-card spy-tilt-left settings-chrono">
                         <span class="settings-label">⏱️ CHRONO DU BRIEFING</span>
-                        <div class="chrono-control-group">
-                            <button onclick="changeChronoValue(-10)" class="chrono-btn">-10s</button>
-                            <span id="chrono-value" class="chrono-display-value">60s</span>
-                            <button onclick="changeChronoValue(10)" class="chrono-btn">+10s</button>
+                        <div class="select-control-group">
+                            <button onclick="changeChronoValue(-10)" class="select-btn">-10s</button>
+                            <span id="select-value" class="select-display-value">60s</span>
+                            <button onclick="changeChronoValue(10)" class="select-btn">+10s</button>
                         </div>
                     </div>
                 </div>
@@ -1650,7 +1650,7 @@
 
         function changeChronoValue(amount) {
             configuredChrono = Math.max(10, configuredChrono + amount);
-            document.getElementById('chrono-value').textContent = `${configuredChrono}s`;
+            document.getElementById('select-value').textContent = `${configuredChrono}s`;
         }
 
         // Notification visuelle intégrée

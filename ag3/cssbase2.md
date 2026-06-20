@@ -41,7 +41,7 @@ Situé au bas de l'appareil de jeu, le module d'empreinte digitale a été repen
 [ Écran 7 : Paramètres ]
 ```
  1. **Inscription (#screen-register)** : Permet de gérer la liste des joueurs en cours. Ajout et retrait dynamiques d'agents avec contrôle de conformité.
- 2. **Briefing Service (#screen-service)** : Sceau de l'agence du Service et instructions sur le nombre de complices du VIRUS présents.
+ 2. **Briefing Service (#screen-role)** : Sceau de l'agence du Service et instructions sur le nombre de complices du VIRUS présents.
  3. **Obsession Adoration (#screen-adoration)** : Écran décrivant l'obsession secrète d'un joueur devant faire triompher la cible désignée (J1).
  4. **Infiltration Virus (#screen-virus)** : Insigne du serpent et identité des complices (Sophie & Hugo).
  5. **Informateur Secret (#screen-informant)** : Grille de sélection tactile permettant d'inspecter deux agents pour savoir si l'un d'eux appartient à la faction adverse.
