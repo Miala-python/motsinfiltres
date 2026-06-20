@@ -1,3 +1,4 @@
+// Code base
 
 // --- ARCHITECTURE INTERACTIVE & LOGIQUE DES PAGES ---
 const pageOrderList = [
@@ -295,3 +296,12 @@ function restartGameSession() {
 window.onload = function () {
     renderInscribedAgents();
 }
+
+
+// Code plus
+
+
+
+
+
+

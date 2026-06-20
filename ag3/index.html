@@ -325,16 +325,28 @@
                 </div> -->
 
                 <!-- LE SCANNER D'EMPREINTE TACTILE -->
-                <div id="trigger-fingerprint" 
+                <div id="trigger-fingerprint">
+                    <!--
                      onclick="handleSequentialClick()"
                      onmousedown="handleSensorHoldStart(event)" 
                      onmouseup="handleSensorHoldEnd()" 
                      onmouseleave="handleSensorHoldEnd()"
                      ontouchstart="handleSensorHoldStart(event)" 
-                     ontouchend="handleSensorHoldEnd()"
+                     ontouchend="handleSensorHoldEnd()"-->
                      class="fingerprint-sensor spy-tilt-right">
+                    
                     <div class="svg-wrapper">
                         <!-- Icon empreinte digitale -->
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a8 8 0 00-8 8v1a8 8 0 0016 0V10a8 8 0 00-8-8zm3.707 9.707a1 1 0 01-1.414-1.414L12.586 10H11V8h1.586l-.293-.293a1 1 0 011.414-1.414L15.414 8H17v2h-1.586l-.293.293z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- LE SCANNER D'EMPREINTE TACTILE -->
+                <div id="trigger-next" class="fingerprint-sensor spy-tilt-right">
+                    <div class="svg-wrapper">
+                        <!-- Icon flèche droite -->
                         <svg fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 2a8 8 0 00-8 8v1a8 8 0 0016 0V10a8 8 0 00-8-8zm3.707 9.707a1 1 0 01-1.414-1.414L12.586 10H11V8h1.586l-.293-.293a1 1 0 011.414-1.414L15.414 8H17v2h-1.586l-.293.293z" clip-rule="evenodd"/>
                         </svg>
