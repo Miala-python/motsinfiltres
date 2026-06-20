@@ -1,0 +1,762 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spy Game - Maquette Interactive No-Scroll</title>
+    <!-- Tailwind CSS pour la structure fluide -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Police condensée style Comic/Espionnage -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CONCEPTION TECHNIQUE NO-SCROLL & STYLE RETRO */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Blocage complet de tout défilement */
+            background-color: #0d0907;
+            font-family: 'Oswald', 'Impact', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Palette de couleurs */
+        .bg-spy-orange {
+            background-color: #b54d24; /* Couleur rouille iconique */
+        }
+        .bg-spy-paper {
+            background-color: #f2eedb; /* Couleur beige des dossiers secrets */
+        }
+        .border-spy-black {
+            border: 3px solid #111111;
+        }
+        .shadow-spy {
+            box-shadow: 3px 3px 0px 0px rgba(11, 11, 11, 1);
+        }
+
+        /* Inclinaisons asymétriques style BD */
+        .spy-tilt-left {
+            transform: rotate(-1.2deg) skewX(-1deg);
+        }
+        .spy-tilt-right {
+            transform: rotate(1deg) skewX(0.8deg);
+        }
+        .spy-tilt-slight {
+            transform: rotate(-0.5deg);
+        }
+
+        /* Boutons avec retour d'état de pression */
+        .spy-btn {
+            transition: transform 0.05s ease, box-shadow 0.05s ease;
+        }
+        .spy-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px 0px rgba(11, 11, 11, 1);
+        }
+
+        /* Inputs de formulaires compacts */
+        .spy-input {
+            border: 2.5px solid #111111;
+            background-color: #f2eedb;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .spy-input::placeholder {
+            color: #837c6d;
+            font-style: italic;
+        }
+
+        /* États cachés d'informations (Révélables au survol/clic long) */
+        .hidden-role {
+            filter: blur(8px);
+            opacity: 0.2;
+            transition: filter 0.2s ease, opacity 0.2s ease;
+        }
+        .revealed-role {
+            filter: none !important;
+            opacity: 1 !important;
+        }
+
+        /* Scannage d'empreinte interactif */
+        @keyframes scan-animation {
+            0%, 100% { transform: scale(1); opacity: 0.85; }
+            50% { transform: scale(1.04); opacity: 1; }
+        }
+        .animate-scan {
+            animation: scan-animation 1.5s infinite ease-in-out;
+        }
+
+        /* Layout absolu des pages */
+        .screen-layout {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .screen-layout.active {
+            display: flex;
+        }
+
+        /* Personnalisation du conteneur de liste */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #111111;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center w-full h-full p-1 sm:p-2">
+
+    <!-- CADRE SIMULATEUR MOBILE : S'adapte au viewport (max h-full/100vh) -->
+    <div class="relative w-full max-w-[375px] h-full max-h-[740px] bg-spy-orange border-spy-black shadow-spy rounded-[2rem] overflow-hidden flex flex-col justify-between">
+        
+        <!-- BARRE STATUT (Haut de page) -->
+        <div class="w-full bg-black py-0.5 px-4 flex justify-between items-center text-white text-[9px] tracking-widest shrink-0 z-30">
+            <span class="font-bold">AGENT DECK v1.4</span>
+            <span id="screen-badge" class="bg-yellow-400 text-black px-1 rounded font-black uppercase text-[8px]">CONFIG</span>
+        </div>
+
+        <!-- HEADER UTILITAIRE (Taille réduite pour optimiser le vertical) -->
+        <div class="w-full px-3 pt-2 pb-0.5 flex justify-between items-center shrink-0 z-30">
+            <!-- Bouton aide / modal -->
+            <button onclick="toggleInfoModal()" class="bg-spy-paper border-spy-black shadow-spy w-7 h-7 font-black text-sm spy-tilt-left spy-btn flex items-center justify-center hover:bg-yellow-50">
+                ?
+            </button>
+            
+            <!-- Titre d'écran dynamique -->
+            <div id="screen-header-title" class="bg-spy-paper border-spy-black shadow-spy px-3 py-0.5 spy-tilt-slight text-xs font-bold uppercase">
+                ENREGISTREMENT
+            </div>
+
+            <!-- Configuration rapide -->
+            <button onclick="switchActivePage('settings')" class="bg-spy-paper border-spy-black shadow-spy p-1.5 spy-tilt-left spy-btn">
+                <svg class="w-3.5 h-3.5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- ZONE DE RENDU DES MAQUETTES (No-Scroll / Flex vertical restreint) -->
+        <div class="flex-1 w-full px-4 py-1 overflow-hidden flex flex-col justify-between">
+
+            <!-- ================= ÉCRAN 1 : INSCRIPTION DES JOUEURS ================= -->
+            <div id="screen-register" class="screen-layout active">
+                <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-slight shrink-0">
+                    <h2 class="text-xs font-bold uppercase tracking-tight">Enregistrez 5 à 9 agents.</h2>
+                </div>
+
+                <!-- Liste défilable uniquement si excès de joueurs (bloqué en hauteur) -->
+                <div id="agents-list-container" class="flex-1 my-2 overflow-y-auto custom-scrollbar space-y-1.5 pr-0.5 max-h-[170px]">
+                    <!-- Injecté par JavaScript -->
+                </div>
+
+                <!-- Zone d'ajout compacte -->
+                <div class="space-y-1.5 shrink-0">
+                    <div class="spy-tilt-left">
+                        <input id="input-new-agent" type="text" placeholder="NOM D'AGENT" maxlength="10" class="spy-input w-full px-2.5 py-1 text-center text-xs shadow-spy">
+                    </div>
+                    <button onclick="handleAddAgent()" class="w-full spy-btn bg-spy-paper border-spy-black shadow-spy py-1.5 text-[10px] font-black tracking-wider uppercase spy-tilt-right hover:bg-amber-100">
+                        + AJOUTER L'AGENT DANS LA BASE
+                    </button>
+                </div>
+
+                <!-- Footer indicatif de l'écran 1 -->
+                <div class="mt-2 shrink-0">
+                    <div class="bg-spy-paper border-spy-black py-0.5 px-3 text-center spy-tilt-slight">
+                        <p id="register-helper-text" class="text-[10px] font-bold text-red-600 leading-tight">Enregistrez au moins 5 joueurs pour continuer.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 2 : RÔLE J1 (THE SERVICE) ================= -->
+            <div id="screen-service" class="screen-layout">
+                <div class="flex flex-col items-center justify-center flex-1 space-y-2 my-auto">
+                    <!-- Sceau Le Service -->
+                    <div class="w-16 h-16 bg-spy-paper rounded-full border-spy-black shadow-spy flex items-center justify-center spy-tilt-left p-1 shrink-0">
+                        <svg viewBox="0 0 100 100" class="w-full h-full text-black">
+                            <circle cx="50" cy="50" r="44" fill="none" stroke="black" stroke-width="4.5"/>
+                            <circle cx="50" cy="50" r="37" fill="none" stroke="black" stroke-dasharray="3 3" stroke-width="1.5"/>
+                            <path d="M15 50 C 30 22, 70 22, 85 50 C 70 78, 30 78, 15 50 Z" fill="none" stroke="black" stroke-width="4.5"/>
+                            <circle cx="50" cy="50" r="13" fill="black" />
+                            <circle cx="50" cy="50" r="5" fill="white" />
+                            <text x="50" y="23" text-anchor="middle" font-size="7.5" font-weight="900" letter-spacing="0.5">THE SERVICE</text>
+                        </svg>
+                    </div>
+
+                    <!-- Enveloppe Révélation d'informations -->
+                    <div class="hidden-role block-reveal-role w-full space-y-1.5">
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-slight">
+                            <p class="text-[11px] font-bold">Pour le moment, vous travaillez pour <span class="text-amber-800 text-xs font-extrabold">Le Service</span>.</p>
+                        </div>
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-right">
+                            <p class="text-[11px] font-bold">Il y a <span class="text-red-600 font-extrabold text-xs">2 agents</span> du VIRUS.</p>
+                        </div>
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-left">
+                            <p class="text-[11px] font-bold leading-tight">Pour gagner, vous devez emprisonner l'une de leurs recrues.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 3 : RÔLE J2 (ADORATION) ================= -->
+            <div id="screen-adoration" class="screen-layout">
+                <div class="flex flex-col justify-center flex-1 space-y-2.5 my-auto">
+                    <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-4 text-center spy-tilt-left bg-red-100 shrink-0">
+                        <h2 class="text-lg font-black tracking-widest text-red-600">ADORATION</h2>
+                    </div>
+
+                    <!-- Enveloppe Adoration floutée -->
+                    <div class="hidden-role block-reveal-role space-y-1.5">
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-right">
+                            <p class="text-[11px] font-bold leading-tight">À partir de maintenant, pour gagner, vous devez <span class="text-red-600 font-extrabold">faire gagner J1</span>.</p>
+                        </div>
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-left">
+                            <p class="text-[11px] font-bold leading-tight">Vous vous éprenez d'amour pour J1, dont le bonheur est la seule chose qui compte.</p>
+                        </div>
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-slight">
+                            <span class="text-[8px] font-bold text-gray-500 uppercase block leading-none">Vous adorez :</span>
+                            <span class="text-md font-black text-red-600 tracking-wider">J1</span>
+                        </div>
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-right">
+                            <p class="text-[9px] font-bold text-stone-700 italic leading-none">Astuce : Essayez de découvrir à quelle équipe J1 appartient et aidez-les de toutes les manières possibles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 4 : RÔLE SOPHIE (VIRUS) ================= -->
+            <div id="screen-virus" class="screen-layout">
+                <div class="flex flex-col items-center justify-center flex-1 space-y-2 my-auto">
+                    <div class="bg-spy-paper border-spy-black shadow-spy py-0.5 px-4 w-full text-center spy-tilt-left shrink-0">
+                        <h2 class="text-sm font-extrabold tracking-wider">SOPHIE</h2>
+                    </div>
+
+                    <!-- Insigne Serpent VIRUS -->
+                    <div class="w-16 h-16 bg-spy-paper rounded-xl border-spy-black shadow-spy flex items-center justify-center spy-tilt-right p-1 shrink-0">
+                        <svg viewBox="0 0 100 100" class="w-full h-full text-red-700">
+                            <path d="M50 8 L 82 22 L 78 62 C 72 80, 50 90, 50 90 C 50 90, 28 80, 22 62 L 18 22 Z" fill="none" stroke="currentColor" stroke-width="4.5"/>
+                            <line x1="50" y1="14" x2="50" y2="84" stroke="currentColor" stroke-width="4"/>
+                            <path d="M34 28 Q 50 42, 66 28 T 34 56 Q 50 70, 66 56" fill="none" stroke="currentColor" stroke-width="4"/>
+                            <text x="50" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="black" stroke="white" stroke-width="1">V.I.R.U.S.</text>
+                        </svg>
+                    </div>
+
+                    <!-- Enveloppe Révélation d'informations -->
+                    <div class="hidden-role block-reveal-role w-full space-y-1.5">
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-slight">
+                            <p class="text-[11px] font-bold leading-tight">Pour le moment, vous travaillez pour le <span class="text-red-700 font-extrabold">VIRUS</span>. Votre mission est de ne pas être découvert et de faire en sorte que Le Service emprisonne l'un des leurs.</p>
+                        </div>
+                        <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-left flex justify-between items-center">
+                            <span class="text-[9px] font-bold text-gray-500 uppercase leading-none">Complice :</span>
+                            <span class="text-xs font-black tracking-widest text-red-700">HUGO</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 5 : ACTION (INFORMATEUR SECRET) ================= -->
+            <div id="screen-informant" class="screen-layout">
+                <div class="bg-spy-paper border-spy-black shadow-spy py-0.5 px-3 text-center spy-tilt-slight shrink-0">
+                    <h2 class="text-sm font-black tracking-wide uppercase">INFORMATEUR SECRET</h2>
+                </div>
+
+                <div class="bg-spy-paper border-spy-black shadow-spy py-1 px-3 text-center spy-tilt-right my-1.5 shrink-0">
+                    <p class="text-[10px] font-bold leading-tight">Choisissez deux agents. Votre informateur vous révélera si l'un deux est un agent du VIRUS.</p>
+                </div>
+
+                <!-- Grille ultra compacte des suspects -->
+                <div class="grid grid-cols-2 gap-1.5 my-1 flex-1 items-center overflow-hidden">
+                    <button onclick="toggleSuspect(this, 'O\'KS')" class="suspect-btn h-11 spy-btn bg-stone-700 text-white border-spy-black shadow-spy px-2 flex justify-between items-center spy-tilt-left">
+                        <span class="font-extrabold text-xs tracking-wider">O'KS</span>
+                        <span class="check-box-indicator text-yellow-400 font-black text-xs"></span>
+                    </button>
+                    <button onclick="toggleSuspect(this, 'DBDJ')" class="suspect-btn h-11 spy-btn bg-stone-700 text-white border-spy-black shadow-spy px-2 flex justify-between items-center spy-tilt-right">
+                        <span class="font-extrabold text-xs tracking-wider">DBDJ</span>
+                        <span class="check-box-indicator text-yellow-400 font-black text-xs"></span>
+                    </button>
+                    <button onclick="toggleSuspect(this, 'J2')" class="suspect-btn h-11 spy-btn bg-spy-paper text-black border-spy-black shadow-spy px-2 flex justify-between items-center spy-tilt-left">
+                        <span class="font-extrabold text-xs tracking-wider">J2</span>
+                        <span class="check-box-indicator text-black font-black text-xs"></span>
+                    </button>
+                    <button onclick="toggleSuspect(this, 'J1')" class="suspect-btn h-11 spy-btn bg-spy-paper text-black border-spy-black shadow-spy px-2 flex justify-between items-center spy-tilt-right">
+                        <span class="font-extrabold text-xs tracking-wider">J1</span>
+                        <span class="check-box-indicator text-black font-black text-xs"></span>
+                    </button>
+                </div>
+
+                <!-- Bouton de validation d'analyse local -->
+                <div class="mt-1 shrink-0">
+                    <button onclick="verifySuspectFactions()" class="w-full spy-btn border-spy-black shadow-spy bg-yellow-400 py-1.5 text-[10px] font-black tracking-wider uppercase text-center spy-tilt-slight hover:bg-yellow-500">
+                        APPUYEZ POUR CONFIRMER LA SÉLECTION
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 6 : RÉSULTATS FINAUX ================= -->
+            <div id="screen-results" class="screen-layout">
+                <div class="space-y-2 flex-1 flex flex-col justify-center">
+                    <!-- GAGNANTS -->
+                    <div class="space-y-1">
+                        <div class="bg-black text-white py-0.5 px-3 text-center spy-tilt-left text-[10px] font-bold tracking-widest">
+                            GAGNANTS
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <div class="bg-spy-paper border-spy-black shadow-spy px-3 py-1 flex items-center gap-1.5 spy-tilt-right">
+                                <span class="text-xs">☣️</span>
+                                <span class="text-[11px] font-black tracking-wide">DBDJ</span>
+                            </div>
+                            <div class="bg-spy-paper border-spy-black shadow-spy px-3 py-1 flex items-center gap-1.5 spy-tilt-left">
+                                <span class="text-xs">☣️</span>
+                                <span class="text-[11px] font-black tracking-wide">O'KS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PERDANTS -->
+                    <div class="space-y-1.5 pt-1">
+                        <div class="bg-black text-white py-0.5 px-3 text-center spy-tilt-right text-[10px] font-bold tracking-widest">
+                            PERDANTS
+                        </div>
+                        <div class="space-y-1">
+                            <div class="bg-spy-paper border-spy-black shadow-spy px-3 py-1 flex justify-between items-center spy-tilt-left">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs">👁️</span>
+                                    <span class="text-[11px] font-black tracking-wide">J1</span>
+                                </div>
+                                <span class="text-red-500 text-xs">❤️</span>
+                            </div>
+                            <div class="bg-spy-paper border-spy-black shadow-spy px-3 py-1 flex justify-between items-center spy-tilt-right">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs">👁️</span>
+                                    <span class="text-[11px] font-black tracking-wide">J2</span>
+                                </div>
+                                <span class="text-black text-xs">👤</span>
+                            </div>
+                            <div class="bg-spy-paper border-spy-black shadow-spy px-3 py-1 flex justify-between items-center spy-tilt-left">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs">👁️</span>
+                                    <span class="text-[11px] font-black tracking-wide">DJDJ</span>
+                                </div>
+                                <span class="text-gray-500 text-[9px] uppercase">RÉVÉLÉ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton Rejouer -->
+                <div class="mt-auto pt-1.5 flex justify-center shrink-0">
+                    <button onclick="restartGameSession()" class="w-10 h-10 bg-spy-paper border-spy-black shadow-spy rounded-full flex items-center justify-center hover:bg-yellow-100 transition spy-tilt-slight active:scale-90">
+                        <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1-1.2 7.632M20 20v-5h-.581m0 0a8.003 8.003 0 01-15.357-2F" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= ÉCRAN 7 : PARAMÈTRES ================= -->
+            <div id="screen-settings" class="screen-layout">
+                <div class="bg-spy-paper border-spy-black shadow-spy py-0.5 px-3 text-center spy-tilt-slight shrink-0">
+                    <h2 class="text-xs font-black uppercase tracking-wide">⚙️ INTERFACES TECHNIQUES</h2>
+                </div>
+
+                <div class="space-y-2 my-2 flex-1 flex flex-col justify-center">
+                    <div class="bg-spy-paper border-spy-black shadow-spy p-2 spy-tilt-left">
+                        <label class="block text-[10px] font-bold uppercase mb-0.5">🔊 EFFETS DE SCAN</label>
+                        <input type="range" class="w-full accent-[#b54d24]" min="0" max="100" value="70">
+                    </div>
+
+                    <div class="bg-spy-paper border-spy-black shadow-spy p-2 spy-tilt-right">
+                        <label class="block text-[10px] font-bold uppercase mb-1">💀 DIFFICULTÉ TACTIQUE</label>
+                        <div class="grid grid-cols-3 gap-1">
+                            <button onclick="setScenarioDifficulty(this)" class="difficulty-option py-0.5 text-[9px] font-bold border-2 border-black bg-yellow-400">CLASSIQUE</button>
+                            <button onclick="setScenarioDifficulty(this)" class="difficulty-option py-0.5 text-[9px] font-bold border-2 border-black bg-spy-paper">DOUBLE JEU</button>
+                            <button onclick="setScenarioDifficulty(this)" class="difficulty-option py-0.5 text-[9px] font-bold border-2 border-black bg-spy-paper">EXTRÊME</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-spy-paper border-spy-black shadow-spy p-2 spy-tilt-left flex justify-between items-center">
+                        <span class="text-[10px] font-bold uppercase">⏱️ CHRONO DU BRIEFING</span>
+                        <div class="flex items-center gap-1">
+                            <button onclick="changeChronoValue(-10)" class="spy-btn border-2 border-black bg-spy-paper px-1.5 text-xs font-bold">-10s</button>
+                            <span id="chrono-value" class="font-extrabold text-xs">60s</span>
+                            <button onclick="changeChronoValue(10)" class="spy-btn border-2 border-black bg-spy-paper px-1.5 text-xs font-bold">+10s</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton de retour -->
+                <div class="mt-auto shrink-0">
+                    <button onclick="switchActivePage('register')" class="w-full spy-btn border-spy-black shadow-spy py-1.5 text-xs font-black bg-amber-100 hover:bg-amber-200 spy-tilt-right">
+                        APQUER LA CONFIGURATION
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= PERSISTENT BOTTOM COMPONENT : FINGERPRINT NAVIGATION ================= -->
+        <div class="w-full bg-stone-900 border-t-4 border-black p-2 shrink-0 z-40">
+            
+            <!-- CONTENANT D'EMPREINTE : SERT DÉSORMAIS DE BOUTON SUIVANT ET DE SCANNER -->
+            <div class="w-full bg-spy-orange border-spy-black shadow-spy p-2 rounded-xl flex items-center justify-between">
+                
+                <!-- Bloc Identifiant d'Agent bas (Inspiré du layout original) -->
+                <div class="flex items-center gap-2 bg-spy-paper border-spy-black shadow-spy py-1 px-2.5 spy-tilt-left rounded-lg shrink-0 select-none">
+                    <div class="flex flex-col">
+                        <!-- Silhouette d'espion simplifiée -->
+                        <svg class="w-5 h-5 text-black mx-auto mb-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-[8px] font-black tracking-tight uppercase leading-none text-center">POUR VOS YEUX<br>UNIQUEMENT</span>
+                    </div>
+                </div>
+
+                <!-- Texte instructif dynamique -->
+                <div class="flex-1 px-2 text-center select-none">
+                    <p class="text-[9px] font-black text-stone-100 uppercase tracking-widest leading-tight">Maintien décrypte</p>
+                    <p class="text-[10px] font-black text-yellow-400 uppercase tracking-tight animate-pulse">Clic : Page suivante ➔</p>
+                </div>
+
+                <!-- L'EMPREINTE TACTILE COMPACTE : Actionne la navigation séquentielle d'un simple clic -->
+                <!-- Également utilisable pour le décryptage d'un clic-droit/clic-long -->
+                <div id="trigger-fingerprint" 
+                     onclick="handleSequentialClick()"
+                     onmousedown="handleSensorHoldStart(event)" 
+                     onmouseup="handleSensorHoldEnd()" 
+                     onmouseleave="handleSensorHoldEnd()"
+                     ontouchstart="handleSensorHoldStart(event)" 
+                     ontouchend="handleSensorHoldEnd()"
+                     class="w-14 h-16 bg-spy-paper border-spy-black shadow-spy rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-yellow-100 active:scale-95 transition-all spy-tilt-right shrink-0 select-none">
+                    <div class="relative w-10 h-10">
+                        <!-- Design de l'empreinte digitale de la maquette -->
+                        <svg class="w-full h-full text-black animate-scan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11a13.92 13.92 0 012.348-7.558M12 11c0-1.88-.317-3.685-.904-5.364M4.2 16c.342.92.83 1.776 1.44 2.536M18 10a13.9 13.9 0 01-5.044 10.74M21 16.001a13.904 13.904 0 01-2.28 2.817M12 3a13.904 13.904 0 016.904 1.817M12 3v3.315" />
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CONTROLE RAPIDE D'AUDIT POUR DESIGNERS (Toujours présent, miniature en un clic) -->
+            <div class="grid grid-cols-7 gap-0.5 text-[7px] font-bold text-center mt-1.5">
+                <button onclick="switchActivePage('register')" class="bg-stone-800 hover:bg-stone-700 text-white p-0.5 rounded-sm">1. REG</button>
+                <button onclick="switchActivePage('service')" class="bg-stone-800 hover:bg-stone-700 text-white p-0.5 rounded-sm">2. J1</button>
+                <button onclick="switchActivePage('adoration')" class="bg-stone-800 hover:bg-stone-700 text-white p-0.5 rounded-sm">3. J2</button>
+                <button onclick="switchActivePage('virus')" class="bg-stone-800 hover:bg-stone-700 text-white p-0.5 rounded-sm">4. VIR</button>
+                <button onclick="switchActivePage('informant')" class="bg-stone-800 hover:bg-stone-700 text-white p-0.5 rounded-sm">5. INF</button>
+                <button onclick="switchActivePage('results')" class="bg-stone-800 hover:bg-stone-700 text-white p-0.5 rounded-sm">6. RES</button>
+                <button onclick="switchActivePage('settings')" class="bg-stone-800 hover:bg-stone-700 text-white p-0.5 rounded-sm">7. SET</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BANDEAU DE TOAST / NOTIFICATION INTÉGRÉ (Évite l'alert standard) -->
+    <div id="toast-notif" class="fixed bottom-6 bg-yellow-300 text-black border-4 border-black font-extrabold px-4 py-2 rounded shadow-2xl text-center transform translate-y-24 opacity-0 transition-all duration-200 pointer-events-none z-50 spy-tilt-slight uppercase text-[10px]">
+        Notification système
+    </div>
+
+    <!-- MODAL POPUP D'AIDE TECHNIQUE -->
+    <div id="help-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-spy-paper border-spy-black shadow-spy p-4 max-w-xs w-full spy-tilt-slight flex flex-col space-y-2">
+            <h3 class="text-md font-black text-center border-b-2 border-black pb-1">🕵️ INTERFACE EMBARQUÉE</h3>
+            <p class="text-[10px] font-bold text-stone-800 leading-normal text-justify">
+                Chaque page est calibrée sans aucun défilement vertical. Le bouton en forme d'empreinte digitale au bas de l'appareil remplace la commande "Suivant". Un clic rapide change d'écran, tandis qu'un maintien prolongé déverrouille les briefings de mission floutés.
+            </p>
+            <button onclick="toggleInfoModal()" class="w-full spy-btn border-spy-black shadow-spy py-1 text-xs font-bold bg-amber-100 hover:bg-amber-200">
+                REPRENDRE
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- ARCHITECTURE INTERACTIVE & LOGIQUE DES PAGES ---
+        const pageOrderList = [
+            'register',
+            'service',
+            'adoration',
+            'virus',
+            'informant',
+            'results',
+            'settings'
+        ];
+        let currentActiveIndex = 0;
+
+        // Base de simulation d'agents inscrits
+        let mockAgents = ["J1", "J2", "SOPHIE", "HUGO", "O'KS"];
+        let configuredChrono = 60;
+        let suspectsSelected = [];
+        let sensorHoldTimer;
+
+        // Rendu de la liste d'agents de l'écran 1
+        function renderInscribedAgents() {
+            const listContainer = document.getElementById('agents-list-container');
+            listContainer.innerHTML = '';
+
+            mockAgents.forEach((agent, index) => {
+                const angleClass = index % 2 === 1 ? 'spy-tilt-left' : 'spy-tilt-right';
+
+                listContainer.innerHTML += `
+                    <div class="bg-spy-paper border-spy-black shadow-spy px-2.5 py-1 flex justify-between items-center ${angleClass} shrink-0">
+                        <span class="text-xs font-black tracking-wide">${agent}</span>
+                        <button onclick="deleteAgent(${index})" class="text-red-600 hover:text-red-800 transition active:scale-90">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            });
+
+            // Affichage de l'aide à l'enregistrement
+            const helper = document.getElementById('register-helper-text');
+            if (mockAgents.length < 5) {
+                helper.textContent = "Enregistrez au moins 5 joueurs pour continuer.";
+                helper.classList.remove('text-green-700');
+                helper.classList.add('text-red-600');
+            } else {
+                helper.textContent = "Effectif réglementaire ! Prêt à jouer.";
+                helper.classList.remove('text-red-600');
+                helper.classList.add('text-green-700');
+            }
+        }
+
+        // Ajouter un agent de simulation
+        function handleAddAgent() {
+            const field = document.getElementById('input-new-agent');
+            const name = field.value.trim().toUpperCase();
+
+            if (!name) {
+                triggerSystemToast("Veuillez saisir un nom.");
+                return;
+            }
+            if (mockAgents.includes(name)) {
+                triggerSystemToast("Cet agent est déjà enregistré.");
+                return;
+            }
+            if (mockAgents.length >= 9) {
+                triggerSystemToast("9 agents maximum.");
+                return;
+            }
+
+            mockAgents.push(name);
+            field.value = '';
+            renderInscribedAgents();
+            triggerSystemToast(`Recruté : ${name}`);
+        }
+
+        // Supprimer un agent
+        function deleteAgent(index) {
+            const removed = mockAgents[index];
+            mockAgents.splice(index, 1);
+            renderInscribedAgents();
+            triggerSystemToast(`Retiré : ${removed}`);
+        }
+
+        // Navigation séquentielle déclenchée par clic sur l'empreinte digitale
+        function handleSequentialClick() {
+            currentActiveIndex = (currentActiveIndex + 1) % pageOrderList.length;
+            switchActivePage(pageOrderList[currentActiveIndex]);
+        }
+
+        // Gestion de l'affichage global des pages d'exemple
+        function switchActivePage(screenId) {
+            // Cacher tous les écrans
+            document.querySelectorAll('.screen-layout').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Afficher l'écran ciblé
+            const screenElement = document.getElementById(`screen-${screenId}`);
+            if (screenElement) {
+                screenElement.classList.add('active');
+            }
+
+            // Mettre à jour l'index
+            currentActiveIndex = pageOrderList.indexOf(screenId);
+
+            // Re-flouter les rôles au changement d'écran pour la simulation
+            document.querySelectorAll('.block-reveal-role').forEach(el => {
+                el.classList.add('hidden-role');
+                el.classList.remove('revealed-role');
+            });
+
+            // Synchronisation de l'en-tête de page
+            const headerTitle = document.getElementById('screen-header-title');
+            const badge = document.getElementById('screen-badge');
+
+            switch (screenId) {
+                case 'register':
+                    headerTitle.textContent = "INSCRIPTION";
+                    badge.textContent = "CONFIG";
+                    badge.className = "bg-yellow-400 text-black px-1 rounded font-black text-[8px] uppercase";
+                    break;
+                case 'service':
+                    headerTitle.textContent = "BRIEFING J1";
+                    badge.textContent = "SERVICE";
+                    badge.className = "bg-sky-700 text-white px-1 rounded font-black text-[8px] uppercase";
+                    break;
+                case 'adoration':
+                    headerTitle.textContent = "BRIEFING J2";
+                    badge.textContent = "ADORATION";
+                    badge.className = "bg-red-500 text-white px-1 rounded font-black text-[8px] uppercase";
+                    break;
+                case 'virus':
+                    headerTitle.textContent = "BRIEFING SOPHIE";
+                    badge.textContent = "VIRUS";
+                    badge.className = "bg-red-800 text-white px-1 rounded font-black text-[8px] uppercase";
+                    break;
+                case 'informant':
+                    headerTitle.textContent = "RECHERCHER";
+                    badge.textContent = "INSPECTER";
+                    badge.className = "bg-black text-white px-1 rounded font-black text-[8px] uppercase";
+                    break;
+                case 'results':
+                    headerTitle.textContent = "VERDICT";
+                    badge.textContent = "CLASSEMENT";
+                    badge.className = "bg-green-700 text-white px-1 rounded font-black text-[8px] uppercase";
+                    break;
+                case 'settings':
+                    headerTitle.textContent = "PARAMÈTRES";
+                    badge.textContent = "SYSTÈME";
+                    badge.className = "bg-stone-600 text-white px-1 rounded font-black text-[8px] uppercase";
+                    break;
+            }
+        }
+
+        // --- DECRYPTAGE PAR DETECTEUR D'EMPREINTE (CLIC LONG / HOLD) ---
+        function handleSensorHoldStart(e) {
+            e.preventDefault();
+            // Lancer le chronomètre de maintien
+            sensorHoldTimer = setTimeout(() => {
+                document.querySelectorAll('.block-reveal-role').forEach(el => {
+                    el.classList.remove('hidden-role');
+                    el.classList.add('revealed-role');
+                });
+                triggerSystemToast("🔑 ENVELOPPE DÉCRYPTÉE !");
+            }, 600); // Temps nécessaire de pression pour éviter les faux positifs lors du clic de transition
+        }
+
+        function handleSensorHoldEnd() {
+            clearTimeout(sensorHoldTimer);
+            document.querySelectorAll('.block-reveal-role').forEach(el => {
+                el.classList.add('hidden-role');
+                el.classList.remove('revealed-role');
+            });
+        }
+
+        // --- PHASE ENQUÊTE : CHOIX DES SUSPECTS ---
+        function toggleSuspect(btnElement, suspectName) {
+            if (suspectsSelected.includes(suspectName)) {
+                // Désélection
+                suspectsSelected = suspectsSelected.filter(name => name !== suspectName);
+                btnElement.classList.remove('bg-yellow-400', 'text-black');
+                if (suspectName === "O'KS" || suspectName === "DBDJ") {
+                    btnElement.classList.add('bg-stone-700', 'text-white');
+                } else {
+                    btnElement.classList.add('bg-spy-paper', 'text-black');
+                }
+                btnElement.querySelector('.check-box-indicator').textContent = '';
+            } else {
+                // Sélection
+                if (suspectsSelected.length >= 2) {
+                    triggerSystemToast("Deux suspects maximum.");
+                    return;
+                }
+                suspectsSelected.push(suspectName);
+                btnElement.classList.remove('bg-stone-700', 'bg-spy-paper', 'text-white', 'text-black');
+                btnElement.classList.add('bg-yellow-400', 'text-black');
+                btnElement.querySelector('.check-box-indicator').textContent = '✓';
+            }
+        }
+
+        function verifySuspectFactions() {
+            if (suspectsSelected.length < 2) {
+                triggerSystemToast("Désignez d'abord 2 coupables.");
+                return;
+            }
+            triggerSystemToast(`Analyse : ${suspectsSelected.join(' & ')}`);
+            setTimeout(() => {
+                const virusCheck = suspectsSelected.some(name => name === "O'KS" || name === "DBDJ");
+                if (virusCheck) {
+                    triggerSystemToast("☢️ ALERTE : L'un d'eux est un agent du VIRUS !");
+                } else {
+                    triggerSystemToast("👁️ RAS : Les deux agents sont sains.");
+                }
+            }, 1000);
+        }
+
+        // --- OPTIONS / PARAMÈTRES INTERACTIFS ---
+        function setScenarioDifficulty(btn) {
+            document.querySelectorAll('.difficulty-option').forEach(el => {
+                el.classList.remove('bg-yellow-400');
+                el.classList.add('bg-spy-paper');
+            });
+            btn.classList.remove('bg-spy-paper');
+            btn.classList.add('bg-yellow-400');
+            triggerSystemToast(`Difficulté : ${btn.textContent}`);
+        }
+
+        function changeChronoValue(amount) {
+            configuredChrono = Math.max(10, configuredChrono + amount);
+            document.getElementById('chrono-value').textContent = `${configuredChrono}s`;
+        }
+
+        // Notification visuelle intégrée
+        function triggerSystemToast(message) {
+            const toast = document.getElementById('toast-notif');
+            toast.textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 2200);
+        }
+
+        // Ouvrir / Fermer la fenêtre d'aide
+        function toggleInfoModal() {
+            const modal = document.getElementById('help-modal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Réinitialiser la partie
+        function restartGameSession() {
+            suspectsSelected = [];
+            document.querySelectorAll('.suspect-btn').forEach(btn => {
+                btn.classList.remove('bg-yellow-400');
+                const isNpc = btn.querySelector('span').textContent === "O'KS" || btn.querySelector('span').textContent === "DBDJ";
+                if (isNpc) {
+                    btn.classList.add('bg-stone-700', 'text-white');
+                } else {
+                    btn.classList.add('bg-spy-paper', 'text-black');
+                }
+                btn.querySelector('.check-box-indicator').textContent = '';
+            });
+            switchActivePage('register');
+            triggerSystemToast("🔄 Table de jeu nettoyée.");
+        }
+
+        // Lancement de l'application
+        window.onload = function() {
+            renderInscribedAgents();
+        }
+    </script>
+</body>
+</html>
+
