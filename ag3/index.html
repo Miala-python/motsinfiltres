@@ -11,7 +11,7 @@
     <script data-goatcounter="https://infiltresgame.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     <script>if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./Xsw.js').catch(err => console.log('SW failed', err));
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
             });
         }</script>
 </head>
@@ -30,9 +30,9 @@
         <!-- HEADER UTILITAIRE -->
         <div class="header-utility">
             <!-- Bouton aide -->
-            <!--<button onclick="toggleInfoModal()" class="spy-btn btn-help spy-tilt-left">
+            <button onclick="toggleInfoModal()" class="spy-btn btn-help spy-tilt-left">
                 ?
-            </button>-->
+            </button>
 
             <!-- Titre d'écran dynamique -->
             <div id="screen-header-title" class="screen-title spy-tilt-slight">
@@ -646,12 +646,130 @@
     <!-- MODAL POPUP D'AIDE TECHNIQUE -->
     <div id="help-modal" class="modal-overlay" onclick="handleOutsideModalClick(event)">
         <div class="modal-card spy-tilt-slight">
-            <h3>🕵️ INTERFACE EMBARQUÉE</h3>
-            <p>
-                Chaque page est calibrée sans aucun défilement vertical. Le bouton en forme d'empreinte digitale au bas
-                de l'appareil remplace la commande "Suivant". Un clic rapide change d'écran, tandis qu'un maintien
-                prolongé déverrouille les briefings de mission floutés.
-            </p>
+            <h3>CONFIGURATION</h3>
+            <div id="gdt-config" class="config-panel">
+                <h4>Configuration GDt.act</h4>
+                <p>Choisissez les éléments actifs pour chaque groupe.</p>
+
+                <fieldset style="margin-bottom:10px;">
+                    <legend>VIS</legend>
+                    <label><input id="vis-master" type="checkbox"> Tout sélectionner</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                        <label><input class="gdt-checkbox" data-list="vis" value="cfs" type="checkbox"> cfs</label>
+                        <label><input class="gdt-checkbox" data-list="vis" value="IFS" type="checkbox"> IFS</label>
+                        <label><input class="gdt-checkbox" data-list="vis" value="aph" type="checkbox"> aph</label>
+                        <label><input class="gdt-checkbox" data-list="vis" value="rsd" type="checkbox"> rsd</label>
+                        <label><input class="gdt-checkbox" data-list="vis" value="ifa" type="checkbox"> ifa</label>
+                        <label><input class="gdt-checkbox" data-list="vis" value="its" type="checkbox"> its</label>
+                    </div>
+                </fieldset>
+
+                <fieldset style="margin-bottom:10px;">
+                    <legend>SEC</legend>
+                    <label><input id="sec-master" type="checkbox"> Tout sélectionner</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                        <label><input class="gdt-checkbox" data-list="sec" value="rcn" type="checkbox"> rcn</label>
+                        <label><input class="gdt-checkbox" data-list="sec" value="ado" type="checkbox"> ado</label>
+                        <label><input class="gdt-checkbox" data-list="sec" value="bem" type="checkbox"> bem</label>
+                        <label><input class="gdt-checkbox" data-list="sec" value="agd" type="checkbox"> agd</label>
+                        <label><input class="gdt-checkbox" data-list="sec" value="NRM" type="checkbox"> NRM</label>
+                    </div>
+                </fieldset>
+
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+                    <button onclick="resetGdtConfig()" class="spy-btn">Réinitialiser</button>
+                    <button onclick="saveGdtConfig()" class="spy-btn btn-apply-settings">Sauvegarder</button>
+                </div>
+
+                <script>
+                    (function(){
+                        const defaultConfig = {
+                            vis: ['cfs','IFS','aph','rsd','ifa','its'],
+                            sec: ['rcn','ado','bem','agd','NRM']
+                        };
+                        const STORAGE_KEY = 'gdt_act_config';
+
+                        function getCheckboxes(list) {
+                            return Array.from(document.querySelectorAll('.gdt-checkbox[data-list="'+list+'"]'));
+                        }
+
+                        function setMasterState(list) {
+                            const master = document.getElementById(list+'-master');
+                            const boxes = getCheckboxes(list);
+                            master.checked = boxes.length && boxes.every(b => b.checked);
+                        }
+
+                        function applyConfig(cfg) {
+                            ['vis','sec'].forEach(list => {
+                                const boxes = getCheckboxes(list);
+                                boxes.forEach(b => b.checked = (cfg[list] || []).includes(b.value));
+                                setMasterState(list);
+                            });
+                        }
+
+                        function loadGdtConfig() {
+                            try {
+                                const raw = localStorage.getItem(STORAGE_KEY);
+                                if (!raw) return defaultConfig;
+                                const parsed = JSON.parse(raw);
+                                return {
+                                    vis: Array.isArray(parsed.vis) ? parsed.vis : defaultConfig.vis,
+                                    sec: Array.isArray(parsed.sec) ? parsed.sec : defaultConfig.sec
+                                };
+                            } catch(e) {
+                                return defaultConfig;
+                            }
+                        }
+
+                        window.saveGdtConfig = function(){
+                            const cfg = { vis: [], sec: [] };
+                            ['vis','sec'].forEach(list => {
+                                getCheckboxes(list).forEach(b => { if (b.checked) cfg[list].push(b.value); });
+                            });
+                            localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+                            const toast = document.getElementById('toast-notif');
+                            if (toast) {
+                                toast.textContent = 'Configuration sauvegardée.';
+                                toast.style.opacity = '1';
+                                clearTimeout(window._gdtToastTimeout);
+                                window._gdtToastTimeout = setTimeout(()=>toast.style.opacity='0', 2000);
+                            }
+                        };
+
+                        window.resetGdtConfig = function(){
+                            localStorage.removeItem(STORAGE_KEY);
+                            applyConfig(defaultConfig);
+                            const toast = document.getElementById('toast-notif');
+                            if (toast) {
+                                toast.textContent = 'Configuration réinitialisée.';
+                                toast.style.opacity = '1';
+                                clearTimeout(window._gdtToastTimeout);
+                                window._gdtToastTimeout = setTimeout(()=>toast.style.opacity='0', 2000);
+                            }
+                        };
+
+                        // master checkbox handlers
+                        document.getElementById('vis-master').addEventListener('change', function(){
+                            getCheckboxes('vis').forEach(b => b.checked = this.checked);
+                        });
+                        document.getElementById('sec-master').addEventListener('change', function(){
+                            getCheckboxes('sec').forEach(b => b.checked = this.checked);
+                        });
+
+                        // individual checkbox handlers to update master
+                        document.querySelectorAll('.gdt-checkbox').forEach(cb => {
+                            cb.addEventListener('change', function(){
+                                setMasterState(this.dataset.list);
+                            });
+                        });
+
+                        // initialize with stored or default config
+                        document.addEventListener('DOMContentLoaded', function(){
+                            applyConfig(loadGdtConfig());
+                        });
+                    })();
+                </script>
+            </div>
             <button onclick="toggleInfoModal()" class="spy-btn btn-modal-close">
                 REPRENDRE
             </button>
