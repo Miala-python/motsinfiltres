@@ -16,7 +16,7 @@
 
         <!-- BARRE STATUT (Haut de page) -->
         <div class="status-bar">
-            <span class="brand-name">AGENT DECK v1.4</span>
+            <span class="brand-name">AGENT DECK v1.5</span>
             <span id="screen-badge" class="badge">BETA</span>
         </div>
 
@@ -41,7 +41,7 @@
                         d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                         clip-rule="evenodd" />
                 </svg>
-            </button>--> 
+            </button>-->
         </div>
 
         <!-- ZONE DE RENDU DES MAQUETTES -->
@@ -139,11 +139,11 @@
                                     letter-spacing="0.5">THE SERVICE</text>
                             </svg>
                         </div>
-                        <div class="envelope-line spy-tilt-slight">
+                        <div class="envelope-line spy-tilt-slight fix-sized-5">
                             <p>Pour le moment, vous travaillez pour <span class="text-highlight-service">Le
                                     Service</span>.</p>
                         </div>
-                        <div class="envelope-line spy-tilt-right">
+                        <div class="envelope-line spy-tilt-right fix-sized-10">
                             <p>Il y a <span class="text-highlight-bold">
                                     <div id="nb-virus">n</div> agents
                                 </span> du VIRUS.</p>
@@ -166,10 +166,10 @@
                                     stroke="white" stroke-width="1">V.I.R.U.S.</text>
                             </svg>
                         </div>
-                        <div class="envelope-line spy-tilt-slight">
+                        <div class="envelope-line spy-tilt-slight fix-sized-5">
                             <p>Voici votre role machiavélique:</p>
                         </div>
-                        <div class="envelope-line spy-tilt-right">
+                        <div class="envelope-line spy-tilt-right fix-sized-10">
                             <p>Pour le moment, vous travaillez pour le <span class="text-highlight-virus">VIRUS</span>.
                                 Votre mission est de ne pas être découvert et de faire en sorte que Le Service
                                 emprisonne l'un des leurs.</p>
@@ -181,9 +181,9 @@
                     </div>
                 </div>
             </div>
-            
-           <!-- ================= ÉCRAN 03 : NOM + ACTION ================= -->
-           <div id="screen-actintro" class="screen-layout">
+
+            <!-- ================= ÉCRAN 03 : NOM + ACTION ================= -->
+            <div id="screen-actintro" class="screen-layout">
                 <div class="role-wrapper">
                     <div class="header-name spy-tilt-left">
                         <h1 class="header-name-act">&NAME_HERE&</h1>
@@ -193,7 +193,7 @@
                     </div>
 
                     <!-- Enveloppe Adoration floutée -->
-                    <div id="actintro-text" class="hidden-role block-reveal-role envelope-details revealed-role">
+                    <div id="actintro-text" class="envelope-details">
                         <!--
                         ADORATION
                         <div class="envelope-line spy-tilt-right">
@@ -211,7 +211,7 @@
                             <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et
                                 aidez-les de toutes les manières possibles.</p>
                         </div>-->
-<!--
+                        <!--
 <div class="public-page">
     <div class="envelope-line spy-tilt-left">
         <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a de la rancune contre quelqu’un. Cet agent gagnera seulement si sa cible est emprisonnée.</p>
@@ -289,12 +289,12 @@
 
 
                     </div>
-                  
-                    
+
+
                 </div>
             </div>
-           <!-- ================= ÉCRAN 04 : ACTION CLASSIQUE ================= -->
-           <div id="screen-classic" class="screen-layout">
+            <!-- ================= ÉCRAN 04 : ACTION CLASSIQUE ================= -->
+            <div id="screen-classic" class="screen-layout">
                 <div class="role-wrapper">
                     <div class="header-name spy-tilt-left">
                         <h1 class="header-name-act">&NAME_HERE&</h1>
@@ -305,7 +305,7 @@
 
                     <!-- Enveloppe Adoration floutée -->
                     <div id="classic-text" class="hidden-role block-reveal-role envelope-details">
-                         <!--<div class="envelope-line spy-tilt-right">
+                        <!--<div class="envelope-line spy-tilt-right">
                            <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire
                                     gagner J1</span>.</p>
                         </div>
@@ -320,21 +320,9 @@
                             <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et
                                 aidez-les de toutes les manières possibles.</p>
                         </div>-->
-                        
-<!--
+
+                        <!--
 <div class="private-page">
-    <div class="envelope-line spy-tilt-left">
-        <p>Sélectionnez deux agents pour interroger l'informateur.</p>
-    </div>
-    <div class="envelope-line spy-tilt-slight">
-        <span class="target-subtext">Premier agent :</span> <span class="target-name">J1</span>
-    </div>
-    <div class="envelope-line spy-tilt-right">
-        <span class="target-subtext">Second agent :</span> <span class="target-name">J2</span>
-    </div>
-    <div class="envelope-line spy-tilt-left">
-        <p class="tips-text">Résultat : L'informateur vous dira de manière générique si <span class="text-highlight-bold">au moins l'un d'eux</span> fait partie du VIRUS.</p>
-    </div>
 </div>
 
 <div class="private-page">
@@ -467,19 +455,26 @@
                     </div>
                 </div>
             </div>
-          <!-- ================= ÉCRAN 05 : ACTION SELECTION ================= -->
-<div id="screen-informant" class="screen-layout">
+            <!-- ================= ÉCRAN 05 : ACTION SELECTION ================= -->
+            <div id="screen-select" class="screen-layout">
+                <div class="header-name spy-tilt-left">
+                    <h1 class="header-name-act">&NAME_HERE&</h1>
+                </div>
                 <div class="info-card spy-tilt-slight">
-                    <h2>INFORMATEUR SECRET</h2>
+                    <h1 id="select-title">INFORMATEUR SECRET</h1>
                 </div>
 
-                <div class="envelope-line spy-tilt-right" style="margin: 6px 0;">
-                    <p style="font-size: 10px;">Choisissez deux agents. Votre informateur vous révélera si l'un deux est
-                        un agent du VIRUS.</p>
+                <div id="select-text">
+
                 </div>
 
                 <!-- Grille suspects -->
-                <div class="suspects-grid">
+                <div id="select-grid" class="suspects-grid">
+                    <!--<button value="42" onclick="togglePlayer(this)" class="suspect-btn dark-theme spy-tilt-left">
+                        <span class="suspect-label">NOM</span>
+                        <span class="check-box-indicator"></span>
+                    </button>-->
+                    <!--
                     <button onclick="toggleSuspect(this, 'O\'KS')" class="suspect-btn dark-theme spy-tilt-left">
                         <span class="suspect-label">O'KS</span>
                         <span class="check-box-indicator"></span>
@@ -495,7 +490,7 @@
                     <button onclick="toggleSuspect(this, 'J1')" class="suspect-btn light-theme spy-tilt-right">
                         <span class="suspect-label">J1</span>
                         <span class="check-box-indicator"></span>
-                    </button>
+                    </button>-->
                 </div>
 
                 <!-- Bouton de validation d'analyse -->
@@ -509,12 +504,12 @@
             <div id="screen-results" class="screen-layout">
                 <div class="results-container">
                     <!-- GAGNANTS -->
-                    <div class="results-category">
+                    <div class="results-category" id="results-winners-grid">
                         <div class="results-category-header spy-tilt-left">
                             GAGNANTS
                         </div>
                         <div class="results-row-grid">
-                          <!--
+                            <!--
                             <div class="result-card spy-tilt-right">
                                 <span class="result-icon">☣️</span>
                                 <span class="result-text-main">DBDJ</span>
@@ -524,7 +519,7 @@
                                 <span class="result-text-main">O'KS</span>
                             </div>-->
                         </div>
-                        
+
                     </div>
 
                     <!-- PERDANTS -->
@@ -532,8 +527,8 @@
                         <div class="results-category-header spy-tilt-right">
                             PERDANTS
                         </div>
-                        <div class="results-category">
-                           <!--
+                        <div class="results-category" id="results-losers-grid">
+                            <!--
                             <div class="result-card-wide spy-tilt-left">
                                 <div style="display: flex; align-items: center; gap: 6px;">
                                     <span class="result-icon">👁️</span>
@@ -654,8 +649,10 @@
 
                     <div class="svg-wrapper">
                         <!-- Icon empreinte digitale -->
-                        <svg class="animate-scan" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11a13.92 13.92 0 012.348-7.558M12 11c0-1.88-.317-3.685-.904-5.364M4.2 16c.342.92.83 1.776 1.44 2.536M18 10a13.9 13.9 0 01-5.044 10.74M21 16.001a13.904 13.904 0 01-2.28 2.817M12 3a13.904 13.904 0 016.904 1.817M12 3v3.315" />
+                        <svg class="animate-scan" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11a13.92 13.92 0 012.348-7.558M12 11c0-1.88-.317-3.685-.904-5.364M4.2 16c.342.92.83 1.776 1.44 2.536M18 10a13.9 13.9 0 01-5.044 10.74M21 16.001a13.904 13.904 0 01-2.28 2.817M12 3a13.904 13.904 0 016.904 1.817M12 3v3.315" />
                         </svg>
                     </div>
                 </div>

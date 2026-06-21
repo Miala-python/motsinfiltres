@@ -389,7 +389,7 @@ body {
 
 /* États cachés/Révélables */
 .hidden-role {
-    filter: blur(8px);
+    filter: blur(25px);
     opacity: 0.2;
     transition: filter 0.2s ease, opacity 0.2s ease;
 }
@@ -515,7 +515,7 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
     margin: 4px 0;
-    flex: 1;
+    /*flex: 1;*/
     align-items: center;
     overflow: hidden;
 }
@@ -540,6 +540,11 @@ body {
 
 .suspect-btn.light-theme {
     background-color: var(--spy-paper);
+    color: var(--spy-black);
+}
+
+.suspect-btn.active {
+    background-color: var(--spy-yellow);
     color: var(--spy-black);
 }
 
@@ -1066,6 +1071,14 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+.fix-sized-5 {
+    height: 5vh;
+}
+
+.fix-sized-10 {
+    height: 10vh;
 }
 
 .fix-sized-20 {

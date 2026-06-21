@@ -264,7 +264,7 @@ function triggerSystemToast(message) {
 
     setTimeout(() => {
         toast.classList.remove('visible');
-    }, 2200);
+    }, 4000);
 }
 
 // Ouvrir / Fermer la fenêtre d'aide
@@ -316,13 +316,25 @@ var GDt = {
         'virus': { max: 0, min: 0, value: 0 }
     },
     actions: [],
+    pblcacts: [],
     act: {
-        vis: ['cfs', 'aph', 'rsd', 'ifa'], //, 'its', 'IFS'
+        vis: ['cfs', 'aph', 'rsd', 'ifa', 'its'],//IFS
         sec: ['rcn', 'ado', 'bem', 'agd', 'NRM'],
         vistmp: [],
         sectmp: []
     },
-    actualId: None
+    actualId: null,
+    selected: [],
+    waitselect: false,
+    votes: []
+}
+const actsNames = {
+    'cfs': 'CONFESSION',
+    'aph': 'ANCIENNES PHOTOGRAPHIES',
+    'rsd': 'RENSEIGNEMENTS DANOIS',
+    'ifa': 'INFO ANONYME',
+    'its': 'INFORMATEUR SECRET',
+    'IFS': 'INFO SECRETE'
 }
 
 function randint(a, b) {
@@ -370,6 +382,7 @@ function clickNext() {
             document.getElementById('screen-role').classList.remove('active');
             fillAjouer();
             GDt.actions = Array(GDt.agents.length);
+            GDt.pblcacts = Array(GDt.agents.length);
             GDt.cibles = Array(GDt.agents.length);
             GDt.act.vistmp = [...GDt.act.vis];
             GDt.startingroles = [...GDt.roles];
@@ -398,7 +411,7 @@ function clickNext() {
 
     if (GDt.page == 'actintro') {
         if (GDt.ajouer.length == 0) {
-
+            GDt.page = 'vote';
         } else {
             GDt.actualId = popAjouer();
             const name = GDt.agents[GDt.actualId];
@@ -409,6 +422,7 @@ function clickNext() {
             } else {
                 GDt.actions[GDt.actualId] = popRanList(GDt.act.vistmp);
             }
+            GDt.pblcacts[GDt.actualId] = GDt.actions[GDt.actualId];
             document.getElementById('screen-actintro').classList.add('active');
             document.getElementById('screen-classic').classList.remove('active');
             document.getElementById('screen-select').classList.remove('active');
@@ -474,36 +488,34 @@ function clickNext() {
             }
 
         }
-    }
-    else
-        if (GDt.page == 'classic') {
+    } else if (GDt.page == 'classic') {
 
-            document.getElementById('screen-actintro').classList.remove('active');
+        document.getElementById('screen-actintro').classList.remove('active');
 
-            document.getElementById('screen-classic').classList.add('active');
-            document.getElementById('for-all-icon').classList.add('hidden');
-            document.getElementById('private-icon').classList.remove('hidden');
-            document.getElementById('trigger-fingerprint').classList.remove('hidden');
-            const title = document.getElementById('classic-title');
-            const div = document.getElementById('classic-text');
-            const act = GDt.actions[GDt.actualId];
-            if (act == 'cfs') {
-                title.innerText = "CONFESSION";
-                div.innerHTML = `<div class="envelope-line spy-tilt-right">
+        document.getElementById('screen-classic').classList.add('active');
+        document.getElementById('for-all-icon').classList.add('hidden');
+        document.getElementById('private-icon').classList.remove('hidden');
+        document.getElementById('trigger-fingerprint').classList.remove('hidden');
+        const title = document.getElementById('classic-title');
+        const div = document.getElementById('classic-text');
+        const act = GDt.actions[GDt.actualId];
+        if (act == 'cfs') {
+            title.innerText = "CONFESSION";
+            div.innerHTML = `<div class="envelope-line spy-tilt-right">
         <p>${GDt.agents[GDt.actualId]} travaille actuellement pour <span class="text-highlight-bold">le ${GDt.roles[GDt.actualId]}</span>.</p>
     </div>`;
-                GDt.page = 'actintro';
-            } else if (act == 'aph') {
-                title.innerText = "ANCIENNES PHOTOGRAPHIES";
-                const ajsave = [...GDt.ajouer];
-                fillAjouer();
-                const j1 = popAjouer();
-                let j2 = popAjouer();
-                while (GDt.roles[j1] != GDt.roles[j2] || GDt.ajouer.length == 0) {
-                    j2 = popAjouer();
-                }
-                GDt.ajouer = [...ajsave];
-                div.innerHTML = `
+            GDt.page = 'actintro';
+        } else if (act == 'aph') {
+            title.innerText = "ANCIENNES PHOTOGRAPHIES";
+            const ajsave = [...GDt.ajouer];
+            fillAjouer();
+            const j1 = popAjouer();
+            let j2 = popAjouer();
+            while (GDt.roles[j1] != GDt.roles[j2] || GDt.ajouer.length == 0) {
+                j2 = popAjouer();
+            }
+            GDt.ajouer = [...ajsave];
+            div.innerHTML = `
     <div class="envelope-line spy-tilt-left">
         <p>Vos archives indiquent que ces deux individus ont commencé leur carrière sous la même bannière :</p>
     </div>
@@ -516,18 +528,18 @@ function clickNext() {
     <div class="envelope-line spy-tilt-left">
         <p class="tips-text">Note : Ils appartenaient à la <span class="text-highlight-bold">même agence</span> au début de la partie.</p>
     </div>`;
-                GDt.page = 'actintro';
-            } else if (act == 'rsd') {
-                title.innerText = "RENSEIGNEMENTS DANOIS";
-                const ajsave = [...GDt.ajouer];
-                fillAjouer();
-                const j1 = popAjouer();
-                let j2 = popAjouer();
-                while (GDt.roles[j1] == GDt.roles[j2] || GDt.ajouer.length == 0) {
-                    j2 = popAjouer();
-                }
-                GDt.ajouer = [...ajsave];
-                div.innerHTML = `
+            GDt.page = 'actintro';
+        } else if (act == 'rsd') {
+            title.innerText = "RENSEIGNEMENTS DANOIS";
+            const ajsave = [...GDt.ajouer];
+            fillAjouer();
+            const j1 = popAjouer();
+            let j2 = popAjouer();
+            while (GDt.roles[j1] == GDt.roles[j2] || GDt.ajouer.length == 0) {
+                j2 = popAjouer();
+            }
+            GDt.ajouer = [...ajsave];
+            div.innerHTML = `
     <div class="envelope-line spy-tilt-right">
         <p>La transmission interceptée lie les deux noms suivants à des camps opposés :</p>
     </div>
@@ -540,11 +552,11 @@ function clickNext() {
     <div class="envelope-line spy-tilt-right">
         <p class="tips-text">Règle : L'un est membre du <span class="text-highlight-bold">VIRUS</span>, l'autre appartient au <span class="text-highlight-bold">Service</span>. À vous de déduire qui est qui.</p>
     </div>`;
-                GDt.page = 'actintro';
-            } else if (act == 'ifa') {
-                title.innerText = "INFO ANONYME";
-                let idx = randint(0, GDt.agents.length);
-                div.innerHTML = `
+            GDt.page = 'actintro';
+        } else if (act == 'ifa') {
+            title.innerText = "INFO ANONYME";
+            let idx = randint(0, GDt.agents.length);
+            div.innerHTML = `
     <div class="envelope-line spy-tilt-right">
         <p>Voici les informations confidentielles interceptées à propos de votre cible :</p>
     </div>
@@ -554,13 +566,235 @@ function clickNext() {
     <div class="envelope-line spy-tilt-left">
         <span class="target-subtext">Agence découverte :</span> <span class="text-highlight-bold">le ${GDt.roles[idx]}</span>
     </div>`;
-                GDt.page = 'actintro';
+            GDt.page = 'actintro';
+        }
+
+    } else if (GDt.page == 'select') {
+        if (GDt.waitselect) {
+            const act = GDt.actions[GDt.actualId];
+            if (act == 'its') {
+                if (GDt.selected.length == 2) {
+                    if (GDt.roles[GDt.selected[0]] == 'virus' || GDt.roles[GDt.selected[1]] == 'virus') {
+                        triggerSystemToast("☢️ ALERTE : L'un d'eux est un agent du VIRUS !");
+                    } else {
+                        triggerSystemToast("👁️ RAS : Les deux agents sont sains.");
+                    }
+                    GDt.waitselect = false;
+                    GDt.page = 'actintro';
+                    clickNext();
+                } else {
+                    triggerSystemToast("Désignez exactement 2 suspects.");
+                }
+            }
+
+        } else {
+            GDt.waitselect = true;
+            GDt.selected = [];
+            let html = '';
+            for (let i = 0; i < GDt.agents.length; i++) {
+                if (GDt.agents[i] === GDt.agents[GDt.actualId]) { } else {
+                    html += `<button value="${i}" onclick="togglePlayer(this)" class="suspect-btn dark-theme spy-tilt-${i % 2 === 0 ? 'left' : 'right'}">
+                    <span class="suspect-label">${GDt.agents[i]}</span>
+                    <span class="check-box-indicator"></span>
+                </button>`;
+                }
+            }
+            document.getElementById('select-grid').innerHTML = html;
+            document.getElementById('screen-actintro').classList.remove('active');
+            document.getElementById('screen-select').classList.add('active');
+            document.getElementById('for-all-icon').classList.add('hidden');
+            document.getElementById('private-icon').classList.remove('hidden');
+            document.getElementById('trigger-fingerprint').classList.add('hidden');
+            const title = document.getElementById('select-title');
+            const div = document.getElementById('select-text');
+            const act = GDt.actions[GDt.actualId];
+            if (act == 'its') {
+                title.innerText = "INFORMATEUR SECRET";
+                div.innerHTML = `<div class="envelope-line spy-tilt-left">
+        <p>Sélectionnez deux agents pour interroger l'informateur.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Résultat : L'informateur vous dira de manière générique si <span class="text-highlight-bold">au moins l'un d'eux</span> fait partie du VIRUS.</p>
+    </div>`;
             }
 
         }
+    } else if (GDt.page == 'vote') {
+        if (GDt.waitselect) {
+            const act = GDt.actions[GDt.actualId];
+            if (GDt.selected.length == 1) {
+                GDt.votes.push(GDt.selected[0]);
+                GDt.waitselect = false;
+                clickNext();
+            } else {
+                triggerSystemToast("Désignez exactement 1 coupable.");
+            }
+        } else {
+            GDt.actualId += 1; 
+            if (GDt.votes.length == 0 ){
+                GDt.actualId = 0;
+            } else if (GDt.votes.length == GDt.agents.length) {
+                GDt.page = 'results';
+                clickNext();
+                return;
+            }
+            GDt.waitselect = true;
+            GDt.selected = [];
+            let html = '';
+            for (let i = 0; i < GDt.agents.length; i++) {
+                if (GDt.agents[i] === GDt.agents[GDt.actualId]) { } else {
+                    html += `<button value="${i}" onclick="togglePlayer(this)" class="suspect-btn dark-theme spy-tilt-${i % 2 === 0 ? 'left' : 'right'}">
+                    <span class="suspect-label">${GDt.agents[i]}</span>
+                    <span class="check-box-indicator"></span>
+                </button>`;
+                }
+            }
+            document.getElementById('select-grid').innerHTML = html;
+            document.getElementById('screen-actintro').classList.remove('active');
+            document.getElementById('screen-select').classList.add('active');
+            document.getElementById('for-all-icon').classList.add('hidden');
+            document.getElementById('private-icon').classList.remove('hidden');
+            document.getElementById('trigger-fingerprint').classList.add('hidden');
+            const title = document.getElementById('select-title');
+            const div = document.getElementById('select-text');
+           
+            title.innerText = "VOTES";
+            // Consignes de votes et rappel des actions de chacun.
+            let divtxt = '';
+            for (let i = 0; i < GDt.agents.length; i++) {
+                divtxt += `<div class="envelope-line spy-tilt-${i % 2 === 0 ? 'left' : 'right'}">
+        <span class="target-subtext">${GDt.agents[i]} :</span> <span class="target-name">${actsNames[GDt.pblcacts[i]]}</span>
+    </div>`;
+            }
+            divtxt += `<div class="envelope-line spy-tilt-slight">
+        <p class="tips-text">Consigne : Chaque joueur vote pour désigner un coupable. Le joueur actif ne peut pas voter pour lui-même.</p>
+    </div>`;
+            div.innerHTML = divtxt;
+
+
+        }
+    } else if (GDt.page == 'results') {
+        document.getElementById('screen-resluts').classList.add('active');
+        document.getElementById('screen-select').classList.remove('active');
+        document.getElementById('for-all-icon').classList.remove('hidden');
+        document.getElementById('private-icon').classList.add('hidden');
+        // Résultats : remplir les containers (IDs à créer dans le HTML : results-winners-grid, results-losers-grid)
+        (() => {
+            const winnersContainer = document.getElementById('results-winners-grid');
+            const losersContainer = document.getElementById('results-losers-grid');
+            //if (!winnersContainer || !losersContainer) return;
+
+            // Compter les voix (GDt.votes contient des indices potentiellement stockés en string)
+            const counts = Array(GDt.agents.length).fill(0);
+            GDt.votes.forEach(v => {
+                const idx = Number(v);
+                if (!Number.isNaN(idx) && idx >= 0 && idx < counts.length) counts[idx]++;
+            });
+
+            // Préparer liste joueurs avec compte
+            const players = GDt.agents.map((name, i) => ({ index: i, name, votes: counts[i], role: GDt.roles[i], cibles: GDt.cibles[i], act: GDt.actions[i] }));
+            const maxVotes = Math.max(...players.map(p => p.votes), 0);
+
+            // Déterminer gagnants / perdants selon les règles spécifiées
+            let winners = [];
+            let losers = [];
+
+            // Récupération des joueurs triés (déjà fournis dans `players`)
+            const playersOrdered = players.slice().sort((a, b) => b.votes - a.votes);
+
+            // Trouver le(s) meilleur(s)
+            const topVotes = maxVotes;
+            const topPlayers = players.filter(p => p.votes === topVotes);
+
+            /* Construction des listes winners et losers: 
+- Celui qui a le plus de voie se fait emprisonner. En cas d'egalité: personne ne se fait emprisonner. 
+- Si un virus se fait emprisonner, les services gagnent sinon les virus gagnent
+Exceptions: 
+- Quelqu'un avec comme action 'rcn' gagne TOUT SEUL si sa cible se fait emprisonner
+- Quelqu'un avec comme action 'aph' gagne si sa cible gagne*/
+            const egalite = topPlayers.length > 1;
+
+            imprisoned = topPlayers[0]; // joueur emprisonné
+
+            let victoire_unique = false
+            if (!egalite){
+                playersOrdered.forEach(p => {
+                    if (p.role == 'rcn' && p.cibles == imprisoned.index) {  
+                        victoire_unique = true;
+                        winners.push(p);}
+                });
+            }
+            if (victoire_unique) {
+                losers = playersOrdered.filter(p => !winners.includes(p));
+            } else {
+                playersOrdered.forEach(p => {
+                    if (p.act == 'ado') {
+                        p.role = GDt.roles[p.cibles];
+                    }
+                    let win = false;
+                    if (egalite) {
+                        win = p.role == 'virus';
+                    } else {
+                        win = imprisoned.role != p.role;}
+                    if (win) {
+                        winners.push(p);
+                    }else{
+                        losers.push(p);
+                    }
+                    }
+                );
+
+                    }
+
+            winnersContainer.innerHTML = winners.map(p =>
+                `<div class="result-card spy-tilt-${p.index % 2 === 0 ? 'right' : 'left'}">
+                    <span class="result-icon">🏆</span>
+                    <span class="result-text-main">${p.name}</span>
+                    <span class="result-subtext">(${p.votes} vote${p.votes > 1 ? 's' : ''})</span>
+                </div>`
+            ).join('');
+
+            losersContainer.innerHTML = losers.map(p =>
+                `<div class="result-card-wide spy-tilt-${p.index % 2 === 0 ? 'left' : 'right'}">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span class="result-icon">👁️</span>
+                        <span class="result-text-main">${p.name}</span>
+                    </div>
+                    <span class="result-subtext">Votes: ${p.votes}</span>
+                </div>`
+            ).join('');
+        })();
+    }
 }
 
+function togglePlayer(btnElement) {
+    const checkIndicator = btnElement.querySelector('.check-box-indicator');
+    const suspectName = btnElement.value;
 
+    if (GDt.selected.includes(suspectName)) {
+        // Désélection
+        GDt.selected = GDt.selected.filter(name => name !== suspectName);
+
+        // Retirer le style actif en rétablissant les classes d'origine
+        //if (suspectName === "O'KS" || suspectName === "DBDJ") {
+        btnElement.className = "suspect-btn dark-theme";
+        /*} else {
+            btnElement.className = "suspect-btn light-theme";
+        }*/
+        checkIndicator.textContent = '';
+    } else {
+        // Sélection
+        /*if (GDt.selected.length >= 2) {
+            triggerSystemToast("Deux suspects maximum.");
+            return;
+        }*/
+        GDt.selected.push(suspectName);
+
+        btnElement.className = "suspect-btn active";
+
+        checkIndicator.textContent = '✓';
+    }
+}
 
 
 function changeQuantityValue(id, amount) {
