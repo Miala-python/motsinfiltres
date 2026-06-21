@@ -306,8 +306,8 @@ window.onload = function () {
 }
 // Code plus
 
-function resetGDt(){
-    GDt.page='register';
+function resetGDt() {
+    GDt.page = 'register';
     GDt.roles = [];
     GDt.startingroles = [];
     GDt.cibles = [];
@@ -603,7 +603,7 @@ function clickNext() {
         <p class="tips-text">Astuce : Orientez les soupçons et votez stratégiquement pour envoyer ${GDt.agents[idx]} derrière les barreaux.</p>
     </div>`;
             GDt.page = 'actintro';
-        }else if (act == 'ado') {
+        } else if (act == 'ado') {
             title.innerText = "ADORATION";
             let idx = randint(0, GDt.agents.length);
             GDt.cibles[GDt.actualId] = idx;
@@ -621,7 +621,7 @@ function clickNext() {
         <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe ${GDt.agents[idx]} appartient et aidez-les de toutes les manières possibles.</p>
     </div>`;
             GDt.page = 'actintro';
-        }else if (act == 'bem') {
+        } else if (act == 'bem') {
             title.innerText = "BOUC EMISSAIRE";
             GDt.cibles[GDt.actualId] = GDt.actualId;
             GDt.actions[GDt.actualId] = 'rcn';
@@ -639,9 +639,9 @@ function clickNext() {
         <p class="tips-text">Astuce : Comportez-vous de manière suspecte pour attirer les votes sur vous, sans paraître trop évident.</p>
     </div>`;
             GDt.page = 'actintro';
-        }else if (act == 'agd') {
+        } else if (act == 'agd') {
             title.innerText = "AGENT DORMANT";
-            GDt.roles[GDt.actualId] = GDt.roles[GDt.actualId] == 'service'? 'virus' : 'service';
+            GDt.roles[GDt.actualId] = GDt.roles[GDt.actualId] == 'service' ? 'virus' : 'service';
             div.innerHTML = `
     <div class="envelope-line spy-tilt-left">
         <p>Votre puce sous-cutanée s'est activée. <span class="text-highlight-bold">Vous changez de camp instantanément !</span></p>
@@ -732,7 +732,7 @@ function clickNext() {
 
             const name = GDt.agents[GDt.actualId];
             document.querySelectorAll('.header-name-act').forEach(el => el.innerText = name);
-            
+
             GDt.waitselect = true;
             GDt.selected = [];
             let html = '';

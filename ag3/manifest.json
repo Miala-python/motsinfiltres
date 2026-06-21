@@ -1,0 +1,25 @@
+{
+  "name": "Double Agent - Le Jeu",
+  "short_name": "Double Agent",
+  "description": "Un jeu de société de déduction et de ruse.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#b54d24",
+  "theme_color": "#111111",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "757x757",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Jouer",
+      "short_name": "Jouer",
+      "description": "Lancer une partie de Mots Infiltrés",
+      "url": "./index.html",
+      "icons": [{ "src": "favicon.png", "sizes": "757x757" }]
+    }
+  ]
+}
