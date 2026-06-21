@@ -23,9 +23,9 @@
         <!-- HEADER UTILITAIRE -->
         <div class="header-utility">
             <!-- Bouton aide -->
-            <button onclick="toggleInfoModal()" class="spy-btn btn-help spy-tilt-left">
+            <!--<button onclick="toggleInfoModal()" class="spy-btn btn-help spy-tilt-left">
                 ?
-            </button>
+            </button>-->
 
             <!-- Titre d'écran dynamique -->
             <div id="screen-header-title" class="screen-title spy-tilt-slight">
@@ -33,6 +33,7 @@
             </div>
 
             <!-- Configuration rapide -->
+            <!--
             <button onclick="switchActivePage('settings')" class="spy-btn btn-settings spy-tilt-left"
                 aria-label="Paramètres">
                 <svg fill="currentColor" viewBox="0 0 20 20">
@@ -40,7 +41,7 @@
                         d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
                         clip-rule="evenodd" />
                 </svg>
-            </button>
+            </button>--> 
         </div>
 
         <!-- ZONE DE RENDU DES MAQUETTES -->
@@ -180,16 +181,18 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ================= ÉCRAN 3 : RÔLE J2 (ADORATION) ================= -->
-            <div id="screen-adoration" class="screen-layout">
+            
+           <!-- ================= ÉCRAN 03 : NOM + ACTION ================= -->
+           <div id="screen-adoration" class="screen-layout">
                 <div class="role-wrapper">
                     <div class="info-card bg-adoration-red spy-tilt-left">
-                        <h2 class="title-adoration">ADORATION</h2>
+                        <h1 class="title-adoration">$ACTION$</h1>
                     </div>
 
                     <!-- Enveloppe Adoration floutée -->
-                    <div class="hidden-role block-reveal-role envelope-details">
+                    <div class="hidden-role block-reveal-role envelope-details revealed-role">
+                        <!--
+                        ADORATION
                         <div class="envelope-line spy-tilt-right">
                             <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire
                                     gagner J1</span>.</p>
@@ -204,49 +207,349 @@
                         <div class="envelope-line spy-tilt-right">
                             <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et
                                 aidez-les de toutes les manières possibles.</p>
-                        </div>
+                        </div>-->
+                        <div class="public-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif doit montrer à un <span class="text-highlight-bold">(et un seul)</span> autre agent, l’agence pour laquelle il ou elle travaille.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Le joueur actif doit sélectionner <span class="text-highlight-bold">deux agents</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>L’informateur révélera si l’un d’eux est un agent du <span class="text-highlight-bold">VIRUS</span>.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-slight">
+        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a reçu des informations à propos de l’agence d’un des autres agents.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Le joueur actif a trouvé des preuves montrant, qu’au début, <span class="text-highlight-bold">deux agents</span> travaillaient pour la <span class="text-highlight-bold">même agence</span>.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif a intercepté une transmission avec <span class="text-highlight-bold">deux noms</span> : l’un est un agent du <span class="text-highlight-bold">VIRUS</span>, l’autre non.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-slight">
+        <p>Le joueur actif consulte son informateur et <span class="text-highlight-bold">découvre l’agence</span> d’un des autres agents.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-left">
+        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a de la rancune contre quelqu’un. Cet agent gagnera seulement si sa cible est emprisonnée.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-right">
+        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif s’éprend d’amour pour quelqu’un. Cet agent gagnera seulement si l’objet de son adoration gagne.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-slight">
+        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a reçu des ordres de ses supérieurs. Maintenant, cet agent gagnera seulement s’il se fait emprisonner.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p>Dans ce cas, tous les agents du Service et du VIRUS <span class="text-highlight-bold">perdront</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif travaille toujours officiellement pour la même agence.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-left">
+        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif change de camp. Si l’agent travaillait pour Le Service, il travaille maintenant pour le VIRUS et vice versa.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif peut déserter son équipe et rejoindre l’adversaire.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p>Un déserteur du <span class="text-highlight-bold">VIRUS</span> perd la partie s’il reçoit au moins un vote d’un autre membre du <span class="text-highlight-bold">VIRUS</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <p>Un déserteur du <span class="text-highlight-bold">Service</span> ne peut pas voter.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Le joueur actif sélectionne un agent pour découvrir son agence.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>S’il se trouve que c’est un agent du <span class="text-highlight-bold">VIRUS</span>, le joueur actif rejoindra sa cause.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-slight">
+        <p>Le joueur actif sélectionne un agent.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p>Ils pourront tous les deux voir si l’un d’eux ou les deux, travaillent pour le <span class="text-highlight-bold">VIRUS</span>.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif doit sélectionner un autre agent qui pourra soit <span class="text-highlight-bold">ajouter un vote supplémentaire</span> contre le joueur actif, soit <span class="text-highlight-bold">protéger</span> le joueur actif contre un vote lors de la phase d’accusation.</p>
+    </div>
+</div>
+
+<div class="public-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Le joueur actif doit choisir un autre agent et <span class="text-highlight-bold">échanger secrètement d’agence</span> avec celui-ci.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <p>Ils travaillent maintenant chacun pour l’agence pour laquelle l’autre travaillait.</p>
+    </div>
+</div>
+
+
                     </div>
+                  
+                    
                 </div>
             </div>
-
-            <!-- ================= ÉCRAN 4 : RÔLE SOPHIE (VIRUS) ================= -->
-            <div id="screen-virus" class="screen-layout">
+           <!-- ================= ÉCRAN 04 : ACTION CLASSIQUE ================= -->
+           <div id="screen-adoration" class="screen-layout">
                 <div class="role-wrapper">
-                    <div class="header-name spy-tilt-left">
-                        <h2>SOPHIE</h2>
+                    <div class="info-card bg-adoration-red spy-tilt-left">
+                        <h1 class="title-adoration">$ACTION$</h1>
                     </div>
 
-                    <!-- Insigne Serpent VIRUS -->
-                    <div class="seal-logo virus-badge spy-tilt-right">
-                        <svg viewBox="0 0 100 100">
-                            <!-- Shield path with custom color directly -->
-                            <path d="M50 8 L 82 22 L 78 62 C 72 80, 50 90, 50 90 C 50 90, 28 80, 22 62 L 18 22 Z"
-                                fill="none" stroke="#b91c1c" stroke-width="4.5" />
-                            <line x1="50" y1="14" x2="50" y2="84" stroke="#b91c1c" stroke-width="4" />
-                            <path d="M34 28 Q 50 42, 66 28 T 34 56 Q 50 70, 66 56" fill="none" stroke="#b91c1c"
-                                stroke-width="4" />
-                            <text x="50" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="black"
-                                stroke="white" stroke-width="1">V.I.R.U.S.</text>
-                        </svg>
-                    </div>
-
-                    <!-- Enveloppe Révélation d'informations -->
+                    <!-- Enveloppe Adoration floutée -->
                     <div class="hidden-role block-reveal-role envelope-details">
+                        <div class="envelope-line spy-tilt-right">
+                            <!--<p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire
+                                    gagner J1</span>.</p>
+                        </div>
+                        <div class="envelope-line spy-tilt-left">
+                            <p>Vous vous éprenez d'amour pour J1, dont le bonheur est la seule chose qui compte.</p>
+                        </div>
                         <div class="envelope-line spy-tilt-slight">
-                            <p>Pour le moment, vous travaillez pour le <span class="text-highlight-virus">VIRUS</span>.
-                                Votre mission est de ne pas être découvert et de faire en sorte que Le Service
-                                emprisonne l'un des leurs.</p>
+                            <span class="target-subtext">Vous adorez :</span>
+                            <span class="target-name">J1</span>
                         </div>
-                        <div class="envelope-line spy-tilt-left complice-row">
-                            <span class="complice-label">Complice :</span>
-                            <span class="complice-value">HUGO</span>
-                        </div>
+                        <div class="envelope-line spy-tilt-right">
+                            <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et
+                                aidez-les de toutes les manières possibles.</p>
+                        </div>-->
+                        <div class="private-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Choisissez un autre joueur secret et cliquez sur son nom pour lui <span class="text-highlight-bold">révéler secrètement</span> votre agence actuelle.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Sélectionner un agent :</span>
+        </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Sélectionnez deux agents pour interroger l'informateur.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Premier agent :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Second agent :</span> <span class="target-name">J2</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Résultat : L'informateur vous dira de manière générique si <span class="text-highlight-bold">au moins l'un d'eux</span> fait partie du VIRUS.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Voici les informations confidentielles interceptées à propos de votre cible :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Agent ciblé :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <span class="target-subtext">Agence découverte :</span> <span class="text-highlight-bold">[Le Service / Le VIRUS]</span>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Vos archives indiquent que ces deux individus ont commencé leur carrière sous la même bannière :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Premier agent :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Second agent :</span> <span class="target-name">J2</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Note : Ils appartenaient à la <span class="text-highlight-bold">même agence</span> au début de la partie.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>La transmission interceptée lie les deux noms suivants à des camps opposés :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Agent A :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <span class="target-subtext">Agent B :</span> <span class="target-name">J2</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p class="tips-text">Règle : L'un est membre du <span class="text-highlight-bold">VIRUS</span>, l'autre appartient au <span class="text-highlight-bold">Service</span>. À vous de déduire qui est qui.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire emprisonner J1</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>Peu importe qui gagne la partie (Le Service ou le VIRUS), votre unique condition de victoire est la chute de votre cible.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Votre cible :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Astuce : Orientez les soupçons et votez stratégiquement pour envoyer J1 derrière les barreaux.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire gagner J1</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p>Vous vous éprenez d'amour pour J1, dont le bonheur est la seule chose qui compte.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Vous adorez :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et aidez-les de toutes les manières possibles.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-slight">
+        <p>Vos ordres ont changé : vous devez <span class="text-highlight-bold">devenir le Bouc Émissaire</span> de cette mission.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p>Pour remporter la victoire, vous devez impérativement <span class="text-highlight-bold">vous faire emprisonner</span> à la fin du tour.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>Si vous y parvenez, vous gagnez <span class="text-highlight-bold">seul</span> et sabotez les deux autres agences.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Astuce : Comportez-vous de manière suspecte pour attirer les votes sur vous, sans paraître trop évident.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Votre puce sous-cutanée s'est activée. <span class="text-highlight-bold">Vous changez de camp instantanément !</span></p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Votre nouvelle agence :</span>
+        <span class="text-highlight-bold">[VIRUS (si vous étiez Service) / Service (si vous étiez VIRUS)]</span>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <p class="tips-text">Attention : Vos conditions de victoire sont désormais alignées sur les objectifs de votre nouvelle équipe. Ne révélez pas ce revirement.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Souhaitez-vous activer votre droit de désertion et <span class="text-highlight-bold">rejoindre l'agence adverse</span> ?</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <span class="target-subtext">Votre allégeance finale :</span>
+        <span class="text-highlight-bold">[Camp adverse appliqué]</span>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <p class="tips-text">Attention : Si vous quittez le VIRUS, évitez absolument les votes de vos anciens alliés. Si vous quittez le Service, votre droit de vote est révoqué.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Sélectionnez un agent pour infiltrer son réseau :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Agent infiltré :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Agence de la cible :</span> <span class="text-highlight-bold">[Service / VIRUS]</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Statut : Si la cible est du VIRUS, <span class="text-highlight-bold">votre agence est devenue le VIRUS</span>. Restez discret sur votre nouvelle alliance.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-right">
+        <p>Vous et votre cible croisez vos dossiers pour détecter la présence du VIRUS :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Agent sélectionné :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <span class="target-subtext">Résultat partagé :</span> 
+        <span class="text-highlight-bold">[Aucun de vous / Un seul de vous / Vous deux]</span> bosse(nt) pour le VIRUS.
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-slight">
+        <p>Désignez l'agent qui détient les documents vous concernant :</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Agent choisi :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Note : Ce joueur va devoir décider secrètement s'il utilise cette preuve pour vous <span class="text-highlight-bold">enfoncer (+1 vote)</span> ou pour vous <span class="text-highlight-bold">protéger (-1 vote)</span>.</p>
+    </div>
+</div>
+
+<div class="private-page">
+    <div class="envelope-line spy-tilt-left">
+        <p>Sélectionnez l'agent avec lequel vous allez échanger vos rôles en secret :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Agent ciblé pour l'échange :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Votre nouvelle agence :</span> <span class="text-highlight-bold">[Nouvelle Agence]</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Règle : Vous récupérez son agence, il récupère la vôtre. Vos conditions de victoire sont instantanément modifiées.</p>
+    </div>
+</div>
+
+
                     </div>
                 </div>
             </div>
-
-            <!-- ================= ÉCRAN 5 : ACTION (INFORMATEUR SECRET) ================= -->
-            <div id="screen-informant" class="screen-layout">
+          <!-- ================= ÉCRAN 05 : ACTION SELECTION ================= -->
+<div id="screen-informant" class="screen-layout">
                 <div class="info-card spy-tilt-slight">
                     <h2>INFORMATEUR SECRET</h2>
                 </div>
@@ -282,7 +585,8 @@
                 </button>
             </div>
 
-            <!-- ================= ÉCRAN 6 : RÉSULTATS FINAUX ================= -->
+
+            <!-- ================= ÉCRAN 06 : RÉSULTATS FINAUX ================= -->
             <div id="screen-results" class="screen-layout">
                 <div class="results-container">
                     <!-- GAGNANTS -->
@@ -291,6 +595,7 @@
                             GAGNANTS
                         </div>
                         <div class="results-row-grid">
+                          <!--
                             <div class="result-card spy-tilt-right">
                                 <span class="result-icon">☣️</span>
                                 <span class="result-text-main">DBDJ</span>
@@ -298,8 +603,9 @@
                             <div class="result-card spy-tilt-left">
                                 <span class="result-icon">☣️</span>
                                 <span class="result-text-main">O'KS</span>
-                            </div>
+                            </div>-->
                         </div>
+                        
                     </div>
 
                     <!-- PERDANTS -->
@@ -308,6 +614,7 @@
                             PERDANTS
                         </div>
                         <div class="results-category">
+                           <!--
                             <div class="result-card-wide spy-tilt-left">
                                 <div style="display: flex; align-items: center; gap: 6px;">
                                     <span class="result-icon">👁️</span>
@@ -329,6 +636,7 @@
                                 </div>
                                 <span class="result-subtext">RÉVÉLÉ</span>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>
