@@ -281,6 +281,7 @@ function handleOutsideModalClick(e) {
 
 // Réinitialiser la partie
 function restartGameSession() {
+    resetGDt();
     suspectsSelected = [];
     document.querySelectorAll('.suspect-btn').forEach(btn => {
         btn.style.backgroundColor = "";
@@ -305,9 +306,25 @@ window.onload = function () {
 }
 // Code plus
 
+function resetGDt(){
+    GDt.page='register';
+    GDt.roles = [];
+    GDt.startingroles = [];
+    GDt.cibles = [];
+    GDt.ajouer = [];
+    GDt.actions = [];
+    GDt.pblcacts = [];
+    GDt.act.vistmp = [];
+    GDt.act.sectmp = [];
+    GDt.actualId = null;
+    GDt.selected = [];
+    GDt.waitselect = false;
+    GDt.votes = [];
+}
+
 var GDt = {
     page: 'register',
-    agents: ["J1", "J2", "SOPHIE", "HUGO", "O'KS"],
+    agents: ["P^P", "PP", "TT", "DN", "PO"],
     roles: [],
     startingroles: [],
     cibles: [],
@@ -318,7 +335,7 @@ var GDt = {
     actions: [],
     pblcacts: [],
     act: {
-        vis: ['cfs', 'aph', 'rsd', 'ifa', 'its', 'IFS'],
+        vis: ['cfs', 'IFS', 'aph', 'rsd', 'ifa', 'its'], // 'aph', 'rsd', 'ifa', 'its', 
         sec: ['rcn', 'ado', 'bem', 'agd', 'NRM'],
         vistmp: [],
         sectmp: []
@@ -451,15 +468,16 @@ function clickNext() {
                 title.innerText = "INFO SECRETE";
                 div.innerHTML = `
     <div class="envelope-line spy-tilt-slight">
-        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a reçu des informations à propos de l’agence d’un des autres agents.</p>
+        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a reçu des informations.</p>
     </div>`;
                 if (GDt.act.sectmp.length == 0) {
                     GDt.act.sectmp = [...GDt.act.sec];
                 }
-                GDt.actions[GDt.actualId] = popRanList(GDt.act.vistmp);
+                GDt.actions[GDt.actualId] = popRanList(GDt.act.sectmp);
                 if (GDt.actions[GDt.actualId] == 'NRM') {
                     if (GDt.act.vistmp.length == 0) {
                         GDt.act.vistmp = [...GDt.act.vis];
+                        GDt.act.vistmp = GDt.act.vistmp.filter(a => a !== 'IFS');
                     }
                     GDt.actions[GDt.actualId] = popRanList(GDt.act.vistmp);
                 }
@@ -606,7 +624,7 @@ function clickNext() {
         }else if (act == 'bem') {
             title.innerText = "BOUC EMISSAIRE";
             GDt.cibles[GDt.actualId] = GDt.actualId;
-            GDt.act[GDt.actualId] = 'rcn';
+            GDt.actions[GDt.actualId] = 'rcn';
             div.innerHTML = `
     <div class="envelope-line spy-tilt-slight">
         <p>Vos ordres ont changé : vous devez <span class="text-highlight-bold">devenir le Bouc Émissaire</span> de cette mission.</p>
@@ -623,7 +641,7 @@ function clickNext() {
             GDt.page = 'actintro';
         }else if (act == 'agd') {
             title.innerText = "AGENT DORMANT";
-            GDt.roles[GDt.actualId] = 'virus' ? GDt.roles[GDt.actualId] == 'service' : 'service';
+            GDt.roles[GDt.actualId] = GDt.roles[GDt.actualId] == 'service'? 'virus' : 'service';
             div.innerHTML = `
     <div class="envelope-line spy-tilt-left">
         <p>Votre puce sous-cutanée s'est activée. <span class="text-highlight-bold">Vous changez de camp instantanément !</span></p>
@@ -796,7 +814,7 @@ Exceptions:
             let victoire_unique = false
             if (!egalite) {
                 playersOrdered.forEach(p => {
-                    if (p.role == 'rcn' && p.cibles == imprisoned.index) {
+                    if (p.act == 'rcn' && p.cibles == imprisoned.index) {
                         victoire_unique = true;
                         winners.push(p);
                     }
