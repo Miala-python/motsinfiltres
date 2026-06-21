@@ -318,7 +318,7 @@ var GDt = {
     actions: [],
     pblcacts: [],
     act: {
-        vis: ['cfs', 'aph', 'rsd', 'ifa', 'its'],//IFS
+        vis: ['cfs', 'aph', 'rsd', 'ifa', 'its', 'IFS'],
         sec: ['rcn', 'ado', 'bem', 'agd', 'NRM'],
         vistmp: [],
         sectmp: []
@@ -334,7 +334,7 @@ const actsNames = {
     'rsd': 'RENSEIGNEMENTS DANOIS',
     'ifa': 'INFO ANONYME',
     'its': 'INFORMATEUR SECRET',
-    'IFS': 'INFO SECRETE'
+    'IFS': 'DOSSIER SECRET'
 }
 
 function randint(a, b) {
@@ -567,6 +567,75 @@ function clickNext() {
         <span class="target-subtext">Agence découverte :</span> <span class="text-highlight-bold">le ${GDt.roles[idx]}</span>
     </div>`;
             GDt.page = 'actintro';
+        } else if (act == 'rcn') {
+            title.innerText = "RANCUNE";
+            let idx = randint(0, GDt.agents.length);
+            GDt.cibles[GDt.actualId] = idx;
+            div.innerHTML = `
+    <div class="envelope-line spy-tilt-left">
+        <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire emprisonner ${GDt.agents[idx]}</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>Peu importe qui gagne la partie (Le Service ou le VIRUS), votre unique condition de victoire est la chute de votre cible.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Votre cible :</span> <span class="target-name">${GDt.agents[idx]}</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Astuce : Orientez les soupçons et votez stratégiquement pour envoyer ${GDt.agents[idx]} derrière les barreaux.</p>
+    </div>`;
+            GDt.page = 'actintro';
+        }else if (act == 'ado') {
+            title.innerText = "ADORATION";
+            let idx = randint(0, GDt.agents.length);
+            GDt.cibles[GDt.actualId] = idx;
+            div.innerHTML = `
+    <div class="envelope-line spy-tilt-right">
+        <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire gagner ${GDt.agents[idx]}</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p>Vous vous éprenez d'amour pour ${GDt.agents[idx]}, dont le bonheur est la seule chose qui compte.</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Vous adorez :</span> <span class="target-name">${GDt.agents[idx]}</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe ${GDt.agents[idx]} appartient et aidez-les de toutes les manières possibles.</p>
+    </div>`;
+            GDt.page = 'actintro';
+        }else if (act == 'bem') {
+            title.innerText = "BOUC EMISSAIRE";
+            GDt.cibles[GDt.actualId] = GDt.actualId;
+            GDt.act[GDt.actualId] = 'rcn';
+            div.innerHTML = `
+    <div class="envelope-line spy-tilt-slight">
+        <p>Vos ordres ont changé : vous devez <span class="text-highlight-bold">devenir le Bouc Émissaire</span> de cette mission.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p>Pour remporter la victoire, vous devez impérativement <span class="text-highlight-bold">vous faire emprisonner</span> à la fin du tour.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>Si vous y parvenez, vous gagnez <span class="text-highlight-bold">seul</span> et sabotez les deux autres agences.</p>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Astuce : Comportez-vous de manière suspecte pour attirer les votes sur vous, sans paraître trop évident.</p>
+    </div>`;
+            GDt.page = 'actintro';
+        }else if (act == 'agd') {
+            title.innerText = "AGENT DORMANT";
+            GDt.roles[GDt.actualId] = 'virus' ? GDt.roles[GDt.actualId] == 'service' : 'service';
+            div.innerHTML = `
+    <div class="envelope-line spy-tilt-left">
+        <p>Votre puce sous-cutanée s'est activée. <span class="text-highlight-bold">Vous changez de camp instantanément !</span></p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Votre nouvelle agence :</span>
+        <span class="text-highlight-bold">Le ${GDt.roles[GDt.actualId]}</span>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <p class="tips-text">Attention : Vos conditions de victoire sont désormais alignées sur les objectifs de votre nouvelle équipe. Ne révélez pas ce revirement.</p>
+    </div>`;
+            GDt.page = 'actintro';
         }
 
     } else if (GDt.page == 'select') {
@@ -642,6 +711,10 @@ function clickNext() {
                 clickNext();
                 return;
             }
+
+            const name = GDt.agents[GDt.actualId];
+            document.querySelectorAll('.header-name-act').forEach(el => el.innerText = name);
+            
             GDt.waitselect = true;
             GDt.selected = [];
             let html = '';
