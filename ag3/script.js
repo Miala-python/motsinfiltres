@@ -264,7 +264,7 @@ function triggerSystemToast(message) {
 
     setTimeout(() => {
         toast.classList.remove('visible');
-    }, 4000);
+    }, 5000);
 }
 
 // Ouvrir / Fermer la fenêtre d'aide
@@ -620,6 +620,10 @@ function clickNext() {
 
         }
     } else if (GDt.page == 'vote') {
+        document.getElementById('screen-actintro').classList.remove('active');
+        document.getElementById('screen-classic').classList.remove('active');
+        document.getElementById('screen-select').classList.add('active');
+
         if (GDt.waitselect) {
             const act = GDt.actions[GDt.actualId];
             if (GDt.selected.length == 1) {
@@ -630,8 +634,8 @@ function clickNext() {
                 triggerSystemToast("Désignez exactement 1 coupable.");
             }
         } else {
-            GDt.actualId += 1; 
-            if (GDt.votes.length == 0 ){
+            GDt.actualId += 1;
+            if (GDt.votes.length == 0) {
                 GDt.actualId = 0;
             } else if (GDt.votes.length == GDt.agents.length) {
                 GDt.page = 'results';
@@ -657,13 +661,13 @@ function clickNext() {
             document.getElementById('trigger-fingerprint').classList.add('hidden');
             const title = document.getElementById('select-title');
             const div = document.getElementById('select-text');
-           
+
             title.innerText = "VOTES";
             // Consignes de votes et rappel des actions de chacun.
             let divtxt = '';
             for (let i = 0; i < GDt.agents.length; i++) {
-                divtxt += `<div class="envelope-line spy-tilt-${i % 2 === 0 ? 'left' : 'right'}">
-        <span class="target-subtext">${GDt.agents[i]} :</span> <span class="target-name">${actsNames[GDt.pblcacts[i]]}</span>
+                divtxt += `<div class="agent-item spy-tilt-${i % 2 === 0 ? 'left' : 'right'}">
+        <span class="agent-name">${GDt.agents[i]} :</span> <span class="agent-act">${actsNames[GDt.pblcacts[i]]}</span>
     </div>`;
             }
             divtxt += `<div class="envelope-line spy-tilt-slight">
@@ -674,7 +678,7 @@ function clickNext() {
 
         }
     } else if (GDt.page == 'results') {
-        document.getElementById('screen-resluts').classList.add('active');
+        document.getElementById('screen-results').classList.add('active');
         document.getElementById('screen-select').classList.remove('active');
         document.getElementById('for-all-icon').classList.remove('hidden');
         document.getElementById('private-icon').classList.add('hidden');
@@ -717,11 +721,12 @@ Exceptions:
             imprisoned = topPlayers[0]; // joueur emprisonné
 
             let victoire_unique = false
-            if (!egalite){
+            if (!egalite) {
                 playersOrdered.forEach(p => {
-                    if (p.role == 'rcn' && p.cibles == imprisoned.index) {  
+                    if (p.role == 'rcn' && p.cibles == imprisoned.index) {
                         victoire_unique = true;
-                        winners.push(p);}
+                        winners.push(p);
+                    }
                 });
             }
             if (victoire_unique) {
@@ -735,16 +740,17 @@ Exceptions:
                     if (egalite) {
                         win = p.role == 'virus';
                     } else {
-                        win = imprisoned.role != p.role;}
+                        win = imprisoned.role != p.role;
+                    }
                     if (win) {
                         winners.push(p);
-                    }else{
+                    } else {
                         losers.push(p);
                     }
-                    }
+                }
                 );
 
-                    }
+            }
 
             winnersContainer.innerHTML = winners.map(p =>
                 `<div class="result-card spy-tilt-${p.index % 2 === 0 ? 'right' : 'left'}">

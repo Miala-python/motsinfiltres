@@ -270,6 +270,13 @@ body {
     letter-spacing: 0.05em;
 }
 
+.agent-act {
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: var(--spy-red-dark);
+}
+
 .agent-delete-btn {
     background: transparent;
     border: none;
@@ -389,7 +396,7 @@ body {
 
 /* États cachés/Révélables */
 .hidden-role {
-    filter: blur(25px);
+    filter: blur(100px);
     opacity: 0.2;
     transition: filter 0.2s ease, opacity 0.2s ease;
 }
@@ -1083,4 +1090,10 @@ body {
 
 .fix-sized-20 {
     height: 20vh;
+}
+
+.compact * {
+  margin-bottom: 0;
+  padding: 1px;
+  height: auto;
 }
