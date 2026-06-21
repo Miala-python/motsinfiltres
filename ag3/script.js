@@ -317,7 +317,7 @@ var GDt = {
     },
     actions: [],
     act: {
-        vis: ['cfs', 'its', 'IFS', 'aph', 'rsd', 'ifa'],
+        vis: ['cfs', 'aph', 'rsd', 'ifa'], //, 'its', 'IFS'
         sec: ['rcn', 'ado', 'bem', 'agd', 'NRM'],
         vistmp: [],
         sectmp: []
@@ -495,29 +495,64 @@ function clickNext() {
                 GDt.page = 'actintro';
             } else if (act == 'aph') {
                 title.innerText = "ANCIENNES PHOTOGRAPHIES";
+                const ajsave = [...GDt.ajouer];
+                fillAjouer();
+                const j1 = popAjouer();
+                let j2 = popAjouer();
+                while (GDt.roles[j1] != GDt.roles[j2] || GDt.ajouer.length == 0) {
+                    j2 = popAjouer();
+                }
+                GDt.ajouer = [...ajsave];
                 div.innerHTML = `
     <div class="envelope-line spy-tilt-left">
-        <p>Le joueur actif a trouvé des preuves montrant, qu’au début, <span class="text-highlight-bold">deux agents</span> travaillaient pour la <span class="text-highlight-bold">même agence</span>.</p>
+        <p>Vos archives indiquent que ces deux individus ont commencé leur carrière sous la même bannière :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Premier agent :</span> <span class="target-name">${GDt.agents[j1]}</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <span class="target-subtext">Second agent :</span> <span class="target-name">${GDt.agents[j2]}</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <p class="tips-text">Note : Ils appartenaient à la <span class="text-highlight-bold">même agence</span> au début de la partie.</p>
     </div>`;
                 GDt.page = 'actintro';
             } else if (act == 'rsd') {
                 title.innerText = "RENSEIGNEMENTS DANOIS";
+                const ajsave = [...GDt.ajouer];
+                fillAjouer();
+                const j1 = popAjouer();
+                let j2 = popAjouer();
+                while (GDt.roles[j1] == GDt.roles[j2] || GDt.ajouer.length == 0) {
+                    j2 = popAjouer();
+                }
+                GDt.ajouer = [...ajsave];
                 div.innerHTML = `
     <div class="envelope-line spy-tilt-right">
-        <p>Le joueur actif a intercepté une transmission avec <span class="text-highlight-bold">deux noms</span> : l’un est un agent du <span class="text-highlight-bold">VIRUS</span>, l’autre non.</p>
+        <p>La transmission interceptée lie les deux noms suivants à des camps opposés :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Agent A :</span> <span class="target-name">${GDt.agents[j1]}</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <span class="target-subtext">Agent B :</span> <span class="target-name">${GDt.agents[j2]}</span>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p class="tips-text">Règle : L'un est membre du <span class="text-highlight-bold">VIRUS</span>, l'autre appartient au <span class="text-highlight-bold">Service</span>. À vous de déduire qui est qui.</p>
     </div>`;
                 GDt.page = 'actintro';
             } else if (act == 'ifa') {
                 title.innerText = "INFO ANONYME";
+                let idx = randint(0, GDt.agents.length);
                 div.innerHTML = `
     <div class="envelope-line spy-tilt-right">
         <p>Voici les informations confidentielles interceptées à propos de votre cible :</p>
     </div>
     <div class="envelope-line spy-tilt-slight">
-        <span class="target-subtext">Agent ciblé :</span> <span class="target-name">J1</span>
+        <span class="target-subtext">Agent ciblé :</span> <span class="target-name">${GDt.agents[idx]}</span>
     </div>
     <div class="envelope-line spy-tilt-left">
-        <span class="target-subtext">Agence découverte :</span> <span class="text-highlight-bold">[Le Service / Le VIRUS]</span>
+        <span class="target-subtext">Agence découverte :</span> <span class="text-highlight-bold">le ${GDt.roles[idx]}</span>
     </div>`;
                 GDt.page = 'actintro';
             }
