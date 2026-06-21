@@ -183,14 +183,17 @@
             </div>
             
            <!-- ================= ÉCRAN 03 : NOM + ACTION ================= -->
-           <div id="screen-adoration" class="screen-layout">
+           <div id="screen-actintro" class="screen-layout">
                 <div class="role-wrapper">
+                    <div class="header-name spy-tilt-left">
+                        <h1 class="header-name-act">&NAME_HERE&</h1>
+                    </div>
                     <div class="info-card bg-adoration-red spy-tilt-left">
-                        <h1 class="title-adoration">$ACTION$</h1>
+                        <h1 id="actintro-title" class="title-adoration">$ACTION$</h1>
                     </div>
 
                     <!-- Enveloppe Adoration floutée -->
-                    <div class="hidden-role block-reveal-role envelope-details revealed-role">
+                    <div id="actintro-text" class="hidden-role block-reveal-role envelope-details revealed-role">
                         <!--
                         ADORATION
                         <div class="envelope-line spy-tilt-right">
@@ -208,45 +211,7 @@
                             <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et
                                 aidez-les de toutes les manières possibles.</p>
                         </div>-->
-                        <div class="public-page">
-    <div class="envelope-line spy-tilt-right">
-        <p>Le joueur actif doit montrer à un <span class="text-highlight-bold">(et un seul)</span> autre agent, l’agence pour laquelle il ou elle travaille.</p>
-    </div>
-</div>
-
-<div class="public-page">
-    <div class="envelope-line spy-tilt-left">
-        <p>Le joueur actif doit sélectionner <span class="text-highlight-bold">deux agents</span>.</p>
-    </div>
-    <div class="envelope-line spy-tilt-right">
-        <p>L’informateur révélera si l’un d’eux est un agent du <span class="text-highlight-bold">VIRUS</span>.</p>
-    </div>
-</div>
-
-<div class="public-page">
-    <div class="envelope-line spy-tilt-slight">
-        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a reçu des informations à propos de l’agence d’un des autres agents.</p>
-    </div>
-</div>
-
-<div class="public-page">
-    <div class="envelope-line spy-tilt-left">
-        <p>Le joueur actif a trouvé des preuves montrant, qu’au début, <span class="text-highlight-bold">deux agents</span> travaillaient pour la <span class="text-highlight-bold">même agence</span>.</p>
-    </div>
-</div>
-
-<div class="public-page">
-    <div class="envelope-line spy-tilt-right">
-        <p>Le joueur actif a intercepté une transmission avec <span class="text-highlight-bold">deux noms</span> : l’un est un agent du <span class="text-highlight-bold">VIRUS</span>, l’autre non.</p>
-    </div>
-</div>
-
-<div class="public-page">
-    <div class="envelope-line spy-tilt-slight">
-        <p>Le joueur actif consulte son informateur et <span class="text-highlight-bold">découvre l’agence</span> d’un des autres agents.</p>
-    </div>
-</div>
-
+<!--
 <div class="public-page">
     <div class="envelope-line spy-tilt-left">
         <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a de la rancune contre quelqu’un. Cet agent gagnera seulement si sa cible est emprisonnée.</p>
@@ -320,7 +285,7 @@
     <div class="envelope-line spy-tilt-slight">
         <p>Ils travaillent maintenant chacun pour l’agence pour laquelle l’autre travaillait.</p>
     </div>
-</div>
+</div>-->
 
 
                     </div>
@@ -329,16 +294,19 @@
                 </div>
             </div>
            <!-- ================= ÉCRAN 04 : ACTION CLASSIQUE ================= -->
-           <div id="screen-adoration" class="screen-layout">
+           <div id="screen-classic" class="screen-layout">
                 <div class="role-wrapper">
+                    <div class="header-name spy-tilt-left">
+                        <h1 class="header-name-act">&NAME_HERE&</h1>
+                    </div>
                     <div class="info-card bg-adoration-red spy-tilt-left">
-                        <h1 class="title-adoration">$ACTION$</h1>
+                        <h1 id="classic-title" class="title-adoration">$ACTION$</h1>
                     </div>
 
                     <!-- Enveloppe Adoration floutée -->
-                    <div class="hidden-role block-reveal-role envelope-details">
-                        <div class="envelope-line spy-tilt-right">
-                            <!--<p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire
+                    <div id="classic-text" class="hidden-role block-reveal-role envelope-details">
+                         <!--<div class="envelope-line spy-tilt-right">
+                           <p>À partir de maintenant, pour gagner, vous devez <span class="text-highlight-bold">faire
                                     gagner J1</span>.</p>
                         </div>
                         <div class="envelope-line spy-tilt-left">
@@ -352,14 +320,7 @@
                             <p class="tips-text">Astuce : Essayez de découvrir à quelle équipe J1 appartient et
                                 aidez-les de toutes les manières possibles.</p>
                         </div>-->
-                        <div class="private-page">
-    <div class="envelope-line spy-tilt-right">
-        <p>Choisissez un autre joueur secret et cliquez sur son nom pour lui <span class="text-highlight-bold">révéler secrètement</span> votre agence actuelle.</p>
-    </div>
-    <div class="envelope-line spy-tilt-slight">
-        <span class="target-subtext">Sélectionner un agent :</span>
-        </div>
-</div>
+                        
 
 <div class="private-page">
     <div class="envelope-line spy-tilt-left">
@@ -376,17 +337,6 @@
     </div>
 </div>
 
-<div class="private-page">
-    <div class="envelope-line spy-tilt-right">
-        <p>Voici les informations confidentielles interceptées à propos de votre cible :</p>
-    </div>
-    <div class="envelope-line spy-tilt-slight">
-        <span class="target-subtext">Agent ciblé :</span> <span class="target-name">J1</span>
-    </div>
-    <div class="envelope-line spy-tilt-left">
-        <span class="target-subtext">Agence découverte :</span> <span class="text-highlight-bold">[Le Service / Le VIRUS]</span>
-    </div>
-</div>
 
 <div class="private-page">
     <div class="envelope-line spy-tilt-left">

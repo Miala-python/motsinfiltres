@@ -309,10 +309,20 @@ var GDt = {
     page: 'register',
     agents: ["J1", "J2", "SOPHIE", "HUGO", "O'KS"],
     roles: [],
+    startingroles: [],
+    cibles: [],
     ajouer: [],
     selects: {
         'virus': { max: 0, min: 0, value: 0 }
-    }
+    },
+    actions: [],
+    act: {
+        vis: ['cfs', 'its', 'IFS', 'aph', 'rsd', 'ifa'],
+        sec: ['rcn', 'ado', 'bem', 'agd', 'NRM'],
+        vistmp: [],
+        sectmp: []
+    },
+    actualId: None
 }
 
 function randint(a, b) {
@@ -323,11 +333,15 @@ function fillAjouer() {
     GDt.ajouer = Array.from({ length: GDt.agents.length }, (_, i) => i)
 }
 
-function popAjouer() {
-    const idxs = randint(0, GDt.ajouer.length)
-    const idxr = GDt.ajouer[idxs]
-    GDt.ajouer.splice(idxs, 1)
+function popRanList(lst) {
+    const idxs = randint(0, lst.length)
+    const idxr = lst[idxs]
+    lst.splice(idxs, 1)
     return idxr
+}
+
+function popAjouer() {
+    return popRanList(GDt.ajouer)
 }
 
 function clickNext() {
@@ -352,7 +366,13 @@ function clickNext() {
     if (GDt.page == 'role') {
 
         if (GDt.ajouer.length == 0) {
-
+            GDt.page = 'actintro';
+            document.getElementById('screen-role').classList.remove('active');
+            fillAjouer();
+            GDt.actions = Array(GDt.agents.length);
+            GDt.cibles = Array(GDt.agents.length);
+            GDt.act.vistmp = [...GDt.act.vis];
+            GDt.startingroles = [...GDt.roles];
         } else {
             const idx = popAjouer();
             const name = GDt.agents[idx];
@@ -376,7 +396,137 @@ function clickNext() {
 
     }
 
+    if (GDt.page == 'actintro') {
+        if (GDt.ajouer.length == 0) {
+
+        } else {
+            GDt.actualId = popAjouer();
+            const name = GDt.agents[GDt.actualId];
+            document.querySelectorAll('.header-name-act').forEach(el => el.innerText = name);
+            if (GDt.act.vistmp.length == 0) {
+                GDt.actions[GDt.actualId] = 'IFS';
+                GDt.act.vistmp = [...GDt.act.vis];
+            } else {
+                GDt.actions[GDt.actualId] = popRanList(GDt.act.vistmp);
+            }
+            document.getElementById('screen-actintro').classList.add('active');
+            document.getElementById('screen-classic').classList.remove('active');
+            document.getElementById('screen-select').classList.remove('active');
+            document.getElementById('for-all-icon').classList.remove('hidden');
+            document.getElementById('private-icon').classList.add('hidden');
+            document.getElementById('trigger-fingerprint').classList.add('hidden');
+            const title = document.getElementById('actintro-title');
+            const div = document.getElementById('actintro-text');
+            const act = GDt.actions[GDt.actualId];
+            if (act == 'cfs') {
+                title.innerText = "CONFESSION";
+                div.innerHTML = `<div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif doit montrer à un <span class="text-highlight-bold">(et un seul)</span> autre agent, l’agence pour laquelle il ou elle travaille.</p>
+    </div>`;
+                GDt.page = 'classic';
+            } else if (act == 'its') {
+                title.innerText = "INFORMATEUR SECRET";
+                div.innerHTML = `<div class="envelope-line spy-tilt-left">
+        <p>Le joueur actif doit sélectionner <span class="text-highlight-bold">deux agents</span>.</p>
+    </div>
+    <div class="envelope-line spy-tilt-right">
+        <p>L’informateur révélera si l’un d’eux est un agent du <span class="text-highlight-bold">VIRUS</span>.</p>
+    </div>`;
+                GDt.page = 'select';
+            } else if (act == 'IFS') {
+                title.innerText = "INFO SECRETE";
+                div.innerHTML = `
+    <div class="envelope-line spy-tilt-slight">
+        <p><span class="text-highlight-bold">DOSSIER SECRET</span> - Le joueur actif a reçu des informations à propos de l’agence d’un des autres agents.</p>
+    </div>`;
+                if (GDt.act.sectmp.length == 0) {
+                    GDt.act.sectmp = [...GDt.act.sec];
+                }
+                GDt.actions[GDt.actualId] = popRanList(GDt.act.vistmp);
+                if (GDt.actions[GDt.actualId] == 'NRM') {
+                    if (GDt.act.vistmp.length == 0) {
+                        GDt.act.vistmp = [...GDt.act.vis];
+                    }
+                    GDt.actions[GDt.actualId] = popRanList(GDt.act.vistmp);
+                }
+                GDt.page = 'classic';
+            } else if (act == 'aph') {
+                title.innerText = "ANCIENNES PHOTOGRAPHIES";
+                div.innerHTML = `
+    <div class="envelope-line spy-tilt-left">
+        <p>Le joueur actif a trouvé des preuves montrant, qu’au début, <span class="text-highlight-bold">deux agents</span> travaillaient pour la <span class="text-highlight-bold">même agence</span>.</p>
+    </div>`;
+                GDt.page = 'classic';
+            } else if (act == 'rsd') {
+                title.innerText = "RENSEIGNEMENTS DANOIS";
+                div.innerHTML = `
+    <div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif a intercepté une transmission avec <span class="text-highlight-bold">deux noms</span> : l’un est un agent du <span class="text-highlight-bold">VIRUS</span>, l’autre non.</p>
+    </div>`;
+                GDt.page = 'classic';
+            } else if (act == 'ifa') {
+                title.innerText = "INFO ANONYME";
+                div.innerHTML = `
+    <div class="envelope-line spy-tilt-slight">
+        <p>Le joueur actif consulte son informateur et <span class="text-highlight-bold">découvre l’agence</span> d’un des autres agents.</p>
+    </div>`;
+                GDt.page = 'classic';
+            }
+
+        }
+    }
+    else
+        if (GDt.page == 'classic') {
+
+            document.getElementById('screen-actintro').classList.remove('active');
+
+            document.getElementById('screen-classic').classList.add('active');
+            document.getElementById('for-all-icon').classList.add('hidden');
+            document.getElementById('private-icon').classList.remove('hidden');
+            document.getElementById('trigger-fingerprint').classList.remove('hidden');
+            const title = document.getElementById('classic-title');
+            const div = document.getElementById('classic-text');
+            const act = GDt.actions[GDt.actualId];
+            if (act == 'cfs') {
+                title.innerText = "CONFESSION";
+                div.innerHTML = `<div class="envelope-line spy-tilt-right">
+        <p>${GDt.agents[GDt.actualId]} travaille actuellement pour <span class="text-highlight-bold">le ${GDt.roles[GDt.actualId]}</span>.</p>
+    </div>`;
+                GDt.page = 'actintro';
+            } else if (act == 'aph') {
+                title.innerText = "ANCIENNES PHOTOGRAPHIES";
+                div.innerHTML = `
+    <div class="envelope-line spy-tilt-left">
+        <p>Le joueur actif a trouvé des preuves montrant, qu’au début, <span class="text-highlight-bold">deux agents</span> travaillaient pour la <span class="text-highlight-bold">même agence</span>.</p>
+    </div>`;
+                GDt.page = 'actintro';
+            } else if (act == 'rsd') {
+                title.innerText = "RENSEIGNEMENTS DANOIS";
+                div.innerHTML = `
+    <div class="envelope-line spy-tilt-right">
+        <p>Le joueur actif a intercepté une transmission avec <span class="text-highlight-bold">deux noms</span> : l’un est un agent du <span class="text-highlight-bold">VIRUS</span>, l’autre non.</p>
+    </div>`;
+                GDt.page = 'actintro';
+            } else if (act == 'ifa') {
+                title.innerText = "INFO ANONYME";
+                div.innerHTML = `
+    <div class="envelope-line spy-tilt-right">
+        <p>Voici les informations confidentielles interceptées à propos de votre cible :</p>
+    </div>
+    <div class="envelope-line spy-tilt-slight">
+        <span class="target-subtext">Agent ciblé :</span> <span class="target-name">J1</span>
+    </div>
+    <div class="envelope-line spy-tilt-left">
+        <span class="target-subtext">Agence découverte :</span> <span class="text-highlight-bold">[Le Service / Le VIRUS]</span>
+    </div>`;
+                GDt.page = 'actintro';
+            }
+
+        }
 }
+
+
+
 
 function changeQuantityValue(id, amount) {
     GDt.selects.virus.max = GDt.agents.length;
