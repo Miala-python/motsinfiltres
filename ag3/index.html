@@ -23,7 +23,7 @@
 
         <!-- BARRE STATUT (Haut de page) -->
         <div class="status-bar">
-            <span class="brand-name">AGENT DECK v0.1.12</span>
+            <span class="brand-name">AGENT DECK v0.1.13</span>
             <span id="screen-badge" class="badge">BETA</span>
         </div>
 
@@ -682,92 +682,97 @@
                 </div>
 
                 <script>
-                    (function(){
-                        const defaultConfig = {
-                            vis: ['cfs','IFS','aph','rsd','ifa','its'],
-                            sec: ['rcn','ado','bem','agd','NRM']
-                        };
-                        const STORAGE_KEY = 'gdt_act_config';
+                    (function() {
+  const defaultConfig = {
+    vis: ['cfs', 'IFS', 'aph', 'rsd', 'ifa', 'its'],
+    sec: ['rcn', 'ado', 'bem', 'agd', 'NRM']
+  };
+  const STORAGE_KEY = 'gdt_act_config';
 
-                        function getCheckboxes(list) {
-                            return Array.from(document.querySelectorAll('.gdt-checkbox[data-list="'+list+'"]'));
-                        }
+  function getCheckboxes(list) {
+    return Array.from(document.querySelectorAll('.gdt-checkbox[data-list="'+list+'"]'));
+  }
 
-                        function setMasterState(list) {
-                            const master = document.getElementById(list+'-master');
-                            const boxes = getCheckboxes(list);
-                            master.checked = boxes.length && boxes.every(b => b.checked);
-                        }
+  function setMasterState(list) {
+    const master = document.getElementById(list+'-master');
+    const boxes = getCheckboxes(list);
+    master.checked = boxes.length && boxes.every(b => b.checked);
+  }
 
-                        function applyConfig(cfg) {
-                            ['vis','sec'].forEach(list => {
-                                const boxes = getCheckboxes(list);
-                                boxes.forEach(b => b.checked = (cfg[list] || []).includes(b.value));
-                                setMasterState(list);
-                            });
-                        }
+  function applyConfig(cfg) {
+    ['vis', 'sec'].forEach(list => {
+      const boxes = getCheckboxes(list);
+      boxes.forEach(b => b.checked = (cfg[list] || []).includes(b.value));
+      setMasterState(list);
+    });
+  }
 
-                        function loadGdtConfig() {
-                            try {
-                                const raw = localStorage.getItem(STORAGE_KEY);
-                                if (!raw) return defaultConfig;
-                                const parsed = JSON.parse(raw);
-                                return {
-                                    vis: Array.isArray(parsed.vis) ? parsed.vis : defaultConfig.vis,
-                                    sec: Array.isArray(parsed.sec) ? parsed.sec : defaultConfig.sec
-                                };
-                            } catch(e) {
-                                return defaultConfig;
-                            }
-                        }
+  function loadGdtConfig() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultConfig;
+      const parsed = JSON.parse(raw);
+      return {
+        vis: Array.isArray(parsed.vis) ? parsed.vis: defaultConfig.vis,
+        sec: Array.isArray(parsed.sec) ? parsed.sec: defaultConfig.sec
+      };
+    } catch(e) {
+      return defaultConfig;
+    }
+  }
 
-                        window.saveGdtConfig = function(){
-                            const cfg = { vis: [], sec: [] };
-                            ['vis','sec'].forEach(list => {
-                                getCheckboxes(list).forEach(b => { if (b.checked) cfg[list].push(b.value); });
-                            });
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
-                            const toast = document.getElementById('toast-notif');
-                            if (toast) {
-                                toast.textContent = 'Configuration sauvegardée.';
-                                toast.style.opacity = '1';
-                                clearTimeout(window._gdtToastTimeout);
-                                window._gdtToastTimeout = setTimeout(()=>toast.style.opacity='0', 2000);
-                            }
-                        };
+  window.saveGdtConfig = function() {
+    const cfg = {
+      vis: [],
+      sec: []
+    };
+    ['vis',
+      'sec'].forEach(list => {
+        getCheckboxes(list).forEach(b => {
+          if (b.checked) cfg[list].push(b.value);
+        });
+      });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+    GDt.act.vis = cfg.vis;
+    GDt.act.sec = cfg.sec;
+    alert("Config enregistree");
+  };
 
-                        window.resetGdtConfig = function(){
-                            localStorage.removeItem(STORAGE_KEY);
-                            applyConfig(defaultConfig);
-                            const toast = document.getElementById('toast-notif');
-                            if (toast) {
-                                toast.textContent = 'Configuration réinitialisée.';
-                                toast.style.opacity = '1';
-                                clearTimeout(window._gdtToastTimeout);
-                                window._gdtToastTimeout = setTimeout(()=>toast.style.opacity='0', 2000);
-                            }
-                        };
+  window.resetGdtConfig = function() {
+    localStorage.removeItem(STORAGE_KEY);
+    applyConfig(defaultConfig);
+    const toast = document.getElementById('toast-notif');
+    if (toast) {
+      toast.textContent = 'Configuration réinitialisée.';
+      toast.style.opacity = '1';
+      clearTimeout(window._gdtToastTimeout);
+      window._gdtToastTimeout = setTimeout(()=>toast.style.opacity = '0', 2000);
+    }
+  };
 
-                        // master checkbox handlers
-                        document.getElementById('vis-master').addEventListener('change', function(){
-                            getCheckboxes('vis').forEach(b => b.checked = this.checked);
-                        });
-                        document.getElementById('sec-master').addEventListener('change', function(){
-                            getCheckboxes('sec').forEach(b => b.checked = this.checked);
-                        });
+  // master checkbox handlers
+  document.getElementById('vis-master').addEventListener('change', function() {
+    getCheckboxes('vis').forEach(b => b.checked = this.checked);
+  });
+  document.getElementById('sec-master').addEventListener('change', function() {
+    getCheckboxes('sec').forEach(b => b.checked = this.checked);
+  });
 
-                        // individual checkbox handlers to update master
-                        document.querySelectorAll('.gdt-checkbox').forEach(cb => {
-                            cb.addEventListener('change', function(){
-                                setMasterState(this.dataset.list);
-                            });
-                        });
+  // individual checkbox handlers to update master
+  document.querySelectorAll('.gdt-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+      setMasterState(this.dataset.list);
+    });
+  });
 
-                        // initialize with stored or default config
-                        document.addEventListener('DOMContentLoaded', function(){
-                            applyConfig(loadGdtConfig());
-                        });
-                    })();
+  // initialize with stored or default config
+  document.addEventListener('DOMContentLoaded', function() {
+    applyConfig(loadGdtConfig());
+  });
+})();
+
+
+// While infini
                 </script>
             </div>
             <button onclick="toggleInfoModal()" class="spy-btn btn-modal-close">
