@@ -529,7 +529,7 @@ function clickNext() {
             fillAjouer();
             const j1 = popAjouer();
             let j2 = popAjouer();
-            while (GDt.roles[j1] != GDt.roles[j2] || GDt.ajouer.length == 0) {
+            while (GDt.roles[j1] != GDt.roles[j2] && GDt.ajouer.length != 0) {
                 j2 = popAjouer();
             }
             GDt.ajouer = [...ajsave];
