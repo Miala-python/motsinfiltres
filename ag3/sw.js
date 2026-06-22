@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agent3-v1.4.3';
+const CACHE_NAME = 'agent3-v1.4.13';
 const ASSETS = ['./', './index.html', './manifest.json', './script.js', './style.css'
 
 ];
